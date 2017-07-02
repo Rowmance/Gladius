@@ -7,8 +7,14 @@ use bit_reverse::ParallelReverse;
 pub struct BitBoard(pub u64);
 
 impl BitBoard {
+    /// Flips the bitboard such that it's from the perspective of the other player.
     pub fn flip(&self) -> Self {
         BitBoard(self.0.swap_bits())
+    }
+
+    /// Counts the number of set bits on the bitboard.
+    pub fn count(&self) -> u32 {
+        self.0.count_ones()
     }
 }
 
