@@ -1,9 +1,9 @@
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not};
-use std::fmt::{Debug, Formatter, Result};
+use std::fmt::{Formatter, Result, Display};
 use bit_reverse::ParallelReverse;
 
 /// Represents a 64-bit bitboard.
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub struct BitBoard(pub u64);
 
 impl BitBoard {
@@ -66,8 +66,8 @@ impl Not for BitBoard {
 }
 
 // ---------------------------------------------------------------------------
-// Debug
-impl Debug for BitBoard {
+// Display
+impl Display for BitBoard {
     #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "\n{}:\n+-+-+-+-+-+-+-+-+-+\n", self.0);
