@@ -70,14 +70,22 @@ impl Not for BitBoard {
 impl Display for BitBoard {
     #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "\n{}:\n+-+-+-+-+-+-+-+-+-+\n", self.0);
+        let mut str = String::new();
+        str.push_str(self.0.to_string().as_str());
+        str.push_str("\n+-+-+-+-+-+-+-+-+-+\n");
         for rank in 0..8 {
-            write!(f, "| ");
+            str.push_str("| ");
             for file in 0..8 {
-                write!(f, "{} ", if self.0 & (1 << ((7 - rank) * 8 + file)) > 0 { "X" } else { "-" });
+                let char = if self.0 & (1 << ((7 - rank) * 8 + file)) > 0 {
+                    "X"
+                } else {
+                    "-"
+                };
+                str.push_str(char);
             }
-            write!(f, "|\n");
+            str.push_str("|\n");
         }
-        write!(f, "+-+-+-+-+-+-+-+-+-+")
+        str.push_str("+-+-+-+-+-+-+-+-+-+");
+        write!(f, "{}", str)
     }
 }
