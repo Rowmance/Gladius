@@ -1,6 +1,7 @@
 [package]
-name = "Gladius"
+name = "gladius"
 version = "0.1.0"
 authors = ["Roman Kolacz <roman@kolacz.io>"]
 
 [dependencies]
+bit_reverse = "0.1.7"
