@@ -1,0 +1,6 @@
+[package]
+name = "Gladius"
+version = "0.1.0"
+authors = ["Roman Kolacz <roman@kolacz.io>"]
+
+[dependencies]
