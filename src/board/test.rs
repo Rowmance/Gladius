@@ -1,6 +1,8 @@
 use board::bitboard::BitBoard;
 use board::bitboards;
 
+use board::rank::Rank;
+
 #[test]
 fn bitboard_ops() {
     // Symmetrical
@@ -34,4 +36,10 @@ fn bitboard_ops() {
 
     // Test not operator
     assert!(!!bitboards::BLACK_START_ROOKS ^ bitboards::BLACK_START_ROOKS == bitboards::EMPTY);
+}
+
+#[test]
+fn rank() {
+    assert!(Rank::FOUR.to_index() == 3);
+    assert!(Rank::from_index(6) == Rank::SEVEN);
 }
