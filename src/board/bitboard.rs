@@ -83,9 +83,9 @@ impl Display for BitBoard {
             str.push_str("| ");
             for file in 0..8 {
                 let char = if self.0 & (1 << ((7 - rank) * 8 + file)) > 0 {
-                    "X"
+                    "X "
                 } else {
-                    "-"
+                    "- "
                 };
                 str.push_str(char);
             }

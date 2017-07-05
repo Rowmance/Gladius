@@ -1,5 +1,7 @@
 use std::fmt::{Formatter, Result, Display};
 
+use board::bitboard::BitBoard;
+
 /// Represents a rank on a chessboard.
 #[derive(PartialEq, Clone, Copy, Debug)]
 pub enum Rank {
@@ -26,10 +28,23 @@ impl Rank {
     pub fn to_index(&self) -> u8 {
         *self as u8
     }
+
+    pub fn to_bitboard(&self) -> BitBoard {
+        let mut val: u64 = 0;
+        val = val | 1 << (*self as u8);
+        val = val | 1 << (*self as u8) + 8;
+        val = val | 1 << (*self as u8) + 16;
+        val = val | 1 << (*self as u8) + 24;
+        val = val | 1 << (*self as u8) + 32;
+        val = val | 1 << (*self as u8) + 40;
+        val = val | 1 << (*self as u8) + 48;
+        val = val | 1 << (*self as u8) + 56;
+        BitBoard(val)
+    }
 }
 
 impl Display for Rank {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "{}",  self)
+        write!(f, "Rank {:?}",  self)
     }
 }

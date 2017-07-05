@@ -40,6 +40,10 @@ fn bitboard_ops() {
 
 #[test]
 fn rank() {
-    assert!(Rank::FOUR.to_index() == 3);
+    assert!(Rank::TWO.to_index() == 1);
     assert!(Rank::from_index(6) == Rank::SEVEN);
+
+    assert!(Rank::FOUR.to_bitboard() == BitBoard(578721382704613384));
+    assert!(Rank::ONE.to_bitboard() == BitBoard(72340172838076673));
+    assert!(Rank::EIGHT.to_bitboard() == BitBoard(9259542123273814144));
 }
