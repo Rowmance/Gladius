@@ -14,10 +14,12 @@
 
 mod bitboard;
 mod bitboards;
+mod square;
 mod rank;
 mod file;
 mod piece;
 mod player;
+mod board;
 
 #[cfg(test)]
 mod test;

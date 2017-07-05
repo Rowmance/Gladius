@@ -7,6 +7,11 @@ use bit_reverse::ParallelReverse;
 pub struct BitBoard(pub u64);
 
 impl BitBoard {
+    /// Creates a new instance from the given 64-bit integer.
+    pub fn new(val: u64) -> Self {
+        BitBoard(val)
+    }
+
     /// Flips the bitboard such that it's from the perspective of the other player.
     pub fn flip(&self) -> Self {
         BitBoard(self.0.swap_bits())

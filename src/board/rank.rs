@@ -33,18 +33,15 @@ impl Rank {
     pub fn to_bitboard(&self) -> BitBoard {
         let mut val: u64 = 0;
         val = val | 1 << (*self as u8);
-        val = val | 1 << (*self as u8) + 8;
-        val = val | 1 << (*self as u8) + 16;
-        val = val | 1 << (*self as u8) + 24;
-        val = val | 1 << (*self as u8) + 32;
-        val = val | 1 << (*self as u8) + 40;
-        val = val | 1 << (*self as u8) + 48;
-        val = val | 1 << (*self as u8) + 56;
+        val |= val << 8;
+        val |= val << 16;
+        val |= val << 32;
         BitBoard(val)
     }
 }
 
 impl Display for Rank {
+    #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "Rank {:?}",  self)
     }

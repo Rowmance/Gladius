@@ -1,8 +1,10 @@
 use board::bitboard::BitBoard;
 use board::bitboards;
-
+use board::square::Square;
 use board::rank::Rank;
 use board::file::File;
+
+use std::panic::catch_unwind;
 
 #[test]
 fn bitboard_ops() {
@@ -37,6 +39,25 @@ fn bitboard_ops() {
 
     // Test not operator
     assert!(!!bitboards::BLACK_START_ROOKS ^ bitboards::BLACK_START_ROOKS == bitboards::EMPTY);
+}
+
+
+#[test]
+fn square() {
+    assert!(Square::new(0) == Square::from_coordinates(File::A, Rank::ONE));
+    assert!(Square::new(3) == Square::from_coordinates(File::D, Rank::ONE));
+    assert!(Square::new(7) == Square::from_coordinates(File::H, Rank::ONE));
+    assert!(Square::new(8) == Square::from_coordinates(File::A, Rank::TWO));
+    assert!(Square::new(27) == Square::from_coordinates(File::D, Rank::FOUR));
+
+    assert!(Square::new(47) == Square::from_coordinates(File::H, Rank::SIX));
+    assert!(Square::new(63) == Square::from_coordinates(File::H, Rank::EIGHT));
+
+    let square = Square::from_coordinates(File::C, Rank::TWO);
+    assert!(square.file() == File::C);
+    assert!(square.rank() == Rank::TWO);
+
+    debug_assert!(catch_unwind(|| Square::new(64)).is_err());
 }
 
 #[test]

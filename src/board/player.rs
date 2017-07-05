@@ -7,6 +7,7 @@ pub enum Player {
 }
 
 impl Display for Player {
+    #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "Player {:?}",  self)
     }
