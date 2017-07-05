@@ -15,6 +15,7 @@
 mod bitboard;
 mod bitboards;
 mod rank;
+mod file;
 
 #[cfg(test)]
 mod test;

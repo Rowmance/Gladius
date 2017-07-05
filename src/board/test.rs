@@ -2,6 +2,7 @@ use board::bitboard::BitBoard;
 use board::bitboards;
 
 use board::rank::Rank;
+use board::file::File;
 
 #[test]
 fn bitboard_ops() {
@@ -46,4 +47,14 @@ fn rank() {
     assert!(Rank::FOUR.to_bitboard() == BitBoard(578721382704613384));
     assert!(Rank::ONE.to_bitboard() == BitBoard(72340172838076673));
     assert!(Rank::EIGHT.to_bitboard() == BitBoard(9259542123273814144));
+}
+
+#[test]
+fn file() {
+    assert!(File::B.to_index() == 1);
+    assert!(File::from_index(6) == File::G);
+
+    assert!(File::A.to_bitboard() == BitBoard(255));
+    assert!(File::D.to_bitboard() == BitBoard(4278190080));
+    assert!(File::H.to_bitboard() == BitBoard(18374686479671623680));
 }
