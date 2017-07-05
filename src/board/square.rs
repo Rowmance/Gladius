@@ -39,7 +39,6 @@ impl Square {
 }
 
 impl Display for Square {
-    #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "{}", self.to_bitboard())
     }

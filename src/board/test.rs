@@ -39,6 +39,14 @@ fn bitboard_ops() {
 
     // Test not operator
     assert!(!!bitboards::BLACK_START_ROOKS ^ bitboards::BLACK_START_ROOKS == bitboards::EMPTY);
+
+    // Test iterator
+    let mut count = 0;
+    for sq in bitboards::BLACK_START_PAWNS.iter() {
+        assert!(sq.rank() == Rank::SEVEN);
+        count += 1;
+    }
+    assert!(count == 8)
 }
 
 

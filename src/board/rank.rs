@@ -41,7 +41,6 @@ impl Rank {
 }
 
 impl Display for Rank {
-    #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "Rank {:?}",  self)
     }

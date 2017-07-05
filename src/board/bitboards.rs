@@ -1,8 +1,5 @@
 //! A collection of commonly used bitboards.
 
-// Don't trigger dead code lint if these aren't used.
-#![allow(dead_code)]
-
 use board::bitboard::BitBoard;
 
 /// An empty bitboard.

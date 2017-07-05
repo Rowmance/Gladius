@@ -2,6 +2,9 @@ use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, N
 use std::fmt::{Formatter, Result, Display};
 use bit_reverse::ParallelReverse;
 
+use board::square::Square;
+use std::u64;
+
 /// Represents a 64-bit bitboard.
 #[derive(PartialEq, Clone, Copy, Debug)]
 pub struct BitBoard(pub u64);
@@ -20,6 +23,11 @@ impl BitBoard {
     /// Counts the number of set bits on the bitboard.
     pub fn count(&self) -> u32 {
         self.0.count_ones()
+    }
+
+    // Returns an iterable BitBoard
+    pub fn iter(&self) -> BitBoardIter {
+        BitBoardIter(self.0)
     }
 }
 
@@ -79,7 +87,6 @@ impl Not for BitBoard {
 // ---------------------------------------------------------------------------
 // Display
 impl Display for BitBoard {
-    #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         let mut str = String::new();
         str.push_str(self.0.to_string().as_str());
@@ -98,5 +105,23 @@ impl Display for BitBoard {
         }
         str.push_str("+-+-+-+-+-+-+-+-+-+");
         write!(f, "{}", str)
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Iterator
+pub struct BitBoardIter(u64);
+
+impl Iterator for BitBoardIter {
+    type Item = Square;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.0 == 0 {
+            None
+        } else {
+            let result = Square::new(self.0.trailing_zeros() as u8);
+            self.0 ^= result.to_bitboard().0;
+            Some(result)
+        }
     }
 }

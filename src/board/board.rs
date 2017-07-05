@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::{Formatter, Result, Display};
 
 use board::piece::Piece;
 use board::bitboard::BitBoard;
@@ -9,20 +10,26 @@ use board::square::Square;
 /// * whether en-passant is possible, and where
 pub struct Board {
     /// A map of positions of each of the white player pieces.
-    white_pieces: HashMap<Piece, BitBoard>,
+    pub white_pieces: HashMap<Piece, BitBoard>,
 
     /// A map of positions of each of the black player pieces.
-    black_pieces: HashMap<Piece, BitBoard>,
+    pub black_pieces: HashMap<Piece, BitBoard>,
 
     /// The player whose turn it is.
-    player_turn: Player,
+    pub player_turn: Player,
 
     /// The square an en-passant capture is available on, if any.
-    en_passant: Option<Square>,
+    pub en_passant: Option<Square>,
 
     /// The number of half-turns since the last capture or pawn advance.
-    draw_half_turns: usize,
+    pub draw_half_turns: usize,
 
     /// The number of full turns elapsed.
-    full_turns: usize
+    pub full_turns: usize
+}
+
+impl Display for Board {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        unimplemented!()
+    }
 }

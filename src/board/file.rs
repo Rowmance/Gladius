@@ -36,7 +36,6 @@ impl File {
 }
 
 impl Display for File {
-    #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "File {:?}",  self)
     }

@@ -7,7 +7,6 @@ pub enum Piece {
 }
 
 impl Display for Piece {
-    #[allow(unused_must_use)]
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "{:?}",  self)
     }
