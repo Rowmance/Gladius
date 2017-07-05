@@ -22,6 +22,7 @@ mod file;
 mod piece;
 mod player;
 mod board;
+mod castle_rights;
 
 #[cfg(test)]
 mod test;

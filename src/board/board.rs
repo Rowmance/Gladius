@@ -5,6 +5,7 @@ use board::piece::Piece;
 use board::bitboard::BitBoard;
 use board::player::Player;
 use board::square::Square;
+use board::castle_rights::CastleRights;
 
 /// Represents a complete state of a chess board.
 /// * whether en-passant is possible, and where
@@ -20,6 +21,12 @@ pub struct Board {
 
     /// The square an en-passant capture is available on, if any.
     pub en_passant: Option<Square>,
+
+    /// White players castle rights.
+    pub white_castle_rights: CastleRights,
+
+    /// Black players castle rights.
+    pub black_castle_rights: CastleRights,
 
     /// The number of half-turns since the last capture or pawn advance.
     pub draw_half_turns: usize,
