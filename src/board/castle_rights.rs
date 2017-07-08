@@ -1,11 +1,14 @@
+//! The castle rights.
+
 use std::fmt::{Formatter, Result, Display};
 
-#[derive(PartialEq, Clone, Copy, Debug)]
+/// The castle rights.
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum CastleRights {
-    NONE,
-    KINGSIDE,
-    QUEENSIDE,
-    BOTH
+    None,
+    KingSide,
+    QueenSide,
+    Both
 }
 
 impl Display for CastleRights {

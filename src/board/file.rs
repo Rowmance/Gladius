@@ -1,9 +1,12 @@
+//! A file on the chess board.
+
 use std::fmt::{Formatter, Result, Display};
+use std::slice::Iter;
 
 use board::bitboard::BitBoard;
 
 /// Represents a file on a chessboard.
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum File {
     A, B, C, D, E, F, G, H
 }
@@ -33,10 +36,17 @@ impl File {
     pub fn to_bitboard(&self) -> BitBoard {
         BitBoard(255 << (*self as u8) * 8)
     }
+
+    /// Returns an iterator over all the files.
+    pub fn iter() -> Iter<'static, File> {
+        use self::File::*;
+        static FILES: [File; 8] = [A, B, C, D, E, F, G, H];
+        FILES.into_iter()
+    }
 }
 
 impl Display for File {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "File {:?}",  self)
+        write!(f, "File {:?}", self)
     }
 }
