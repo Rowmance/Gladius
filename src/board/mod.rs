@@ -11,18 +11,19 @@
 //! * the number of half-turns since the last capture or
 //!   pawn advance (for the 50-move draw rule)
 //! * the number of full turns which have occurred.
+
 #![allow(dead_code)]
 #![allow(unused_must_use)]
 
-mod bitboard;
-mod bitboards;
-mod square;
-mod rank;
-mod file;
-mod piece;
-mod player;
-mod board;
-mod castle_rights;
+pub mod bitboard;
+pub mod bitboards;
+pub mod square;
+pub mod rank;
+pub mod file;
+pub mod piece;
+pub mod player;
+pub mod board;
+pub mod castle_rights;
 
 #[cfg(test)]
 mod test;

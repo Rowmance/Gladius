@@ -1,9 +1,12 @@
+//! A 64-bit bitboard.
+
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not};
 use std::fmt::{Formatter, Result, Display};
+use std::u64;
+
 use bit_reverse::ParallelReverse;
 
 use board::square::Square;
-use std::u64;
 
 /// Represents a 64-bit bitboard.
 #[derive(PartialEq, Clone, Copy, Debug)]

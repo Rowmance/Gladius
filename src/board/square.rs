@@ -1,3 +1,5 @@
+//! A square on the chess board.
+
 use std::fmt::{Formatter, Result, Display};
 
 use board::bitboard::BitBoard;
