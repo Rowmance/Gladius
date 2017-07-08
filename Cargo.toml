@@ -2,6 +2,12 @@
 name = "gladius"
 version = "0.1.0"
 authors = ["Roman Kolacz <roman@kolacz.io>"]
+repository = "https://github.com/Rowmance/Gladius"
+homepage = "https://github.com/Rowmance/Gladius"
+license = "MIT"
+readme = "README.md"
+# documentation = "" // TODO! - Get Travis to push the compiled docs.
+description = "Rust chess engine."
 
 [dependencies]
 bit_reverse = "0.1.7"

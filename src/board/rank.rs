@@ -8,7 +8,29 @@ use board::bitboard::BitBoard;
 /// Represents a rank on a chessboard.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Rank {
-    One, Two, Three, Four, Five, Six, Seven, Eight
+    /// First rank.
+    One,
+
+    /// Second rank.
+    Two,
+
+    /// Third rank.
+    Three,
+
+    /// Fourth rank.
+    Four,
+
+    /// Fifth rank.
+    Five,
+
+    /// Sixth rank.
+    Six,
+
+    /// Seventh rank.
+    Seven,
+
+    /// Eighth rank.
+    Eight
 }
 
 impl Rank {

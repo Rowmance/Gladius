@@ -17,8 +17,8 @@ use board::rank::Rank;
 use board::file::File;
 
 /// Represents a complete state of a chess board.
-#[derive(Clone, Builder)]
-#[builder(pattern = "immutable")]
+#[derive(Clone, Builder, Debug)]
+#[builder(pattern = "immutable", derive(Debug))]
 pub struct Board {
     /// A map of positions of each of the white player pieces.
     pub white_pieces: HashMap<Piece, BitBoard>,
@@ -47,11 +47,12 @@ pub struct Board {
 }
 
 impl Board {
-    /// Returns a builder
+    /// Returns the builder.
     pub fn builder() -> BoardBuilder {
         BoardBuilder::default()
     }
 
+    /// Returns the standard chess starting board.
     pub fn start_position() -> Self {
         let white = [
             (Piece::Pawn, bitboards::WHITE_START_PAWNS),
@@ -75,7 +76,7 @@ impl Board {
             .white_pieces(white)
             .black_pieces(black)
             .player_turn(Player::White)
-            .en_passant(Option::None)
+            .en_passant(None)
             .white_castle_rights(CastleRights::Both)
             .black_castle_rights(CastleRights::Both)
             .draw_half_turns(0)
@@ -90,7 +91,7 @@ impl Default for Board {
             .white_pieces(HashMap::new())
             .black_pieces(HashMap::new())
             .player_turn(Player::White)
-            .en_passant(Option::None)
+            .en_passant(None)
             .white_castle_rights(CastleRights::None)
             .black_castle_rights(CastleRights::None)
             .draw_half_turns(0)
@@ -136,12 +137,12 @@ impl Display for Board {
                         let mut res: Option<(Piece, Player)> = None;
                         for (&key, value) in self.white_pieces.iter() {
                             if value.is_square_set(square) {
-                                res = Option::Some((key, Player::White))
+                                res = Some((key, Player::White))
                             }
                         };
                         for (&key, value) in self.black_pieces.iter() {
                             if value.is_square_set(square) {
-                                res = Option::Some((key, Player::Black))
+                                res = Some((key, Player::Black))
                             }
                         }
                         res.map(|(piece, player)| piece_char(piece, player))

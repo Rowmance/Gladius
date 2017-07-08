@@ -5,9 +5,16 @@ use std::fmt::{Formatter, Result, Display};
 /// The castle rights.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum CastleRights {
+    /// No castle available.
     None,
+
+    /// King-side castle available.
     KingSide,
+
+    /// Queen-side castle available.
     QueenSide,
+
+    /// King-side and queen-side castle available.
     Both
 }
 

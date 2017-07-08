@@ -34,6 +34,7 @@ impl Square {
         BitBoard::new(1 << self.0)
     }
 
+    /// Returns the index of the square, compatible with [BitBoard] representation.
     pub fn to_index(&self) -> u8 {
         self.0
     }

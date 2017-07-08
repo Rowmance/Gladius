@@ -8,7 +8,29 @@ use board::bitboard::BitBoard;
 /// Represents a file on a chessboard.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum File {
-    A, B, C, D, E, F, G, H
+    /// A file.
+    A,
+
+    /// B file.
+    B,
+
+    /// C file.
+    C,
+
+    /// D file.
+    D,
+
+    /// E file.
+    E,
+
+    /// F file.
+    F,
+
+    /// G file.
+    G,
+
+    /// H file.
+    H
 }
 
 impl File {

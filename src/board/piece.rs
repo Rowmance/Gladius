@@ -6,11 +6,26 @@ use std::fmt::{Formatter, Result, Display};
 /// Represents a chess piece type.
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum Piece {
-    Pawn, Rook, Knight, Bishop, Queen, King
+    /// Pawn.
+    Pawn,
+
+    /// Rook.
+    Rook,
+
+    /// Knight.
+    Knight,
+
+    /// Bishop.
+    Bishop,
+
+    /// Queen.
+    Queen,
+
+    /// King.
+    King
 }
 
 impl Piece {
-
     /// Returns an iterator over all the pieces.
     pub fn iter() -> Iter<'static, Piece> {
         use self::Piece::*;
@@ -21,6 +36,6 @@ impl Piece {
 
 impl Display for Piece {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "{:?}",  self)
+        write!(f, "{:?}", self)
     }
 }

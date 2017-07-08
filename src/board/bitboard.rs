@@ -28,11 +28,12 @@ impl BitBoard {
         self.0.count_ones()
     }
 
-    // Returns an iterable BitBoard
+    /// Returns an iterable bitboard.
     pub fn iter(&self) -> BitBoardIter {
         BitBoardIter(self.0)
     }
 
+    /// Returns true if the given square is set in the bitboard.
     pub fn is_square_set(&self, square: Square) -> bool {
         (1 << square.to_index()) & self.0 > 0
     }
@@ -117,6 +118,9 @@ impl Display for BitBoard {
 
 // ---------------------------------------------------------------------------
 // Iterator
+
+/// Iterator for a [BitBoard].
+#[derive(Debug)]
 pub struct BitBoardIter(u64);
 
 impl Iterator for BitBoardIter {
