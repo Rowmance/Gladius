@@ -34,7 +34,7 @@ impl File {
 
     /// Converts the file to a [BitBoard]
     pub fn to_bitboard(&self) -> BitBoard {
-        BitBoard(255 << (*self as u8) * 8)
+        BitBoard(0xFF << (*self as u8) * 8)
     }
 
     /// Returns an iterator over all the files.
@@ -47,6 +47,6 @@ impl File {
 
 impl Display for File {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "File {:?}", self)
+        write!(f, "{:?}", self)
     }
 }

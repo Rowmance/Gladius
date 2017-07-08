@@ -5,6 +5,9 @@ use board::bitboard::BitBoard;
 /// An empty bitboard.
 pub const EMPTY: BitBoard = BitBoard(0);
 
+/// A full bitboard.
+pub const FULL: BitBoard = BitBoard(0xFFFFFFFFFFFFFFFF);
+
 //---------------------------------------------------------------------------
 // White Player
 

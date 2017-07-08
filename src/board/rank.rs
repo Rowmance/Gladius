@@ -52,6 +52,6 @@ impl Rank {
 
 impl Display for Rank {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "Rank {:?}", self)
+        write!(f, "{}", self.to_index() + 1)
     }
 }

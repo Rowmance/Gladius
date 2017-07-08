@@ -5,3 +5,5 @@ authors = ["Roman Kolacz <roman@kolacz.io>"]
 
 [dependencies]
 bit_reverse = "0.1.7"
+derive_builder = "0.5.0"
+option-filter = "1.0" # https://github.com/rust-lang/rfcs/issues/1485

@@ -1,10 +1,17 @@
+//! Tests for the board module.
+
 use board::bitboard::BitBoard;
 use board::bitboards;
 use board::square::Square;
 use board::rank::Rank;
 use board::file::File;
+use board::piece::Piece;
+use board::player::Player;
+use board::board::Board;
 
 use std::panic::catch_unwind;
+
+//TODO: Use assert_eq for equality assertions.
 
 #[test]
 fn bitboard_ops() {
@@ -43,7 +50,7 @@ fn bitboard_ops() {
     // Test iterator
     let mut count = 0;
     for sq in bitboards::BLACK_START_PAWNS.iter() {
-        assert!(sq.rank() == Rank::SEVEN);
+        assert!(sq.rank() == Rank::Seven);
         count += 1;
     }
     assert!(count == 8)
@@ -52,30 +59,30 @@ fn bitboard_ops() {
 
 #[test]
 fn square() {
-    assert!(Square::new(0) == Square::from_coordinates(File::A, Rank::ONE));
-    assert!(Square::new(3) == Square::from_coordinates(File::D, Rank::ONE));
-    assert!(Square::new(7) == Square::from_coordinates(File::H, Rank::ONE));
-    assert!(Square::new(8) == Square::from_coordinates(File::A, Rank::TWO));
-    assert!(Square::new(27) == Square::from_coordinates(File::D, Rank::FOUR));
+    assert!(Square::new(0) == Square::from_coordinates(File::A, Rank::One));
+    assert!(Square::new(3) == Square::from_coordinates(File::D, Rank::One));
+    assert!(Square::new(7) == Square::from_coordinates(File::H, Rank::One));
+    assert!(Square::new(8) == Square::from_coordinates(File::A, Rank::Two));
+    assert!(Square::new(27) == Square::from_coordinates(File::D, Rank::Four));
 
-    assert!(Square::new(47) == Square::from_coordinates(File::H, Rank::SIX));
-    assert!(Square::new(63) == Square::from_coordinates(File::H, Rank::EIGHT));
+    assert!(Square::new(47) == Square::from_coordinates(File::H, Rank::Six));
+    assert!(Square::new(63) == Square::from_coordinates(File::H, Rank::Eight));
 
-    let square = Square::from_coordinates(File::C, Rank::TWO);
+    let square = Square::from_coordinates(File::C, Rank::Two);
     assert!(square.file() == File::C);
-    assert!(square.rank() == Rank::TWO);
+    assert!(square.rank() == Rank::Two);
 
     debug_assert!(catch_unwind(|| Square::new(64)).is_err());
 }
 
 #[test]
 fn rank() {
-    assert!(Rank::TWO.to_index() == 1);
-    assert!(Rank::from_index(6) == Rank::SEVEN);
+    assert!(Rank::Two.to_index() == 1);
+    assert!(Rank::from_index(6) == Rank::Seven);
 
-    assert!(Rank::FOUR.to_bitboard() == BitBoard(578721382704613384));
-    assert!(Rank::ONE.to_bitboard() == BitBoard(72340172838076673));
-    assert!(Rank::EIGHT.to_bitboard() == BitBoard(9259542123273814144));
+    assert!(Rank::Four.to_bitboard() == BitBoard(578721382704613384));
+    assert!(Rank::One.to_bitboard() == BitBoard(72340172838076673));
+    assert!(Rank::Eight.to_bitboard() == BitBoard(9259542123273814144));
 }
 
 #[test]
@@ -86,4 +93,13 @@ fn file() {
     assert!(File::A.to_bitboard() == BitBoard(255));
     assert!(File::D.to_bitboard() == BitBoard(4278190080));
     assert!(File::H.to_bitboard() == BitBoard(18374686479671623680));
+}
+
+#[test]
+fn board() {
+    let board = Board::start_position();
+
+    println!("{}", board);
+
+    //assert!(false)
 }

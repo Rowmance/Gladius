@@ -7,7 +7,7 @@ use board::file::File;
 use board::rank::Rank;
 
 /// Represents a square on a board.
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub struct Square(u8);
 
 impl Square {
@@ -32,6 +32,10 @@ impl Square {
     /// Returns a bitboard with only the square marked.
     pub fn to_bitboard(&self) -> BitBoard {
         BitBoard::new(1 << self.0)
+    }
+
+    pub fn to_index(&self) -> u8 {
+        self.0
     }
 
     /// Creates a new intance from the given file and rank.

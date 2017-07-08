@@ -32,6 +32,10 @@ impl BitBoard {
     pub fn iter(&self) -> BitBoardIter {
         BitBoardIter(self.0)
     }
+
+    pub fn is_square_set(&self, square: Square) -> bool {
+        (1 << square.to_index()) & self.0 > 0
+    }
 }
 
 

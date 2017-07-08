@@ -10,6 +10,6 @@ pub enum Player {
 
 impl Display for Player {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "Player {:?}",  self)
+        write!(f, "{:?}",  self)
     }
 }
