@@ -36,15 +36,16 @@ pub enum Rank {
 impl Rank {
     /// Obtains a rank from the given index.
     pub fn from_index(index: u8) -> Self {
+        use self::Rank::*;
         match index {
-            0 => Rank::One,
-            1 => Rank::Two,
-            2 => Rank::Three,
-            3 => Rank::Four,
-            4 => Rank::Five,
-            5 => Rank::Six,
-            6 => Rank::Seven,
-            7 => Rank::Eight,
+            0 => One,
+            1 => Two,
+            2 => Three,
+            3 => Four,
+            4 => Five,
+            5 => Six,
+            6 => Seven,
+            7 => Eight,
             _ => panic!("Cannot create rank from index {}", index)
         }
     }
@@ -69,6 +70,36 @@ impl Rank {
         use self::Rank::*;
         static RANKS: [Rank; 8] = [One, Two, Three, Four, Five, Six, Seven, Eight];
         RANKS.into_iter()
+    }
+
+    /// Returns the next rank, or none if on the last rank.
+    pub fn next(&self) -> Option<Rank> {
+        use self::Rank::*;
+        match *self {
+            One => Some(Two),
+            Two => Some(Three),
+            Three => Some(Four),
+            Four => Some(Five),
+            Five => Some(Six),
+            Six => Some(Seven),
+            Seven => Some(Eight),
+            Eight => None
+        }
+    }
+
+    /// Returns the previous rank, or none if on the first rank.
+    pub fn prev(&self) -> Option<Rank> {
+        use self::Rank::*;
+        match *self {
+            One => None,
+            Two => Some(One),
+            Three => Some(Two),
+            Four => Some(Three),
+            Five => Some(Four),
+            Six => Some(Five),
+            Seven => Some(Six),
+            Eight => Some(Seven)
+        }
     }
 }
 

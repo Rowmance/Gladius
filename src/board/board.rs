@@ -40,7 +40,7 @@ pub struct Board {
     pub black_castle_rights: CastleRights,
 
     /// The number of half-turns since the last capture or pawn advance.
-    pub draw_half_turns: usize,
+    pub draw_plies: usize,
 
     /// The number of full turns elapsed.
     pub full_turns: usize
@@ -79,7 +79,7 @@ impl Board {
             .en_passant(None)
             .white_castle_rights(CastleRights::Both)
             .black_castle_rights(CastleRights::Both)
-            .draw_half_turns(0)
+            .draw_plies(0)
             .full_turns(0)
             .build().expect("Board start position builder panicked")
     }
@@ -94,7 +94,7 @@ impl Default for Board {
             .en_passant(None)
             .white_castle_rights(CastleRights::None)
             .black_castle_rights(CastleRights::None)
-            .draw_half_turns(0)
+            .draw_plies(0)
             .full_turns(0)
             .build().expect("Board default builder panicked")
     }

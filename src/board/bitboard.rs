@@ -37,6 +37,18 @@ impl BitBoard {
     pub fn is_square_set(&self, square: Square) -> bool {
         (1 << square.to_index()) & self.0 > 0
     }
+
+    /// Return an empty bitboard.
+    pub fn empty() -> Self {
+        static EMPTY: BitBoard = BitBoard(0);
+        EMPTY
+    }
+
+    /// Return a full bitboard.
+    pub fn full() -> Self {
+        static FULL: BitBoard =  BitBoard(0xFFFFFFFFFFFFFFFF);
+        FULL
+    }
 }
 
 

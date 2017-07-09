@@ -65,6 +65,36 @@ impl File {
         static FILES: [File; 8] = [A, B, C, D, E, F, G, H];
         FILES.into_iter()
     }
+
+    /// Returns the next file, or none if on the last file.
+    pub fn next(&self) -> Option<File> {
+        use self::File::*;
+        match *self {
+            A => Some(B),
+            B => Some(C),
+            C => Some(D),
+            D => Some(E),
+            E => Some(F),
+            F => Some(G),
+            G => Some(H),
+            H => None
+        }
+    }
+
+    /// Returns the previous file, or none if on the first file.
+    pub fn prev(&self) -> Option<File> {
+        use self::File::*;
+        match *self {
+            A => None,
+            B => Some(A),
+            C => Some(B),
+            D => Some(C),
+            E => Some(D),
+            F => Some(E),
+            G => Some(F),
+            H => Some(G)
+        }
+    }
 }
 
 impl Display for File {
