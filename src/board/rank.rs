@@ -57,12 +57,7 @@ impl Rank {
 
     /// Converts the rank to a [BitBoard]
     pub fn to_bitboard(&self) -> BitBoard {
-        let mut val: u64 = 0;
-        val = val | 1 << (*self as u8);
-        val |= val << 8;
-        val |= val << 16;
-        val |= val << 32;
-        BitBoard(val)
+        BitBoard(0xFF << (*self as u8) * 8)
     }
 
     /// Returns an iterator over all the ranks.

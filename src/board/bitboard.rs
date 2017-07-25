@@ -12,6 +12,8 @@ use board::square::Square;
 #[derive(PartialEq, Clone, Copy, Debug)]
 pub struct BitBoard(pub u64);
 
+// TODO: Wrap the bit operations - this is exposing implementation details.
+
 impl BitBoard {
     /// Creates a new instance from the given 64-bit integer.
     pub fn new(val: u64) -> Self {
@@ -48,6 +50,11 @@ impl BitBoard {
     pub fn full() -> Self {
         static FULL: BitBoard =  BitBoard(0xFFFFFFFFFFFFFFFF);
         FULL
+    }
+
+    /// Returns the underlying u64.
+    pub fn to_u64(&self) -> u64 {
+        self.0
     }
 }
 
@@ -109,7 +116,7 @@ impl Not for BitBoard {
 impl Display for BitBoard {
     fn fmt(&self, f: &mut Formatter) -> Result {
         let mut str = String::new();
-        str.push_str(self.0.to_string().as_str());
+        str.push_str(format!("{:#X}", self.0).as_str());
         str.push_str("\n+-+-+-+-+-+-+-+-+-+\n");
         for rank in 0..8 {
             str.push_str("| ");
