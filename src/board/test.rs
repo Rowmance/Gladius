@@ -57,7 +57,7 @@ fn bitboard_ops() {
 
 #[test]
 fn square() {
-    // TODO: Complete set of tests for this.
+    // TODO: Complete set of tests for this -> use those random test things?
     assert_eq!(Square::new(0), Square::from_coordinates(File::A, Rank::One));
     assert_eq!(Square::new(3), Square::from_coordinates(File::D, Rank::One));
     assert_eq!(Square::new(7), Square::from_coordinates(File::H, Rank::One));
@@ -71,6 +71,7 @@ fn square() {
     assert_eq!(square.file(), File::C);
     assert_eq!(square.rank(), Rank::Two);
 
+    // TODO:  Random number test thing
     debug_assert!(catch_unwind(|| Square::new(64)).is_err());
 }
 
@@ -96,9 +97,9 @@ fn file() {
     assert_eq!(File::B.to_index(), 1);
     assert_eq!(File::from_index(6), File::G);
 
-    assert_eq!(File::A.to_bitboard(), BitBoard(255));
-    assert_eq!(File::D.to_bitboard(), BitBoard(4278190080));
-    assert_eq!(File::H.to_bitboard(), BitBoard(18374686479671623680));
+    assert_eq!(File::A.to_bitboard(), BitBoard(0x101010101010101));
+    assert_eq!(File::D.to_bitboard(), BitBoard(0x808080808080808));
+    assert_eq!(File::H.to_bitboard(), BitBoard(0x8080808080808080));
 }
 
 #[test]
