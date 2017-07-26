@@ -9,8 +9,6 @@ use board::player::Player;
 use board::board::Board;
 use game::valid_moves;
 
-// TODO: Test every single position for moves.
-
 #[test]
 fn valid_moves_rook() {
     macro_rules! test_rook {
@@ -20,9 +18,6 @@ fn valid_moves_rook() {
         )
     }
 
-    test_rook!(File::B, Rank::Four, 144680349887234562);
-
-
     test_rook!(File::A, Rank::One, 0x1010101010101FE);
     test_rook!(File::B, Rank::Two, 0x20202020202FD02);
     test_rook!(File::C, Rank::Three, 0x404040404FB0404);
@@ -31,6 +26,15 @@ fn valid_moves_rook() {
     test_rook!(File::F, Rank::Six, 0x2020DF2020202020);
     test_rook!(File::G, Rank::Seven, 0x40BF404040404040);
     test_rook!(File::H, Rank::Eight, 0x7F80808080808080);
+
+    test_rook!(File::H, Rank::One, 0x808080808080807F);
+    test_rook!(File::G, Rank::Two, 0x404040404040BF40);
+    test_rook!(File::F, Rank::Three, 0x2020202020DF2020);
+    test_rook!(File::E, Rank::Four, 0x10101010EF101010);
+    test_rook!(File::D, Rank::Five, 0x80808F708080808);
+    test_rook!(File::C, Rank::Six, 0x404FB0404040404);
+    test_rook!(File::B, Rank::Seven, 0x2FD020202020202);
+    test_rook!(File::A, Rank::Eight, 0xFE01010101010101);
 }
 
 #[test]
@@ -59,4 +63,9 @@ fn valid_moves_bishop() {
     test_bishop!(File::E, Rank::Six, 0x4428002844820100);
     test_bishop!(File::E, Rank::Seven, 0x2800284482010000);
     test_bishop!(File::E, Rank::Eight, 0x28448201000000);
+
+    test_bishop!(File::H, Rank::One, 0x102040810204000);
+    test_bishop!(File::H, Rank::Eight, 0x40201008040201);
+    test_bishop!(File::A, Rank::One, 0x8040201008040200);
+    test_bishop!(File::A, Rank::Eight, 0x2040810204080);
 }

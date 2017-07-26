@@ -52,16 +52,14 @@ pub fn bishop(square: Square) -> BitBoard {
         BitBoard::new(0x8040201008040201 >> main_diff.abs()) & main_mask
     };
 
+    // Anti-diagonal needs to be masked and then shifted. // TODO: does it?
     let anti_diff = ( -7 + square.rank().to_index() as isize) + square.file().to_index() as isize;
-
     let anti_dia = if anti_diff >= 0 {
-        let y: u32 = (8 * (anti_diff.abs())) as u32;
-        let foo2 = !((2 as u64).pow(y) - 1);
-        BitBoard::new((0x0102040810204080 & foo2) << anti_diff)
+        let anti_mask = !((2 as u64).pow(8 * (anti_diff.abs()) as u32) - 1);
+        BitBoard::new((0x0102040810204080 & anti_mask) << anti_diff)
     } else {
-        let y: u32 = (8 * (8 - anti_diff.abs())) as u32;
-        let foo2 = 0xFFFFFFFFFFFFFFFF ^ ((2 as u64).pow(y) - 1);
-        BitBoard::new((0x0102040810204080 & !foo2) >> anti_diff.abs())
+        let anti_mask = 0xFFFFFFFFFFFFFFFF ^ ((2 as u64).pow(8 * (8 - anti_diff.abs()) as u32) - 1);
+        BitBoard::new((0x0102040810204080 & !anti_mask) >> anti_diff.abs())
     };
 
     main_dia ^ anti_dia
