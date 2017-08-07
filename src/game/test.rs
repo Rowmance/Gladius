@@ -113,7 +113,6 @@ fn valid_attacks_pawn() {
         ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
             let moves = valid_moves::pawn_attacks(square, $player);
-            // TODO: Print on all tests
             println!("\n{} {} pawn attacks: {}", square, $player, moves);
             assert_eq!(moves, BitBoard::new($expected));
         )
@@ -130,4 +129,34 @@ fn valid_attacks_pawn() {
     test_pawn!(File::C, Rank::Seven, Player::Black, 0xA0000000000);
     test_pawn!(File::C, Rank::One, Player::Black, 0);
     test_pawn!(File::C, Rank::Eight, Player::Black, 0xA000000000000);
+}
+
+#[test]
+fn valid_moves_knight() {
+    macro_rules! test_knight {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = valid_moves::knight(square);
+            println!("\n{} knight attacks: {}", square, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        )
+    }
+
+    test_knight!(File::C, Rank::Four, 0xA1100110A00);
+
+    test_knight!(File::C, Rank::Seven, 0x1100110A00000000);
+    test_knight!(File::C, Rank::Eight, 0x110A0000000000);
+    test_knight!(File::C, Rank::One, 0xA1100);
+    test_knight!(File::C, Rank::Two, 0xA110011);
+
+    test_knight!(File::A, Rank::Five, 0x2040004020000);
+    test_knight!(File::B, Rank::Five, 0x5080008050000);
+    test_knight!(File::G, Rank::Five, 0xA0100010A00000);
+    test_knight!(File::H, Rank::Five, 0x40200020400000);
+
+    test_knight!(File::G, Rank::One, 0xA01000);
+    test_knight!(File::G, Rank::Eight, 0x10A00000000000);
+    test_knight!(File::A, Rank::One, 0x20400);
+    test_knight!(File::A, Rank::Eight, 0x4020000000000);
+
 }

@@ -9,7 +9,7 @@ use board::bitboard::BitBoard;
 
 // TODO: Can all of these be generated at build time? There are only (up to) 64 possibilities per piece.
 
-/// Gets the valid pawn moves for a given square.
+/// Gets the valid pawn moves for a given square and player.
 pub fn pawn_moves(square: Square, player: Player) -> BitBoard {
     let homerank = match player {
         Player::White => Rank::Two,
@@ -36,6 +36,7 @@ pub fn pawn_moves(square: Square, player: Player) -> BitBoard {
     forward.map_or(BitBoard::empty(), |rank| rank.to_bitboard() & square.file().to_bitboard())
 }
 
+/// Gets the valid pawn attacks for a given square and player.
 pub fn pawn_attacks(square: Square, player: Player) -> BitBoard {
     let sides = square.file().prev().map_or(BitBoard::empty(), |file| file.to_bitboard())
         | square.file().next().map_or(BitBoard::empty(), |file| file.to_bitboard());
@@ -81,4 +82,24 @@ pub fn bishop(square: Square) -> BitBoard {
 /// Gets the queen moves for a given square.
 pub fn queen(square: Square) -> BitBoard {
     return rook(square) | bishop(square);
+}
+
+/// Gets the knight moves for a given square.
+pub fn knight(square: Square) -> BitBoard {
+    let not_a = !File::A.to_bitboard().to_u64();
+    let not_ab = !((File::A.to_bitboard() | File::B.to_bitboard()).to_u64());
+    let not_h = !File::H.to_bitboard().to_u64();
+    let not_gh = !((File::H.to_bitboard() | File::G.to_bitboard()).to_u64());
+
+    let index = square.to_bitboard().to_u64();
+    let mut result: u64 = 0;
+    result |= index << 17 & not_a;
+    result |= index << 10 & not_ab;
+    result |= index >> 6 & not_ab;
+    result |= index >> 15 & not_a;
+    result |= index >> 17 & not_h;
+    result |= index >> 10 & not_gh;
+    result |= index << 6 & not_gh;
+    result |= index << 15 & not_h;
+    BitBoard::new(result)
 }
