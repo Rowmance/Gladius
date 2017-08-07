@@ -47,6 +47,6 @@ impl Square {
 
 impl Display for Square {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "{}", self.to_bitboard())
+        write!(f, "{}{}", self.file(), self.rank())
     }
 }

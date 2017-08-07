@@ -69,3 +69,65 @@ fn valid_moves_bishop() {
     test_bishop!(File::A, Rank::One, 0x8040201008040200);
     test_bishop!(File::A, Rank::Eight, 0x2040810204080);
 }
+
+#[test]
+fn valid_moves_queen() {
+    macro_rules! test_queen {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            assert_eq!(valid_moves::queen(square), BitBoard::new($expected));
+        )
+    }
+
+    test_queen!(File::C, Rank::Three, 0x844424150EFB0E15);
+    test_queen!(File::F, Rank::Six, 0xA870DF70A8242221);
+    test_queen!(File::C, Rank::Six, 0x150EFB0E15244484);
+    test_queen!(File::F, Rank::Three, 0x212224A870DF70A8);
+}
+
+#[test]
+fn valid_moves_pawn() {
+    macro_rules! test_pawn {
+        ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            assert_eq!(valid_moves::pawn_moves(square, $player), BitBoard::new($expected));
+        )
+    }
+
+    test_pawn!(File::C, Rank::Four, Player::White, 0x400000000);
+    test_pawn!(File::C, Rank::Two, Player::White, 0x4040000);
+    test_pawn!(File::C, Rank::Seven, Player::White, 0x400000000000000);
+    test_pawn!(File::C, Rank::One, Player::White, 0x400);
+    test_pawn!(File::C, Rank::Eight, Player::White, 0);
+
+    test_pawn!(File::C, Rank::Four, Player::Black, 0x40000);
+    test_pawn!(File::C, Rank::Two, Player::Black, 0x4);
+    test_pawn!(File::C, Rank::Seven, Player::Black, 0x40400000000);
+    test_pawn!(File::C, Rank::One, Player::Black, 0);
+    test_pawn!(File::C, Rank::Eight, Player::Black, 0x4000000000000);
+}
+
+#[test]
+fn valid_attacks_pawn() {
+    macro_rules! test_pawn {
+        ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = valid_moves::pawn_attacks(square, $player);
+            // TODO: Print on all tests
+            println!("\n{} {} pawn attacks: {}", square, $player, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        )
+    }
+
+    test_pawn!(File::C, Rank::Four, Player::White, 0xA00000000);
+    test_pawn!(File::C, Rank::Two, Player::White, 0xA0000);
+    test_pawn!(File::C, Rank::Seven, Player::White, 0xA00000000000000);
+    test_pawn!(File::C, Rank::One, Player::White, 0xA00);
+    test_pawn!(File::C, Rank::Eight, Player::White, 0);
+
+    test_pawn!(File::C, Rank::Four, Player::Black, 0xA0000);
+    test_pawn!(File::C, Rank::Two, Player::Black, 0xA);
+    test_pawn!(File::C, Rank::Seven, Player::Black, 0xA0000000000);
+    test_pawn!(File::C, Rank::One, Player::Black, 0);
+    test_pawn!(File::C, Rank::Eight, Player::Black, 0xA000000000000);
+}
