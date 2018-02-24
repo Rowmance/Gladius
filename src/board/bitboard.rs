@@ -1,8 +1,9 @@
 //! A 64-bit bitboard.
 
-use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, Shl, Shr};
+use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, Shl, Shr, Sub, SubAssign};
 use std::fmt::{Formatter, Result, Display};
 use std::u64;
+use std::num::Wrapping;
 
 use bit_reverse::ParallelReverse;
 
@@ -21,6 +22,25 @@ impl BitBoard {
     /// Flips the bitboard such that it's from the perspective of the other player.
     pub fn flip(&self) -> Self {
         BitBoard(self.0.swap_bits())
+    }
+
+    /// Mirrors the board horizontally.
+    pub fn mirror_horizontal(&self) -> Self {
+        BitBoard(self.0.swap_bytes())
+    }
+    
+    /// Mirrors the board along the A1-H8 diagonal
+    pub fn mirror_diag(&self) -> Self {
+        let k1: BitBoard = BitBoard::new(0x5500550055005500);
+        let k2: BitBoard = BitBoard::new(0x3333000033330000);
+        let k4: BitBoard = BitBoard::new(0x0f0f0f0f00000000);
+        let mut t = k4 & (*self ^ (*self << 28));
+        let mut x = *self ^ (t ^ (t >> 28));
+        t = k2 & (x ^ (x << 14));
+        x ^= t ^ (t >> 14);
+        t = k1 & (x ^ (x << 7));
+        x ^= t ^ (t >> 7);
+        x
     }
 
     /// Counts the number of set bits on the bitboard.
@@ -137,6 +157,20 @@ impl Shr<usize> for BitBoard {
 
     fn shr(self, rhs: usize) -> Self {
         BitBoard(self.0 >> rhs)
+    }
+}
+
+impl Sub for BitBoard {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self {
+        BitBoard((Wrapping(self.0) - Wrapping(rhs.0)).0)
+    }
+}
+
+impl SubAssign for BitBoard {
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = BitBoard((Wrapping(self.0) - Wrapping(rhs.0)).0)
     }
 }
 

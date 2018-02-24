@@ -291,3 +291,95 @@ fn semilegal_attacks_knight() {
     test_knight!(File::E, Rank::Five, 0x280000);
     test_knight!(File::H, Rank::Eight, 0x0);
 }
+
+#[test]
+fn semilegal_moves_rook() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - X X - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - X - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    let board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six))
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_rook {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::rook_moves(square, board);
+            
+            println!("\n{} rook moves against:\n{}\nGives: {}", square, board, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_rook!(File::D, Rank::Four, 0x8F7000000);
+    test_rook!(File::C, Rank::One, 0x4040404040404FB);
+    test_rook!(File::E, Rank::Four, 0x10EF101010);
+    test_rook!(File::H, Rank::Eight, 0x7F80808080808080);
+    test_rook!(File::H, Rank::Four, 0x808080807F808080);
+    test_rook!(File::C, Rank::Three, 0x404040404000404);
+    test_rook!(File::G, Rank::Three, 0x404040804040);
+    test_rook!(File::D, Rank::Five, 0xF408000000);
+}
+
+#[test]
+fn semilegal_attacks_rook() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - O O - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - 0 - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    // O: Own   X: Opponent
+    let own_board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six));
+
+    let opponent_board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_rook {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::rook_attacks(square, own_board, opponent_board);
+            
+            println!(
+                "\n{} rook attacks against:\n{}\nBlocked by {}\nGives: {}", 
+                square,
+                opponent_board,
+                own_board, 
+                moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_rook!(File::D, Rank::Four, 0x80000);
+    test_rook!(File::C, Rank::One, 0x0);
+    test_rook!(File::E, Rank::Four, 0x0);
+    test_rook!(File::H, Rank::Eight, 0x0);
+    test_rook!(File::H, Rank::Four, 0x0);
+    test_rook!(File::C, Rank::Three, 0xA0000);
+    test_rook!(File::G, Rank::Five, 0x40000200000000);
+    test_rook!(File::D, Rank::Five, 0x200080000);
+}

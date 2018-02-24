@@ -29,6 +29,21 @@ impl Square {
         Rank::from_index(self.0 / 8)
     }
 
+    /// Returns the square from the opposite players point of view.
+    pub fn flip(&self) -> Self {
+        Square::new(63 - self.0)
+    }
+
+    /// Returns the square mirrored horizontally
+    pub fn mirror_horizontal(&self) -> Self {
+        Square::new(8 * (7 - (self.0 / 8)) + (self.0 % 8))
+    }
+    
+    /// Returns the square mirrored accross the A1-H8 diagonal
+    pub fn mirror_diag(&self) -> Self {
+        Square::new(8 * (self.0 % 8) + (self.0 / 8))
+    }
+
     /// Returns a bitboard with only the square marked.
     pub fn to_bitboard(&self) -> BitBoard {
         BitBoard::new(1 << self.0)
