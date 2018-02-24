@@ -14,7 +14,10 @@
 //! * Stalemate
 //! * Draws via the 50-move rule
 
-mod valid_moves;
+mod basic_moves;
+mod semilegal_moves;
 
 #[cfg(test)]
 mod test;
+
+// TODO: Should move generation be split out of this?

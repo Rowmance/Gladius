@@ -1,4 +1,4 @@
-//! The movement of chess pieces
+//! The movement of chess pieces on an empty board.
 
 use board::square::Square;
 use board::piece::Piece;
@@ -8,6 +8,7 @@ use board::file::File;
 use board::bitboard::BitBoard;
 
 // TODO: Can all of these be generated at build time? There are only (up to) 64 possibilities per piece.
+// TODO: If not, cache these.
 
 /// Gets the valid pawn moves for a given square and player.
 pub fn pawn_moves(square: Square, player: Player) -> BitBoard {
@@ -86,11 +87,13 @@ pub fn queen(square: Square) -> BitBoard {
 
 /// Gets the knight moves for a given square.
 pub fn knight(square: Square) -> BitBoard {
+    // TODO: these can be consts
     let not_a = !File::A.to_bitboard().to_u64();
     let not_ab = !((File::A.to_bitboard() | File::B.to_bitboard()).to_u64());
     let not_h = !File::H.to_bitboard().to_u64();
     let not_gh = !((File::H.to_bitboard() | File::G.to_bitboard()).to_u64());
 
+    // Shift squares without overflowing
     let index = square.to_bitboard().to_u64();
     let mut result: u64 = 0;
     result |= index << 17 & not_a;

@@ -12,8 +12,6 @@ use board::square::Square;
 #[derive(PartialEq, Clone, Copy, Debug)]
 pub struct BitBoard(pub u64);
 
-// TODO: Wrap the bit operations - this is exposing implementation details.
-
 impl BitBoard {
     /// Creates a new instance from the given 64-bit integer.
     pub fn new(val: u64) -> Self {

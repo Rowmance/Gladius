@@ -7,14 +7,14 @@ use board::file::File;
 use board::piece::Piece;
 use board::player::Player;
 use board::board::Board;
-use game::valid_moves;
+use game::basic_moves;
 
 #[test]
-fn valid_moves_rook() {
+fn basic_moves_rook() {
     macro_rules! test_rook {
         ($file:expr, $rank:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
-            assert_eq!(valid_moves::rook(square), BitBoard::new($expected));
+            assert_eq!(basic_moves::rook(square), BitBoard::new($expected));
         )
     }
 
@@ -38,11 +38,11 @@ fn valid_moves_rook() {
 }
 
 #[test]
-fn valid_moves_bishop() {
+fn basic_moves_bishop() {
     macro_rules! test_bishop {
         ($file:expr, $rank:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
-            assert_eq!(valid_moves::bishop(square), BitBoard::new($expected));
+            assert_eq!(basic_moves::bishop(square), BitBoard::new($expected));
         )
     }
 
@@ -71,11 +71,11 @@ fn valid_moves_bishop() {
 }
 
 #[test]
-fn valid_moves_queen() {
+fn basic_moves_queen() {
     macro_rules! test_queen {
         ($file:expr, $rank:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
-            assert_eq!(valid_moves::queen(square), BitBoard::new($expected));
+            assert_eq!(basic_moves::queen(square), BitBoard::new($expected));
         )
     }
 
@@ -86,11 +86,11 @@ fn valid_moves_queen() {
 }
 
 #[test]
-fn valid_moves_pawn() {
+fn basic_moves_pawn() {
     macro_rules! test_pawn {
         ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
-            assert_eq!(valid_moves::pawn_moves(square, $player), BitBoard::new($expected));
+            assert_eq!(basic_moves::pawn_moves(square, $player), BitBoard::new($expected));
         )
     }
 
@@ -112,7 +112,7 @@ fn valid_attacks_pawn() {
     macro_rules! test_pawn {
         ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
-            let moves = valid_moves::pawn_attacks(square, $player);
+            let moves = basic_moves::pawn_attacks(square, $player);
             println!("\n{} {} pawn attacks: {}", square, $player, moves);
             assert_eq!(moves, BitBoard::new($expected));
         )
@@ -132,11 +132,11 @@ fn valid_attacks_pawn() {
 }
 
 #[test]
-fn valid_moves_knight() {
+fn basic_moves_knight() {
     macro_rules! test_knight {
         ($file:expr, $rank:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
-            let moves = valid_moves::knight(square);
+            let moves = basic_moves::knight(square);
             println!("\n{} knight attacks: {}", square, moves);
             assert_eq!(moves, BitBoard::new($expected));
         )
