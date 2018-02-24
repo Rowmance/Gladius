@@ -37,6 +37,17 @@ pub fn knight_attacks(square: Square, opponent_pieces: BitBoard) -> BitBoard {
 }
 
 // -----------------------------------
+/// Returns the moves a given king can make.
+pub fn king_moves(square: Square, blockers: BitBoard) -> BitBoard {
+    basic_moves::king(square) & !blockers
+}
+
+/// Returns the attacks a given king can make.
+pub fn king_attacks(square: Square, opponent_pieces: BitBoard) -> BitBoard {
+    basic_moves::king(square) & opponent_pieces
+}
+
+// -----------------------------------
 /// Returns the combination of moves and captures a rook can make, assuming the blockers 
 /// can all be captured.
 fn rook_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
