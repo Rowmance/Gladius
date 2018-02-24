@@ -1,6 +1,6 @@
 //! A 64-bit bitboard.
 
-use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not};
+use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, Shl, Shr};
 use std::fmt::{Formatter, Result, Display};
 use std::u64;
 
@@ -38,6 +38,21 @@ impl BitBoard {
         (1 << square.to_index()) & self.0 > 0
     }
 
+    /// Returns a copy of the bitboard with the given square set
+    pub fn set_square(&self, square: Square) -> Self {
+        BitBoard(self.0 | square.to_bitboard().0)
+    }
+
+    /// Returns a copy of the bitboard with the given square unset
+    pub fn unset_square(&self, square: Square) -> Self {
+        BitBoard(self.0 & !square.to_bitboard().0)
+    }
+
+    /// Returns a copy of the bitboard with the given square toggled
+    pub fn toggle_square(&self, square: Square) -> Self {
+        BitBoard(self.0 ^ square.to_bitboard().0)
+    }
+
     /// Return an empty bitboard.
     pub fn empty() -> Self {
         static EMPTY: BitBoard = BitBoard(0);
@@ -46,7 +61,7 @@ impl BitBoard {
 
     /// Return a full bitboard.
     pub fn full() -> Self {
-        static FULL: BitBoard =  BitBoard(0xFFFFFFFFFFFFFFFF);
+        static FULL: BitBoard = BitBoard(0xFFFFFFFFFFFFFFFF);
         FULL
     }
 
@@ -106,6 +121,22 @@ impl Not for BitBoard {
 
     fn not(self) -> Self {
         BitBoard(!self.0)
+    }
+}
+
+impl Shl<usize> for BitBoard {
+    type Output = Self;
+
+    fn shl(self, rhs: usize) -> Self {
+        BitBoard(self.0 << rhs)
+    }
+}
+
+impl Shr<usize> for BitBoard {
+    type Output = Self;
+
+    fn shr(self, rhs: usize) -> Self {
+        BitBoard(self.0 >> rhs)
     }
 }
 

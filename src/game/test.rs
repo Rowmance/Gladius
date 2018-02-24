@@ -8,6 +8,7 @@ use board::piece::Piece;
 use board::player::Player;
 use board::board::Board;
 use game::basic_moves;
+use game::semilegal_moves;
 
 #[test]
 fn basic_moves_rook() {
@@ -108,7 +109,7 @@ fn basic_moves_pawn() {
 }
 
 #[test]
-fn valid_attacks_pawn() {
+fn basic_attacks_pawn() {
     macro_rules! test_pawn {
         ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
             let square = Square::from_coordinates($file, $rank);
@@ -158,5 +159,135 @@ fn basic_moves_knight() {
     test_knight!(File::G, Rank::Eight, 0x10A00000000000);
     test_knight!(File::A, Rank::One, 0x20400);
     test_knight!(File::A, Rank::Eight, 0x4020000000000);
+}
 
+// -----------------------------------
+#[test]
+fn semilegal_moves_pawn() {
+    macro_rules! test_pawn {
+        ($own_file:expr, $own_rank:expr, $opp_file:expr, $opp_rank:expr, $player:expr, $expected:expr) => (
+            let own_square = Square::from_coordinates($own_file, $own_rank);
+            let blockers = Square::from_coordinates($opp_file, $opp_rank).to_bitboard();
+            let moves = semilegal_moves::pawn_moves(own_square, $player, blockers);
+            
+            println!("\n{} {} pawn moves blocked by:\n{}\nGives: {}", own_square, $player, blockers, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        )
+    }
+
+    test_pawn!(File::A, Rank::Five, File::A, Rank::Six, Player::White, 0x0);
+    test_pawn!(File::A, Rank::Five, File::A, Rank::Seven, Player::White, 0x10000000000);
+    test_pawn!(File::A, Rank::Five, File::A, Rank::Eight, Player::White, 0x10000000000);
+
+    test_pawn!(File::B, Rank::Two, File::B, Rank::Three, Player::White, 0x0);
+    test_pawn!(File::B, Rank::Two, File::B, Rank::Four, Player::White, 0x20000);
+    test_pawn!(File::B, Rank::Two, File::B, Rank::Five, Player::White, 0x2020000);
+
+    test_pawn!(File::D, Rank::Five, File::D, Rank::Four, Player::Black, 0x0);
+    test_pawn!(File::D, Rank::Five, File::D, Rank::Three, Player::Black, 0x8000000);
+    test_pawn!(File::D, Rank::Five, File::D, Rank::Two, Player::Black, 0x8000000);
+
+    test_pawn!(File::H, Rank::Seven, File::H, Rank::Six, Player::Black, 0x0);
+    test_pawn!(File::H, Rank::Seven, File::H, Rank::Five, Player::Black, 0x800000000000);
+    test_pawn!(File::H, Rank::Seven, File::H, Rank::Four, Player::Black, 0x808000000000);
+}
+
+#[test]
+fn semilegal_attacks_pawn() {
+    macro_rules! test_pawn {
+        ($file:expr, $rank:expr, $targets:expr, $player:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let targets = semilegal_moves::pawn_attacks(square, $player, $targets);
+            
+            println!("\n{} {} pawn attacks against:\n{}\nGives: {}", square, $player, $targets, targets);
+            assert_eq!(targets, BitBoard::new($expected));
+        )
+    }
+
+    let targets = Rank::Five.to_bitboard();
+    test_pawn!(File::A, Rank::Four, targets, Player::White, 0x200000000);
+    test_pawn!(File::H, Rank::Four, targets, Player::White, 0x4000000000);
+    test_pawn!(File::B, Rank::Four, targets, Player::White, 0x500000000);
+    test_pawn!(File::B, Rank::Six, targets, Player::White, 0x0);
+
+    test_pawn!(File::A, Rank::Six, targets, Player::Black, 0x200000000);
+    test_pawn!(File::H, Rank::Six, targets, Player::Black, 0x4000000000);
+    test_pawn!(File::B, Rank::Six, targets, Player::Black, 0x500000000);
+    test_pawn!(File::B, Rank::Four, targets, Player::Black, 0x0);
+}
+
+#[test]
+fn semilegal_moves_knight() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - X X - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - X - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    let board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six))
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_knight {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::knight_moves(square, board);
+            
+            println!("\n{} knight moves against:\n{}\nGives: {}", square, board, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_knight!(File::D, Rank::Four, 0x42000001400);
+    test_knight!(File::C, Rank::One, 0x1100);
+    test_knight!(File::E, Rank::Five, 0x28440044000000);
+    test_knight!(File::H, Rank::Eight, 0x20400000000000);
+}
+
+#[test]
+fn semilegal_attacks_knight() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - X X - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - X - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    let board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six))
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_knight {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::knight_attacks(square, board);
+            
+            println!("\n{} knight attacks against:\n{}\nGives: {}", square, board, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_knight!(File::D, Rank::Four, 0x100200220000);
+    test_knight!(File::C, Rank::One, 0xA0000);
+    test_knight!(File::E, Rank::Five, 0x280000);
+    test_knight!(File::H, Rank::Eight, 0x0);
 }
