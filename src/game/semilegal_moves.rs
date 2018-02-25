@@ -56,7 +56,8 @@ fn rook_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
         let file_mask = square.file().to_bitboard();
         let pot_blockers = blockers & file_mask;
 
-        let difference = pot_blockers - BitBoard::new((Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
+        let difference = pot_blockers - BitBoard::new(
+            (Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
         let changed = difference ^ blockers;
         changed & file_mask
     }
@@ -88,3 +89,7 @@ pub fn rook_attacks(square: Square, own_pieces: BitBoard, opponent_pieces: BitBo
 }
 
 // -----------------------------------
+
+fn bishop_all_moves(_square: Square, _blockers: BitBoard) -> BitBoard {
+    BitBoard::empty()
+}

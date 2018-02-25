@@ -58,6 +58,30 @@ impl Square {
     pub fn from_coordinates(file: File, rank: Rank) -> Self {
         Square(file.to_index() + rank.to_index() * 8)
     }
+    
+    /// Returns the diagonal (A1-H8 direction) which passes through the square.
+    pub fn diagonal(&self) -> BitBoard {
+        // Shift the main diagonal as appropriate and use a mask to remove any overflowing squares.
+        let main_diff = self.file().to_index() as isize - self.rank().to_index() as isize;
+        let main_mask = !BitBoard::new((2 as u64).pow((8 * main_diff.abs()) as u32) - 1);
+        if main_diff > 0 {
+            BitBoard::new(0x8040201008040201 << main_diff) & main_mask.flip()
+        } else {
+            BitBoard::new(0x8040201008040201 >> main_diff.abs()) & main_mask
+        }
+    }
+    
+    /// Returns the antidiagonal (A8-H1 direction) which passes through the square.
+    pub fn antidiagonal(&self) -> BitBoard {
+        let anti_diff = (-7 + self.rank().to_index() as isize) + self.file().to_index() as isize;
+        if anti_diff >= 0 {
+            let anti_mask = !((2 as u64).pow(8 * (anti_diff.abs()) as u32) - 1);
+            BitBoard::new((0x0102040810204080 & anti_mask) << anti_diff)
+        } else {
+            let anti_mask = 0xFFFFFFFFFFFFFFFF ^ ((2 as u64).pow(8 * (8 - anti_diff.abs()) as u32) - 1);
+            BitBoard::new((0x0102040810204080 & !anti_mask) >> anti_diff.abs())
+        }
+    }
 }
 
 impl Display for Square {
