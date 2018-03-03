@@ -126,3 +126,15 @@ pub fn bishop_moves(square: Square, blockers: BitBoard) -> BitBoard {
 pub fn bishop_attacks(square: Square, own_pieces: BitBoard, opponent_pieces: BitBoard) -> BitBoard {
     bishop_all_moves(square, own_pieces | opponent_pieces) & opponent_pieces
 }
+
+// -----------------------------------
+
+/// Returns the moves a given queen can make.
+pub fn queen_moves(square: Square, blockers: BitBoard) -> BitBoard {
+    bishop_moves(square, blockers) | rook_moves(square, blockers)
+}
+
+/// Returns the attacks a given queen can make.
+pub fn queen_attacks(square: Square, own_pieces: BitBoard, opponent_pieces: BitBoard) -> BitBoard {
+    bishop_attacks(square, own_pieces, opponent_pieces) | rook_attacks(square, own_pieces, opponent_pieces)
+}

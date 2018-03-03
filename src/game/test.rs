@@ -556,3 +556,99 @@ fn semilegal_attack_bishop() {
     test_bishop!(File::D, Rank::Seven, 0x200000000);
     test_bishop!(File::F, Rank::Eight, 0x40000000000000);
 }
+
+#[test]
+fn semilegal_moves_queen() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - X X - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - X - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    let board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six))
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_queen {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::queen_moves(square, board);
+
+            println!("\n{} queen moves against:\n{}\nGives: {}", square, board, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_queen!(File::D, Rank::Four, 0x1221CF7142241);
+    test_queen!(File::C, Rank::One, 0x404844424150EFB);
+    test_queen!(File::E, Rank::Four, 0x1824438EF101010);
+    test_queen!(File::H, Rank::Eight, 0x7F80808080808080);
+    test_queen!(File::H, Rank::Four, 0x8890A0C07FC0A090);
+    test_queen!(File::C, Rank::Three, 0x40424150E000E15);
+    test_queen!(File::G, Rank::Three, 0x4050E080E050);
+    test_queen!(File::D, Rank::Five, 0x10204F41C000000);
+    test_queen!(File::D, Rank::Seven, 0x1C37040000000000);
+    test_queen!(File::F, Rank::Eight, 0xDF30202020000000);
+}
+
+#[test]
+fn semilegal_attack_queen() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - O O - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - 0 - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    // O: Own   X: Opponent
+    let own_board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six));
+
+    let opponent_board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_queen {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::queen_attacks(square, own_board, opponent_board);
+
+            println!(
+                "\n{} queen attacks against:\n{}\nBlocked by {}\nGives: {}",
+                square,
+                opponent_board,
+                own_board,
+                moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_queen!(File::D, Rank::Four, 0x40000000080000);
+    test_queen!(File::C, Rank::One, 0x0);
+    test_queen!(File::E, Rank::Four, 0x80000);
+    test_queen!(File::H, Rank::Eight, 0x40000000000000);
+    test_queen!(File::H, Rank::Four, 0x0);
+    test_queen!(File::C, Rank::Three, 0x400000000A0000);
+    test_queen!(File::G, Rank::Three, 0x40000000000000);
+    test_queen!(File::D, Rank::Five, 0x2000A0000);
+    test_queen!(File::D, Rank::Seven, 0x40000200000000);
+    test_queen!(File::F, Rank::Eight, 0x40000000000000);
+}
