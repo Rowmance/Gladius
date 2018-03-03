@@ -1,6 +1,6 @@
 //! The castle rights.
 
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 
 /// The castle rights.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -15,11 +15,11 @@ pub enum CastleRights {
     QueenSide,
 
     /// King-side and queen-side castle available.
-    Both
+    Both,
 }
 
 impl Display for CastleRights {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "Castle Rights: {:?}",  self)
+        write!(f, "Castle Rights: {:?}", self)
     }
 }

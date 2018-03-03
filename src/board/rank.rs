@@ -1,7 +1,7 @@
 //! A rank on the chess board.
 
 use std::slice::Iter;
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 
 use board::bitboard::BitBoard;
 
@@ -30,7 +30,7 @@ pub enum Rank {
     Seven,
 
     /// Eighth rank.
-    Eight
+    Eight,
 }
 
 impl Rank {
@@ -46,7 +46,7 @@ impl Rank {
             5 => Six,
             6 => Seven,
             7 => Eight,
-            _ => panic!("Cannot create rank from index {}", index)
+            _ => panic!("Cannot create rank from index {}", index),
         }
     }
 
@@ -78,7 +78,7 @@ impl Rank {
             Five => Some(Six),
             Six => Some(Seven),
             Seven => Some(Eight),
-            Eight => None
+            Eight => None,
         }
     }
 
@@ -93,7 +93,7 @@ impl Rank {
             Five => Some(Four),
             Six => Some(Five),
             Seven => Some(Six),
-            Eight => Some(Seven)
+            Eight => Some(Seven),
         }
     }
 }

@@ -27,4 +27,3 @@ pub mod castle_rights;
 
 #[cfg(test)]
 mod test;
-

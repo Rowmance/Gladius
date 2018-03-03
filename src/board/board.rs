@@ -1,7 +1,7 @@
 //! The complete state of a chess board.
 
 use std::collections::HashMap;
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 use std::default::Default;
 use std::char;
 
@@ -24,7 +24,6 @@ pub struct Board {
     pub white_pieces: HashMap<Piece, BitBoard>,
     //TODO: Do immutable maps exist? How do they work?
     //TODO: Use getters here - don't expose properties.
-
     /// A map of positions of each of the black player pieces.
     pub black_pieces: HashMap<Piece, BitBoard>,
 
@@ -44,7 +43,7 @@ pub struct Board {
     pub draw_plies: usize,
 
     /// The number of full turns elapsed.
-    pub full_turns: usize
+    pub full_turns: usize,
 }
 
 impl Board {
@@ -61,8 +60,10 @@ impl Board {
             (Piece::Knight, bitboards::WHITE_START_KNIGHTS),
             (Piece::Bishop, bitboards::WHITE_START_BISHOPS),
             (Piece::Queen, bitboards::WHITE_START_QUEENS),
-            (Piece::King, bitboards::WHITE_START_KINGS)
-        ].iter().cloned().collect();
+            (Piece::King, bitboards::WHITE_START_KINGS),
+        ].iter()
+            .cloned()
+            .collect();
 
         let black = [
             (Piece::Pawn, bitboards::BLACK_START_PAWNS),
@@ -70,8 +71,10 @@ impl Board {
             (Piece::Knight, bitboards::BLACK_START_KNIGHTS),
             (Piece::Bishop, bitboards::BLACK_START_BISHOPS),
             (Piece::Queen, bitboards::BLACK_START_QUEENS),
-            (Piece::King, bitboards::BLACK_START_KINGS)
-        ].iter().cloned().collect();
+            (Piece::King, bitboards::BLACK_START_KINGS),
+        ].iter()
+            .cloned()
+            .collect();
 
         Self::builder()
             .white_pieces(white)
@@ -82,7 +85,8 @@ impl Board {
             .black_castle_rights(CastleRights::Both)
             .draw_plies(0)
             .full_turns(0)
-            .build().expect("Board start position builder panicked")
+            .build()
+            .expect("Board start position builder panicked")
     }
 }
 
@@ -97,7 +101,8 @@ impl Default for Board {
             .black_castle_rights(CastleRights::None)
             .draw_plies(0)
             .full_turns(0)
-            .build().expect("Board default builder panicked")
+            .build()
+            .expect("Board default builder panicked")
     }
 }
 
@@ -109,14 +114,14 @@ impl Display for Board {
         fn piece_char(piece: Piece, player: Player) -> char {
             let val = match player {
                 Player::White => 0x2654,
-                Player::Black => 0x265A
+                Player::Black => 0x265A,
             } + match piece {
                 Piece::King => 0,
                 Piece::Queen => 1,
                 Piece::Rook => 2,
                 Piece::Bishop => 3,
                 Piece::Knight => 4,
-                Piece::Pawn => 5
+                Piece::Pawn => 5,
             };
             char::from_u32(val).unwrap()
         }
@@ -140,7 +145,7 @@ impl Display for Board {
                             if value.is_square_set(square) {
                                 res = Some((key, Player::White))
                             }
-                        };
+                        }
                         for (&key, value) in self.black_pieces.iter() {
                             if value.is_square_set(square) {
                                 res = Some((key, Player::Black))

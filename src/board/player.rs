@@ -1,6 +1,6 @@
 //! A chess player.
 
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 
 /// Represents a player.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -9,7 +9,7 @@ pub enum Player {
     White,
 
     /// Black player.
-    Black
+    Black,
 }
 
 impl Display for Player {

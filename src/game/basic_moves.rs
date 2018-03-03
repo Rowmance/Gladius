@@ -14,7 +14,7 @@ use board::bitboard::BitBoard;
 pub fn pawn_moves(square: Square, player: Player) -> BitBoard {
     let homerank = match player {
         Player::White => Rank::Two,
-        Player::Black => Rank::Seven
+        Player::Black => Rank::Seven,
     };
     if square.rank() == homerank {
         let forwardbb = match player {
@@ -31,20 +31,32 @@ pub fn pawn_moves(square: Square, player: Player) -> BitBoard {
     }
     let forward = match player {
         Player::White => square.rank().next(),
-        Player::Black => square.rank().prev()
+        Player::Black => square.rank().prev(),
     };
 
-    forward.map_or(BitBoard::empty(), |rank| rank.to_bitboard() & square.file().to_bitboard())
+    forward.map_or(BitBoard::empty(), |rank| {
+        rank.to_bitboard() & square.file().to_bitboard()
+    })
 }
 
 /// Returns the valid pawn attacks for a given square and player.
 pub fn pawn_attacks(square: Square, player: Player) -> BitBoard {
-    let sides = square.file().prev().map_or(BitBoard::empty(), |file| file.to_bitboard())
-        | square.file().next().map_or(BitBoard::empty(), |file| file.to_bitboard());
+    let sides = square
+        .file()
+        .prev()
+        .map_or(BitBoard::empty(), |file| {
+            file.to_bitboard()
+        })
+        | square
+            .file()
+            .next()
+            .map_or(BitBoard::empty(), |file| {
+                file.to_bitboard()
+            });
 
     let forward = match player {
         Player::White => square.rank().next(),
-        Player::Black => square.rank().prev()
+        Player::Black => square.rank().prev(),
     }.map_or(BitBoard::empty(), |rank| rank.to_bitboard());
 
     forward & sides
@@ -91,7 +103,7 @@ pub fn knight(square: Square) -> BitBoard {
 pub fn king(square: Square) -> BitBoard {
     let not_a = !File::A.to_bitboard().to_u64();
     let not_h = !File::H.to_bitboard().to_u64();
-    
+
     let mut result: u64 = 0;
     let index = square.to_bitboard().to_u64();
     result |= index << 1 & not_a;

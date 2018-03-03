@@ -1,6 +1,6 @@
 //! A square on the chess board.
 
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 
 use board::bitboard::BitBoard;
 use board::file::File;
@@ -38,7 +38,7 @@ impl Square {
     pub fn mirror_horizontal(&self) -> Self {
         Square::new(8 * (7 - (self.0 / 8)) + (self.0 % 8))
     }
-    
+
     /// Returns the square mirrored accross the A1-H8 diagonal
     pub fn mirror_diag(&self) -> Self {
         Square::new(8 * (self.0 % 8) + (self.0 / 8))
@@ -58,7 +58,7 @@ impl Square {
     pub fn from_coordinates(file: File, rank: Rank) -> Self {
         Square(file.to_index() + rank.to_index() * 8)
     }
-    
+
     /// Returns the diagonal (A1-H8 direction) which passes through the square.
     pub fn diagonal(&self) -> BitBoard {
         // Shift the main diagonal as appropriate and use a mask to remove any overflowing squares.
@@ -70,7 +70,7 @@ impl Square {
             BitBoard::new(0x8040201008040201 >> main_diff.abs()) & main_mask
         }
     }
-    
+
     /// Returns the antidiagonal (A8-H1 direction) which passes through the square.
     pub fn antidiagonal(&self) -> BitBoard {
         let anti_diff = (-7 + self.rank().to_index() as isize) + self.file().to_index() as isize;

@@ -1,7 +1,7 @@
 //! A 64-bit bitboard.
 
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, Shl, Shr, Sub, SubAssign};
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 use std::u64;
 use std::num::Wrapping;
 
@@ -28,7 +28,7 @@ impl BitBoard {
     pub fn mirror_horizontal(&self) -> Self {
         BitBoard(self.0.swap_bytes())
     }
-    
+
     /// Mirrors the board along the A1-H8 diagonal
     pub fn mirror_diag(&self) -> Self {
         let k1: BitBoard = BitBoard::new(0x5500550055005500);
@@ -90,7 +90,6 @@ impl BitBoard {
         self.0
     }
 }
-
 
 // ---------------------------------------------------------------------------
 // Operations

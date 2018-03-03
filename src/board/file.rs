@@ -1,6 +1,6 @@
 //! A file on the chess board.
 
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 use std::slice::Iter;
 
 use board::bitboard::BitBoard;
@@ -30,7 +30,7 @@ pub enum File {
     G,
 
     /// H file.
-    H
+    H,
 }
 
 impl File {
@@ -45,7 +45,7 @@ impl File {
             5 => File::F,
             6 => File::G,
             7 => File::H,
-            _ => panic!("Cannot create file from index {}", index)
+            _ => panic!("Cannot create file from index {}", index),
         }
     }
 
@@ -82,7 +82,7 @@ impl File {
             E => Some(F),
             F => Some(G),
             G => Some(H),
-            H => None
+            H => None,
         }
     }
 
@@ -97,7 +97,7 @@ impl File {
             E => Some(D),
             F => Some(E),
             G => Some(F),
-            H => Some(G)
+            H => Some(G),
         }
     }
 }

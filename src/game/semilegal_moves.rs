@@ -15,7 +15,7 @@ use std::num::Wrapping;
 pub fn pawn_moves(square: Square, player: Player, blockers: BitBoard) -> BitBoard {
     let double_blockers = match player {
         Player::White => blockers | blockers << 8,
-        Player::Black => blockers | blockers >> 8
+        Player::Black => blockers | blockers >> 8,
     };
     basic_moves::pawn_moves(square, player) & !double_blockers
 }
@@ -48,7 +48,7 @@ pub fn king_attacks(square: Square, opponent_pieces: BitBoard) -> BitBoard {
 }
 
 // -----------------------------------
-/// Returns the combination of moves and captures a rook can make, assuming the blockers 
+/// Returns the combination of moves and captures a rook can make, assuming the blockers
 /// can all be captured.
 fn rook_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
     // gets the moves in the upward direction only
@@ -56,25 +56,20 @@ fn rook_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
         let file_mask = square.file().to_bitboard();
         let pot_blockers = blockers & file_mask;
 
-        let difference = pot_blockers - BitBoard::new(
-            (Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
+        let difference = pot_blockers - BitBoard::new((Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
         let changed = difference ^ blockers;
         changed & file_mask
     }
-    
-    let up = rook_forward_moves(
-        square,
-        blockers);
-    let down = rook_forward_moves(
-        square.mirror_horizontal(),
-        blockers.mirror_horizontal()).mirror_horizontal();
-    let left = rook_forward_moves(
-        square.mirror_diag(),
-        blockers.mirror_diag()).mirror_diag();
+
+    let up = rook_forward_moves(square, blockers);
+    let down = rook_forward_moves(square.mirror_horizontal(), blockers.mirror_horizontal()).mirror_horizontal();
+    let left = rook_forward_moves(square.mirror_diag(), blockers.mirror_diag()).mirror_diag();
     let right = rook_forward_moves(
         square.mirror_diag().mirror_horizontal(),
-        blockers.mirror_diag().mirror_horizontal()).mirror_horizontal().mirror_diag();
-    
+        blockers.mirror_diag().mirror_horizontal(),
+    ).mirror_horizontal()
+        .mirror_diag();
+
     up | down | left | right
 }
 

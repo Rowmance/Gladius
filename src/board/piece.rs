@@ -1,7 +1,7 @@
 //! A chess piece type.
 
 use std::slice::Iter;
-use std::fmt::{Formatter, Result, Display};
+use std::fmt::{Display, Formatter, Result};
 
 /// Represents a chess piece type.
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
@@ -22,7 +22,7 @@ pub enum Piece {
     Queen,
 
     /// King.
-    King
+    King,
 }
 
 impl Piece {
