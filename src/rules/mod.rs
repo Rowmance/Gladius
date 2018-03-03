@@ -4,7 +4,7 @@
 //! general victory/defeat conditions.
 //!
 //! This includes:
-//! * Which pieces can move where
+//! * Which pieces can move where (move generation)
 //! * Castling
 //! * En passant capturing
 //! * Promotion
@@ -15,7 +15,7 @@
 
 mod basic_moves;
 mod semilegal_moves;
+mod movement;
 
 #[cfg(test)]
 mod test;
-

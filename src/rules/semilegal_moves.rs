@@ -8,7 +8,7 @@ use board::player::Player;
 use board::rank::Rank;
 use board::file::File;
 use board::bitboard::BitBoard;
-use game::basic_moves;
+use rules::basic_moves;
 use std::num::Wrapping;
 
 /// Returns the moves a given pawn can make.

@@ -7,8 +7,8 @@ use board::file::File;
 use board::piece::Piece;
 use board::player::Player;
 use board::board::Board;
-use game::basic_moves;
-use game::semilegal_moves;
+use rules::basic_moves;
+use rules::semilegal_moves;
 
 #[test]
 fn basic_moves_rook() {

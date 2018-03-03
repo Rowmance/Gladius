@@ -6,7 +6,7 @@
         unused_import_braces, unused_qualifications, unused_variables)]
 
 pub mod board;
-pub mod game;
+pub mod rules;
 
 extern crate bit_reverse;
 
