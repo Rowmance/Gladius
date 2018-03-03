@@ -5,8 +5,6 @@ use std::fmt::{Display, Formatter, Result};
 use std::default::Default;
 use std::char;
 
-use option_filter::OptionFilterExt;
-
 use board::piece::Piece;
 use board::bitboard::BitBoard;
 use board::player::Player;
@@ -137,7 +135,7 @@ impl Display for Board {
                 let square = Square::from_coordinates(file, rank);
 
                 let char = self.en_passant
-                    .filter(|sq| *sq == square)
+                    .and_then(|sq| if sq == square { Some(sq) } else { None })
                     .map(|_| 'e')
                     .or_else(|| {
                         let mut res: Option<(Piece, Player)> = None;

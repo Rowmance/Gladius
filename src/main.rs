@@ -9,7 +9,6 @@ pub mod board;
 pub mod game;
 
 extern crate bit_reverse;
-extern crate option_filter;
 
 #[doc(hidden)]
 #[macro_use]

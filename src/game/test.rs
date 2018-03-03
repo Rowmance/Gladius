@@ -460,3 +460,99 @@ fn semilegal_attacks_rook() {
     test_rook!(File::G, Rank::Five, 0x40000200000000);
     test_rook!(File::D, Rank::Five, 0x200080000);
 }
+
+#[test]
+fn semilegal_moves_bishop() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - X X - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - X - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    let board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six))
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_bishop {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::bishop_moves(square, board);
+
+            println!("\n{} bishop moves against:\n{}\nGives: {}", square, board, moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_bishop!(File::D, Rank::Four, 0x1221400142241);
+    test_bishop!(File::C, Rank::One, 0x804020110A00);
+    test_bishop!(File::E, Rank::Four, 0x182442800000000);
+    test_bishop!(File::H, Rank::Eight, 0x0);
+    test_bishop!(File::H, Rank::Four, 0x810204000402010);
+    test_bishop!(File::C, Rank::Three, 0x20110A000A11);
+    test_bishop!(File::G, Rank::Three, 0x10A000A010);
+    test_bishop!(File::D, Rank::Five, 0x102040014000000);
+    test_bishop!(File::D, Rank::Seven, 0x1400040000000000);
+    test_bishop!(File::F, Rank::Eight, 0x10000000000000);
+}
+
+#[test]
+fn semilegal_attack_bishop() {
+    // A board with a varied set of squares set:
+    // +-+-+-+-+-+-+-+-+-+
+    // | - - - - - - - - |
+    // | - - - - - - X - |
+    // | - - - O O - - - |
+    // | - X - - - - - - |
+    // | - - - - - - - - |
+    // | - X - X - 0 - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // +-+-+-+-+-+-+-+-+-+
+    // O: Own   X: Opponent
+    let own_board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::F, Rank::Three))
+        .set_square(Square::from_coordinates(File::D, Rank::Six))
+        .set_square(Square::from_coordinates(File::E, Rank::Six));
+
+    let opponent_board = BitBoard::empty()
+        .set_square(Square::from_coordinates(File::B, Rank::Three))
+        .set_square(Square::from_coordinates(File::B, Rank::Five))
+        .set_square(Square::from_coordinates(File::D, Rank::Three))
+        .set_square(Square::from_coordinates(File::G, Rank::Seven));
+
+    macro_rules! test_bishop {
+        ($file:expr, $rank:expr, $expected:expr) => (
+            let square = Square::from_coordinates($file, $rank);
+            let moves = semilegal_moves::bishop_attacks(square, own_board, opponent_board);
+
+            println!(
+                "\n{} bishop attacks against:\n{}\nBlocked by {}\nGives: {}",
+                square,
+                opponent_board,
+                own_board,
+                moves);
+            assert_eq!(moves, BitBoard::new($expected));
+        );
+    }
+
+    test_bishop!(File::D, Rank::Four, 0x40000000000000);
+    test_bishop!(File::C, Rank::One, 0x0);
+    test_bishop!(File::E, Rank::Four, 0x80000);
+    test_bishop!(File::H, Rank::Eight, 0x40000000000000);
+    test_bishop!(File::H, Rank::Four, 0x0);
+    test_bishop!(File::C, Rank::Three, 0x40000000000000);
+    test_bishop!(File::G, Rank::Three, 0x0);
+    test_bishop!(File::D, Rank::Five, 0x20000);
+    test_bishop!(File::D, Rank::Seven, 0x200000000);
+    test_bishop!(File::F, Rank::Eight, 0x40000000000000);
+}
