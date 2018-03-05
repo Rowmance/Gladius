@@ -31,14 +31,14 @@ impl BitBoard {
 
     /// Mirrors the board along the A1-H8 diagonal
     pub fn mirror_diag(&self) -> Self {
-        let k1: BitBoard = BitBoard::new(0x5500550055005500);
-        let k2: BitBoard = BitBoard::new(0x3333000033330000);
-        let k4: BitBoard = BitBoard::new(0x0f0f0f0f00000000);
-        let mut t = k4 & (*self ^ (*self << 28));
+        static K1: BitBoard = BitBoard(0x5500550055005500);
+        static K2: BitBoard = BitBoard(0x3333000033330000);
+        static K4: BitBoard = BitBoard(0x0f0f0f0f00000000);
+        let mut t = K4 & (*self ^ (*self << 28));
         let mut x = *self ^ (t ^ (t >> 28));
-        t = k2 & (x ^ (x << 14));
+        t = K2 & (x ^ (x << 14));
         x ^= t ^ (t >> 14);
-        t = k1 & (x ^ (x << 7));
+        t = K1 & (x ^ (x << 7));
         x ^= t ^ (t >> 7);
         x
     }
@@ -66,6 +66,11 @@ impl BitBoard {
     /// Returns a copy of the bitboard with the given square unset
     pub fn unset_square(&self, square: Square) -> Self {
         BitBoard(self.0 & !square.to_bitboard().0)
+    }
+    
+    /// Returns true if the bitboard is empty.
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
     }
 
     /// Returns a copy of the bitboard with the given square toggled

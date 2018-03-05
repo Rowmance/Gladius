@@ -5,8 +5,6 @@ use board::bitboards;
 use board::square::Square;
 use board::rank::Rank;
 use board::file::File;
-use board::piece::Piece;
-use board::player::Player;
 use board::board::Board;
 
 use std::panic::catch_unwind;
