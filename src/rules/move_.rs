@@ -4,7 +4,7 @@ use board::square::Square;
 use board::piece::Piece;
 
 /// A movement of a piece (a 'move')
-pub struct Movement {
+pub struct Move {
     /// The square the piece moved from.
     pub origin: Square,
 

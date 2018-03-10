@@ -67,7 +67,7 @@ impl BitBoard {
     pub fn unset_square(&self, square: Square) -> Self {
         BitBoard(self.0 & !square.to_bitboard().0)
     }
-    
+
     /// Returns true if the bitboard is empty.
     pub fn is_empty(&self) -> bool {
         self.0 == 0

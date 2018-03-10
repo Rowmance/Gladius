@@ -20,8 +20,7 @@ use board::file::File;
 pub struct Board {
     /// A map of positions of each of the white player pieces.
     pub white_pieces: HashMap<Piece, BitBoard>,
-    //TODO: Do immutable maps exist? How do they work?
-    //TODO: Use getters here - don't expose properties.
+
     /// A map of positions of each of the black player pieces.
     pub black_pieces: HashMap<Piece, BitBoard>,
 

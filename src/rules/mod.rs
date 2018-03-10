@@ -15,7 +15,7 @@
 
 mod basic_moves;
 mod semilegal_moves;
-mod movement;
+mod move_;
 
 #[cfg(test)]
 mod test;
