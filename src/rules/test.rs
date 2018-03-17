@@ -6,7 +6,7 @@ use board::rank::Rank;
 use board::file::File;
 use board::piece::Piece;
 use board::player::Player;
-use board::board::Board;
+use board::game_state::GameState;
 use rules::basic_moves;
 use rules::semilegal_moves;
 

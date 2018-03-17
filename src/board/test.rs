@@ -5,7 +5,7 @@ use board::bitboards;
 use board::square::Square;
 use board::rank::Rank;
 use board::file::File;
-use board::board::Board;
+use board::game_state::GameState;
 
 use std::panic::catch_unwind;
 
@@ -318,8 +318,8 @@ fn file() {
 }
 
 #[test]
-fn board() {
-    let board = Board::start_position(); //TODO, test the board.
+fn game_state() {
+    let state = GameState::start_position(); // TODO, test the board.
 
-    println!("{}", board);
+    println!("{}", state);
 }

@@ -22,7 +22,8 @@ pub mod rank;
 pub mod file;
 pub mod piece;
 pub mod player;
-pub mod board;
+pub mod game_state;
+pub mod player_board;
 pub mod castle_rights;
 
 #[cfg(test)]

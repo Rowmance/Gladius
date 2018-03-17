@@ -13,16 +13,17 @@ use board::castle_rights::CastleRights;
 use board::bitboards;
 use board::rank::Rank;
 use board::file::File;
+use board::player_board::PlayerBoard;
 
 /// Represents a complete state of a chess board.
 #[derive(Clone, Builder, Debug)]
-#[builder(pattern = "immutable", derive(Debug))]
-pub struct Board {
-    /// A map of positions of each of the white player pieces.
-    pub white_pieces: HashMap<Piece, BitBoard>,
+#[builder(derive(Debug))]
+pub struct GameState {
+    /// The white player board.
+    pub white_board: PlayerBoard,
 
-    /// A map of positions of each of the black player pieces.
-    pub black_pieces: HashMap<Piece, BitBoard>,
+    /// The black player board.
+    pub black_board: PlayerBoard,
 
     /// The player whose turn it is.
     pub player_turn: Player,
@@ -43,39 +44,19 @@ pub struct Board {
     pub full_turns: usize,
 }
 
-impl Board {
+// TODO: Board struct which contains pieces only. Replace hashmap with this.
+
+impl GameState {
     /// Returns the builder.
-    pub fn builder() -> BoardBuilder {
-        BoardBuilder::default()
+    pub fn builder() -> GameStateBuilder {
+        GameStateBuilder::default()
     }
 
     /// Returns the standard chess starting board.
     pub fn start_position() -> Self {
-        let white = [
-            (Piece::Pawn, bitboards::WHITE_START_PAWNS),
-            (Piece::Rook, bitboards::WHITE_START_ROOKS),
-            (Piece::Knight, bitboards::WHITE_START_KNIGHTS),
-            (Piece::Bishop, bitboards::WHITE_START_BISHOPS),
-            (Piece::Queen, bitboards::WHITE_START_QUEENS),
-            (Piece::King, bitboards::WHITE_START_KINGS),
-        ].iter()
-            .cloned()
-            .collect();
-
-        let black = [
-            (Piece::Pawn, bitboards::BLACK_START_PAWNS),
-            (Piece::Rook, bitboards::BLACK_START_ROOKS),
-            (Piece::Knight, bitboards::BLACK_START_KNIGHTS),
-            (Piece::Bishop, bitboards::BLACK_START_BISHOPS),
-            (Piece::Queen, bitboards::BLACK_START_QUEENS),
-            (Piece::King, bitboards::BLACK_START_KINGS),
-        ].iter()
-            .cloned()
-            .collect();
-
         Self::builder()
-            .white_pieces(white)
-            .black_pieces(black)
+            .white_board(PlayerBoard::start_position(Player::White))
+            .black_board(PlayerBoard::start_position(Player::Black))
             .player_turn(Player::White)
             .en_passant(None)
             .white_castle_rights(CastleRights::Both)
@@ -87,11 +68,11 @@ impl Board {
     }
 }
 
-impl Default for Board {
+impl Default for GameState {
     fn default() -> Self {
         Self::builder()
-            .white_pieces(HashMap::new())
-            .black_pieces(HashMap::new())
+            .white_board(PlayerBoard::default())
+            .black_board(PlayerBoard::default())
             .player_turn(Player::White)
             .en_passant(None)
             .white_castle_rights(CastleRights::None)
@@ -105,7 +86,7 @@ impl Default for Board {
 
 //---------------------------------------------------------------------------
 // Display
-impl Display for Board {
+impl Display for GameState {
     fn fmt(&self, f: &mut Formatter) -> Result {
         // Gets the character for a given piece.
         fn piece_char(piece: Piece, player: Player) -> char {
@@ -137,18 +118,33 @@ impl Display for Board {
                     .and_then(|sq| if sq == square { Some(sq) } else { None })
                     .map(|_| 'e')
                     .or_else(|| {
-                        let mut res: Option<(Piece, Player)> = None;
-                        for (&key, value) in self.white_pieces.iter() {
-                            if value.is_square_set(square) {
-                                res = Some((key, Player::White))
-                            }
-                        }
-                        for (&key, value) in self.black_pieces.iter() {
-                            if value.is_square_set(square) {
-                                res = Some((key, Player::Black))
-                            }
-                        }
-                        res.map(|(piece, player)| piece_char(piece, player))
+                        if self.white_board.pawns.is_square_set(square) {
+                            Some((Piece::Pawn, Player::White))
+                        } else if self.white_board.rooks.is_square_set(square) {
+                            Some((Piece::Rook, Player::White))
+                        } else if self.white_board.knights.is_square_set(square) {
+                            Some((Piece::Knight, Player::White))
+                        } else if self.white_board.bishops.is_square_set(square) {
+                            Some((Piece::Bishop, Player::White))
+                        } else if self.white_board.queens.is_square_set(square) {
+                            Some((Piece::Queen, Player::White))
+                        } else if self.white_board.king.is_square_set(square) {
+                            Some((Piece::King, Player::White))
+                        } else if self.black_board.pawns.is_square_set(square) {
+                            Some((Piece::Pawn, Player::Black))
+                        } else if self.black_board.rooks.is_square_set(square) {
+                            Some((Piece::Rook, Player::Black))
+                        } else if self.black_board.knights.is_square_set(square) {
+                            Some((Piece::Knight, Player::Black))
+                        } else if self.black_board.bishops.is_square_set(square) {
+                            Some((Piece::Bishop, Player::Black))
+                        } else if self.black_board.queens.is_square_set(square) {
+                            Some((Piece::Queen, Player::Black))
+                        } else if self.black_board.king.is_square_set(square) {
+                            Some((Piece::King, Player::Black))
+                        } else {
+                            None
+                        }.map(|(piece, player)| piece_char(piece, player))
                     })
                     .unwrap_or(' ');
                 str.push(char);
