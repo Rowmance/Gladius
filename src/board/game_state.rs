@@ -81,6 +81,11 @@ impl GameState {
             ..self
         }
     }
+
+    /// Parses the given FEN.
+    pub fn parse_fen(_fen: &str) -> Self {
+        unimplemented!()
+    }
 }
 
 impl Default for GameState {

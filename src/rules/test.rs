@@ -913,3 +913,89 @@ fn move_promote_black() {
         }
     );
 }
+
+#[test]
+fn move_white() {
+    let mut state = GameState::start_position();
+    println!("{}", state);
+
+    let move1 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::D, Rank::Two),
+        target: Square::from_coordinates(File::D, Rank::Four),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move1);
+    println!("{}", state);
+
+    let move2 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::D, Rank::Seven),
+        target: Square::from_coordinates(File::D, Rank::Five),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move2);
+    println!("{}", state);
+
+    let move3 = Move {
+        piece: Piece::Bishop,
+        origin: Square::from_coordinates(File::C, Rank::One),
+        target: Square::from_coordinates(File::F, Rank::Four),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move3);
+    println!("{}", state);
+
+    let move4 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::E, Rank::Seven),
+        target: Square::from_coordinates(File::E, Rank::Five),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move4);
+    println!("{}", state);
+
+    assert_eq!(
+        state,
+        GameState {
+            white_board: PlayerBoard {
+                pawns: BitBoard::new(134280960),
+                rooks: BitBoard::new(129),
+                knights: BitBoard::new(66),
+                bishops: BitBoard::new(536870944),
+                queens: BitBoard::new(8),
+                king: BitBoard::new(16),
+            },
+            black_board: PlayerBoard {
+                pawns: BitBoard::new(65020822699376640),
+                rooks: BitBoard::new(9295429630892703744),
+                knights: BitBoard::new(4755801206503243776),
+                bishops: BitBoard::new(2594073385365405696),
+                queens: BitBoard::new(576460752303423488),
+                king: BitBoard::new(1152921504606846976),
+            },
+            player_turn: Player::White,
+            en_passant: Some(Square::new(44)),
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 0,
+            full_turns: 2,
+        }
+    );
+}

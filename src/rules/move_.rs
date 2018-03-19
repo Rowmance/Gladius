@@ -67,13 +67,16 @@ impl GameState {
     ///
     /// This method also:
     /// - Sets the player turn to the other player.
-    /// - Resets the en-passant square.
+    /// - Sets or resets the en-passant square.
     /// - Increases the full turns count.
     /// - Increases the draw plies count if necessary.
     /// - Updates the castle rights if a rook or king move
     ///
     /// Invalid game states or moves will give undefined behaviour.
     pub fn apply_move(&self, move_: Move) -> Self {
+        // TODO: Debug validate move? (correct player, is piece there, can piece make that move, etc)
+        // TODO: Debug validate state? One piece per square, not check and still check, etc
+        // TODO: Clean this method up - break it out into other methods.
         let mut new_state = self.clone();
 
         new_state.player_turn = match self.player_turn {
@@ -138,6 +141,7 @@ impl GameState {
             return new_state;
         }
 
+        // Promotion
         if let Some(promo) = move_.promotion {
             match self.player_turn {
                 Player::White => {
@@ -154,6 +158,95 @@ impl GameState {
             return new_state;
         }
 
-        unimplemented!()
+        // All other non-capture moves
+        if !move_.capture {
+            match self.player_turn {
+                Player::White => {
+                    new_state.white_board = self.white_board.with_piece(
+                        move_.piece,
+                        self.white_board
+                            .piece(move_.piece)
+                            .unset_square(move_.origin)
+                            .set_square(move_.target),
+                    );
+
+                    if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Two
+                        && move_.target.rank() == Rank::Four
+                    {
+                        new_state.en_passant = Some(Square::from_coordinates(move_.origin.file(), Rank::Three))
+                    }
+                }
+                Player::Black => {
+                    new_state.black_board = self.black_board.with_piece(
+                        move_.piece,
+                        self.black_board
+                            .piece(move_.piece)
+                            .unset_square(move_.origin)
+                            .set_square(move_.target),
+                    );
+                    if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Seven
+                        && move_.target.rank() == Rank::Five
+                    {
+                        new_state.en_passant = Some(Square::from_coordinates(move_.origin.file(), Rank::Six))
+                    }
+                }
+            }
+
+            return new_state;
+        }
+
+        // All capture moves
+        match self.player_turn {
+            Player::White => {
+                new_state.white_board = self.white_board.with_piece(
+                    move_.piece,
+                    self.white_board
+                        .piece(move_.piece)
+                        .unset_square(move_.origin)
+                        .set_square(move_.target),
+                );
+                new_state.black_board = match self.black_board {
+                    board if board.pawns.is_square_set(move_.target) => {
+                        board.with_pawns(board.pawns.unset_square(move_.target))
+                    }
+                    board if board.rooks.is_square_set(move_.target) => {
+                        board.with_rooks(board.rooks.unset_square(move_.target))
+                    }
+                    board if board.knights.is_square_set(move_.target) => {
+                        board.with_knights(board.knights.unset_square(move_.target))
+                    }
+                    board if board.bishops.is_square_set(move_.target) => {
+                        board.with_bishops(board.bishops.unset_square(move_.target))
+                    }
+                    board => board.with_queens(board.queens.unset_square(move_.target)),
+                }
+            }
+            Player::Black => {
+                new_state.black_board = self.black_board.with_piece(
+                    move_.piece,
+                    self.black_board
+                        .piece(move_.piece)
+                        .unset_square(move_.origin)
+                        .set_square(move_.target),
+                );
+                new_state.white_board = match self.white_board {
+                    board if board.pawns.is_square_set(move_.target) => {
+                        board.with_pawns(board.pawns.unset_square(move_.target))
+                    }
+                    board if board.rooks.is_square_set(move_.target) => {
+                        board.with_rooks(board.rooks.unset_square(move_.target))
+                    }
+                    board if board.knights.is_square_set(move_.target) => {
+                        board.with_knights(board.knights.unset_square(move_.target))
+                    }
+                    board if board.bishops.is_square_set(move_.target) => {
+                        board.with_bishops(board.bishops.unset_square(move_.target))
+                    }
+                    board => board.with_queens(board.queens.unset_square(move_.target)),
+                }
+            }
+        }
+
+        new_state
     }
 }
