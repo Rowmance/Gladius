@@ -9,6 +9,11 @@ use board::player::Player;
 use board::game_state::GameState;
 use rules::basic_moves;
 use rules::semilegal_moves;
+use board::player_board::PlayerBoard;
+use board::bitboards;
+use rules::move_::Move;
+use rules::move_::CastleMove;
+use board::castle_rights::CastleRights;
 
 #[test]
 fn basic_moves_rook() {
@@ -651,4 +656,190 @@ fn semilegal_attack_queen() {
     test_queen!(File::D, Rank::Five, 0x2000A0000);
     test_queen!(File::D, Rank::Seven, 0x40000200000000);
     test_queen!(File::F, Rank::Eight, 0x40000000000000);
+}
+
+// ----------------------------
+
+#[test]
+fn move_castle_white() {
+    let initial_state = GameState::default()
+        .with_player_turn(Player::White)
+        .with_white_board(
+            PlayerBoard::default()
+                .with_rooks(bitboards::WHITE_START_ROOKS)
+                .with_king(bitboards::WHITE_START_KINGS),
+        )
+        .with_black_board(
+            PlayerBoard::default()
+                .with_rooks(bitboards::BLACK_START_ROOKS)
+                .with_king(bitboards::BLACK_START_KINGS),
+        );
+
+    let ks_move = Move {
+        piece: Piece::King,
+        origin: Square::from_coordinates(File::E, Rank::One),
+        target: Square::from_coordinates(File::G, Rank::One),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: Some(CastleMove::KingSide),
+    };
+
+    let ks_state = initial_state.apply_move(ks_move);
+
+    println!("{}", initial_state);
+    println!("{}", ks_state);
+
+    assert_eq!(
+        ks_state,
+        GameState {
+            white_board: PlayerBoard::default()
+                .with_rooks(
+                    BitBoard::empty()
+                        .set_coordinate(File::A, Rank::One)
+                        .set_coordinate(File::F, Rank::One)
+                )
+                .with_king(BitBoard::empty().set_coordinate(File::G, Rank::One)),
+            black_board: PlayerBoard::default()
+                .with_rooks(bitboards::BLACK_START_ROOKS)
+                .with_king(bitboards::BLACK_START_KINGS),
+            player_turn: Player::Black,
+            en_passant: None,
+            white_castle_rights: CastleRights::None,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 1,
+            full_turns: 0,
+        }
+    );
+
+    // ------
+    let qs_move = Move {
+        piece: Piece::King,
+        origin: Square::from_coordinates(File::E, Rank::One),
+        target: Square::from_coordinates(File::C, Rank::One),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: Some(CastleMove::QueenSide),
+    };
+
+    let qs_state = initial_state.apply_move(qs_move);
+
+    println!("{}", initial_state);
+    println!("{}", qs_state);
+
+    assert_eq!(
+        qs_state,
+        GameState {
+            white_board: PlayerBoard::default()
+                .with_rooks(
+                    BitBoard::empty()
+                        .set_coordinate(File::H, Rank::One)
+                        .set_coordinate(File::D, Rank::One)
+                )
+                .with_king(BitBoard::empty().set_coordinate(File::C, Rank::One)),
+            black_board: PlayerBoard::default()
+                .with_rooks(bitboards::BLACK_START_ROOKS)
+                .with_king(bitboards::BLACK_START_KINGS),
+            player_turn: Player::Black,
+            en_passant: None,
+            white_castle_rights: CastleRights::None,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 1,
+            full_turns: 0,
+        }
+    );
+
+    assert!(false)
+}
+
+#[test]
+fn move_castle_black() {
+    let initial_state = GameState::default()
+        .with_player_turn(Player::Black)
+        .with_white_board(
+            PlayerBoard::default()
+                .with_rooks(bitboards::WHITE_START_ROOKS)
+                .with_king(bitboards::WHITE_START_KINGS),
+        )
+        .with_black_board(
+            PlayerBoard::default()
+                .with_rooks(bitboards::BLACK_START_ROOKS)
+                .with_king(bitboards::BLACK_START_KINGS),
+        );
+
+    let ks_move = Move {
+        piece: Piece::King,
+        origin: Square::from_coordinates(File::E, Rank::Eight),
+        target: Square::from_coordinates(File::G, Rank::Eight),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: Some(CastleMove::KingSide),
+    };
+
+    let ks_state = initial_state.apply_move(ks_move);
+
+    println!("{}", initial_state);
+    println!("{}", ks_state);
+
+    assert_eq!(
+        ks_state,
+        GameState {
+            white_board: PlayerBoard::default()
+                .with_rooks(bitboards::WHITE_START_ROOKS)
+                .with_king(bitboards::WHITE_START_KINGS),
+            black_board: PlayerBoard::default()
+                .with_rooks(
+                    BitBoard::empty()
+                        .set_coordinate(File::A, Rank::Eight)
+                        .set_coordinate(File::F, Rank::Eight)
+                )
+                .with_king(BitBoard::empty().set_coordinate(File::G, Rank::Eight)),
+            player_turn: Player::White,
+            en_passant: None,
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::None,
+            draw_plies: 1,
+            full_turns: 1,
+        }
+    );
+
+    // ------
+    let qs_move = Move {
+        piece: Piece::King,
+        origin: Square::from_coordinates(File::E, Rank::Eight),
+        target: Square::from_coordinates(File::C, Rank::Eight),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: Some(CastleMove::QueenSide),
+    };
+
+    let qs_state = initial_state.apply_move(qs_move);
+
+    println!("{}", initial_state);
+    println!("{}", qs_state);
+
+    assert_eq!(
+        qs_state,
+        GameState {
+            white_board: PlayerBoard::default()
+                .with_rooks(bitboards::WHITE_START_ROOKS)
+                .with_king(bitboards::WHITE_START_KINGS),
+            black_board: PlayerBoard::default()
+                .with_rooks(
+                    BitBoard::empty()
+                        .set_coordinate(File::H, Rank::Eight)
+                        .set_coordinate(File::D, Rank::Eight)
+                )
+                .with_king(BitBoard::empty().set_coordinate(File::C, Rank::Eight)),
+            player_turn: Player::White,
+            en_passant: None,
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::None,
+            draw_plies: 1,
+            full_turns: 1,
+        }
+    );
 }

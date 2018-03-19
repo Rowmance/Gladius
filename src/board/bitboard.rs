@@ -8,9 +8,11 @@ use std::num::Wrapping;
 use bit_reverse::ParallelReverse;
 
 use board::square::Square;
+use board::file::File;
+use board::rank::Rank;
 
 /// Represents a 64-bit bitboard.
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub struct BitBoard(pub u64);
 
 impl BitBoard {
@@ -58,14 +60,24 @@ impl BitBoard {
         (1 << square.to_index()) & self.0 > 0
     }
 
-    /// Returns a copy of the bitboard with the given square set
-    pub fn set_square(&self, square: Square) -> Self {
+    /// Returns the the bitboard with the given square set
+    pub fn set_square(self, square: Square) -> Self {
         BitBoard(self.0 | square.to_bitboard().0)
     }
 
-    /// Returns a copy of the bitboard with the given square unset
-    pub fn unset_square(&self, square: Square) -> Self {
+    /// Returns the the bitboard with the given square unset
+    pub fn unset_square(self, square: Square) -> Self {
         BitBoard(self.0 & !square.to_bitboard().0)
+    }
+
+    /// Returns the bitboard with the given coordinate set
+    pub fn set_coordinate(self, file: File, rank: Rank) -> Self {
+        self.set_square(Square::from_coordinates(file, rank))
+    }
+
+    /// Returns the bitboard with the given coordinate set
+    pub fn unset_coordinate(self, file: File, rank: Rank) -> Self {
+        self.unset_square(Square::from_coordinates(file, rank))
     }
 
     /// Returns true if the bitboard is empty.
@@ -73,8 +85,8 @@ impl BitBoard {
         self.0 == 0
     }
 
-    /// Returns a copy of the bitboard with the given square toggled
-    pub fn toggle_square(&self, square: Square) -> Self {
+    /// Returns the the bitboard with the given square toggled
+    pub fn toggle_square(self, square: Square) -> Self {
         BitBoard(self.0 ^ square.to_bitboard().0)
     }
 

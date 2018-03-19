@@ -6,7 +6,7 @@ use board::player::Player;
 use board::piece::Piece;
 
 /// Represents the positions of the pieces for a player
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Copy, Eq, PartialEq)]
 pub struct PlayerBoard {
     /// The pawns.
     pub pawns: BitBoard,

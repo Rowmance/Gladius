@@ -16,8 +16,7 @@ use board::file::File;
 use board::player_board::PlayerBoard;
 
 /// Represents a complete state of a chess board.
-#[derive(Clone, Builder, Debug)]
-#[builder(derive(Debug))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct GameState {
     /// The white player board.
     pub white_board: PlayerBoard,
@@ -44,43 +43,58 @@ pub struct GameState {
     pub full_turns: usize,
 }
 
-// TODO: Board struct which contains pieces only. Replace hashmap with this.
-
 impl GameState {
-    /// Returns the builder.
-    pub fn builder() -> GameStateBuilder {
-        GameStateBuilder::default()
-    }
-
     /// Returns the standard chess starting board.
     pub fn start_position() -> Self {
-        Self::builder()
-            .white_board(PlayerBoard::start_position(Player::White))
-            .black_board(PlayerBoard::start_position(Player::Black))
-            .player_turn(Player::White)
-            .en_passant(None)
-            .white_castle_rights(CastleRights::Both)
-            .black_castle_rights(CastleRights::Both)
-            .draw_plies(0)
-            .full_turns(0)
-            .build()
-            .expect("Board start position builder panicked")
+        Self {
+            white_board: PlayerBoard::start_position(Player::White),
+            black_board: PlayerBoard::start_position(Player::Black),
+            player_turn: Player::White,
+            en_passant: None,
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 0,
+            full_turns: 0,
+        }
+    }
+
+    /// Returns the game state with the given white board.
+    pub fn with_white_board(self, white_board: PlayerBoard) -> Self {
+        Self {
+            white_board,
+            ..self
+        }
+    }
+
+    /// Returns the game state with the given black board.
+    pub fn with_black_board(self, black_board: PlayerBoard) -> Self {
+        Self {
+            black_board,
+            ..self
+        }
+    }
+
+    /// Returns the game state with the given player turn.
+    pub fn with_player_turn(self, player_turn: Player) -> Self {
+        Self {
+            player_turn,
+            ..self
+        }
     }
 }
 
 impl Default for GameState {
     fn default() -> Self {
-        Self::builder()
-            .white_board(PlayerBoard::default())
-            .black_board(PlayerBoard::default())
-            .player_turn(Player::White)
-            .en_passant(None)
-            .white_castle_rights(CastleRights::None)
-            .black_castle_rights(CastleRights::None)
-            .draw_plies(0)
-            .full_turns(0)
-            .build()
-            .expect("Board default builder panicked")
+        Self {
+            white_board: PlayerBoard::default(),
+            black_board: PlayerBoard::default(),
+            player_turn: Player::White,
+            en_passant: None,
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 0,
+            full_turns: 0,
+        }
     }
 }
 
