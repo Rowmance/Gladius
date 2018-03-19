@@ -143,12 +143,12 @@ impl GameState {
                 Player::White => {
                     new_state.white_board = self.white_board
                         .with_pawns(self.white_board.pawns.unset_square(move_.origin))
-                        .with_piece(promo, move_.target)
+                        .with_piece(promo, move_.target.to_bitboard())
                 }
                 Player::Black => {
                     new_state.black_board = self.black_board
                         .with_pawns(self.black_board.pawns.unset_square(move_.origin))
-                        .with_piece(promo, move_.target)
+                        .with_piece(promo, move_.target.to_bitboard())
                 }
             }
             return new_state;

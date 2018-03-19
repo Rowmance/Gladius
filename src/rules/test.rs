@@ -749,8 +749,6 @@ fn move_castle_white() {
             full_turns: 0,
         }
     );
-
-    assert!(false)
 }
 
 #[test]
@@ -839,6 +837,78 @@ fn move_castle_black() {
             white_castle_rights: CastleRights::Both,
             black_castle_rights: CastleRights::None,
             draw_plies: 1,
+            full_turns: 1,
+        }
+    );
+}
+
+#[test]
+fn move_promote_white() {
+    let initial_state = GameState::default()
+        .with_player_turn(Player::White)
+        .with_white_board(PlayerBoard::default().with_pawns(BitBoard::empty().set_coordinate(File::G, Rank::Seven)));
+
+    let move_ = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::G, Rank::Seven),
+        target: Square::from_coordinates(File::G, Rank::Eight),
+        capture: false,
+        en_passant: false,
+        promotion: Some(Piece::Queen),
+        castle: None,
+    };
+
+    let state = initial_state.apply_move(move_);
+
+    println!("{}", initial_state);
+    println!("{}", state);
+
+    assert_eq!(
+        state,
+        GameState {
+            white_board: PlayerBoard::default().with_queens(BitBoard::empty().set_coordinate(File::G, Rank::Eight)),
+            black_board: PlayerBoard::default(),
+            player_turn: Player::Black,
+            en_passant: None,
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 0,
+            full_turns: 0,
+        }
+    );
+}
+
+#[test]
+fn move_promote_black() {
+    let initial_state = GameState::default()
+        .with_player_turn(Player::Black)
+        .with_black_board(PlayerBoard::default().with_pawns(BitBoard::empty().set_coordinate(File::B, Rank::Two)));
+
+    let move_ = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::B, Rank::Two),
+        target: Square::from_coordinates(File::B, Rank::One),
+        capture: false,
+        en_passant: false,
+        promotion: Some(Piece::Knight),
+        castle: None,
+    };
+
+    let state = initial_state.apply_move(move_);
+
+    println!("{}", initial_state);
+    println!("{}", state);
+
+    assert_eq!(
+        state,
+        GameState {
+            white_board: PlayerBoard::default(),
+            black_board: PlayerBoard::default().with_knights(BitBoard::empty().set_coordinate(File::B, Rank::One)),
+            player_turn: Player::White,
+            en_passant: None,
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 0,
             full_turns: 1,
         }
     );
