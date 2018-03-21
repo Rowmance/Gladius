@@ -195,7 +195,7 @@ impl GameState {
             return new_state;
         }
 
-        // All capture moves
+        // All capture moves // TODO: test.
         match self.player_turn {
             Player::White => {
                 new_state.white_board = self.white_board.with_piece(

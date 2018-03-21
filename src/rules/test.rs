@@ -915,7 +915,7 @@ fn move_promote_black() {
 }
 
 #[test]
-fn move_white() {
+fn move_sequence() {
     let mut state = GameState::start_position();
     println!("{}", state);
 
@@ -992,6 +992,92 @@ fn move_white() {
             },
             player_turn: Player::White,
             en_passant: Some(Square::new(44)),
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 0,
+            full_turns: 2,
+        }
+    );
+}
+
+#[test]
+fn attack_sequence() {
+    let mut state = GameState::start_position();
+    println!("{}", state);
+
+    let move1 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::E, Rank::Two),
+        target: Square::from_coordinates(File::E, Rank::Four),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move1);
+    println!("{}", state);
+
+    let move2 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::D, Rank::Seven),
+        target: Square::from_coordinates(File::D, Rank::Five),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move2);
+    println!("{}", state);
+
+    let move3 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::E, Rank::Four),
+        target: Square::from_coordinates(File::D, Rank::Five),
+        capture: true,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move3);
+    println!("{}", state);
+
+    let move4 = Move {
+        piece: Piece::Queen,
+        origin: Square::from_coordinates(File::D, Rank::Eight),
+        target: Square::from_coordinates(File::D, Rank::Five),
+        capture: true,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move4);
+    println!("{}", state);
+
+    assert_eq!(
+        state,
+        GameState {
+            white_board: PlayerBoard {
+                pawns: BitBoard::new(61184),
+                rooks: BitBoard::new(129),
+                knights: BitBoard::new(66),
+                bishops: BitBoard::new(36),
+                queens: BitBoard::new(8),
+                king: BitBoard::new(16),
+            },
+            black_board: PlayerBoard {
+                pawns: BitBoard::new(69524319247532032),
+                rooks: BitBoard::new(9295429630892703744),
+                knights: BitBoard::new(4755801206503243776),
+                bishops: BitBoard::new(2594073385365405696),
+                queens: BitBoard::new(34359738368),
+                king: BitBoard::new(1152921504606846976),
+            },
+            player_turn: Player::White,
+            en_passant: None,
             white_castle_rights: CastleRights::Both,
             black_castle_rights: CastleRights::Both,
             draw_plies: 0,
