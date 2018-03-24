@@ -102,7 +102,7 @@ impl GameState {
                 Player::White => {
                     match castle_move {
                         CastleMove::KingSide => {
-                            new_state.white_board = self.white_board
+                            new_state.white_board = self.white_board // TODO: const these
                                 .with_king(Square::new(6).to_bitboard()) //G1
                                 .with_rooks(self.white_board.rooks
                                     .unset_square(Square::new(7)) // H1
@@ -195,7 +195,36 @@ impl GameState {
             return new_state;
         }
 
-        // All capture moves // TODO: test.
+        // En passant
+        if move_.en_passant {
+            match self.player_turn {
+                Player::White => {
+                    new_state.white_board = self.white_board.with_pawns(
+                        self.white_board
+                            .pawns
+                            .unset_square(move_.origin)
+                            .set_square(move_.target),
+                    );
+                    let target = Square::from_coordinates(move_.target.file(), move_.target.rank().prev().unwrap());
+                    new_state.black_board = self.black_board
+                        .with_pawns(self.black_board.pawns.unset_square(target));
+                }
+                Player::Black => {
+                    new_state.black_board = self.black_board.with_pawns(
+                        self.black_board
+                            .pawns
+                            .unset_square(move_.origin)
+                            .set_square(move_.target),
+                    );
+                    let target = Square::from_coordinates(move_.target.file(), move_.target.rank().next().unwrap());
+                    new_state.white_board = self.white_board
+                        .with_pawns(self.white_board.pawns.unset_square(target));
+                }
+            }
+            return new_state;
+        }
+
+        // All other capture moves
         match self.player_turn {
             Player::White => {
                 new_state.white_board = self.white_board.with_piece(

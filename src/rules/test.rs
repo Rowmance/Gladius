@@ -1085,3 +1085,65 @@ fn attack_sequence() {
         }
     );
 }
+
+#[test]
+fn en_passant() {
+    let mut state = GameState::start_position().with_black_board(
+        PlayerBoard::default().with_pawns(Square::from_coordinates(File::E, Rank::Four).to_bitboard()),
+    );
+    println!("{}", state);
+
+    let move1 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::D, Rank::Two),
+        target: Square::from_coordinates(File::D, Rank::Four),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move1);
+    println!("{}", state);
+
+    let move2 = Move {
+        piece: Piece::Pawn,
+        origin: Square::from_coordinates(File::E, Rank::Four),
+        target: Square::from_coordinates(File::D, Rank::Three),
+        capture: true,
+        en_passant: true,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(move2);
+    println!("{}", state);
+
+    assert_eq!(
+        state,
+        GameState {
+            white_board: PlayerBoard {
+                pawns: BitBoard::new(63232),
+                rooks: BitBoard::new(129),
+                knights: BitBoard::new(66),
+                bishops: BitBoard::new(36),
+                queens: BitBoard::new(8),
+                king: BitBoard::new(16),
+            },
+            black_board: PlayerBoard {
+                pawns: BitBoard::new(524288),
+                rooks: BitBoard::new(0),
+                knights: BitBoard::new(0),
+                bishops: BitBoard::new(0),
+                queens: BitBoard::new(0),
+                king: BitBoard::new(0),
+            },
+            player_turn: Player::White,
+            en_passant: None,
+            white_castle_rights: CastleRights::Both,
+            black_castle_rights: CastleRights::Both,
+            draw_plies: 0,
+            full_turns: 1,
+        }
+    );
+}
