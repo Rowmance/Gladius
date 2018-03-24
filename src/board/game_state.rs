@@ -59,27 +59,21 @@ impl GameState {
     }
 
     /// Returns the game state with the given white board.
-    pub fn with_white_board(self, white_board: PlayerBoard) -> Self {
-        Self {
-            white_board,
-            ..self
-        }
+    pub fn with_white_board(mut self, white_board: PlayerBoard) -> Self {
+        self.white_board = white_board;
+        self
     }
 
     /// Returns the game state with the given black board.
-    pub fn with_black_board(self, black_board: PlayerBoard) -> Self {
-        Self {
-            black_board,
-            ..self
-        }
+    pub fn with_black_board(mut self, black_board: PlayerBoard) -> Self {
+        self.black_board = black_board;
+        self
     }
 
     /// Returns the game state with the given player turn.
-    pub fn with_player_turn(self, player_turn: Player) -> Self {
-        Self {
-            player_turn,
-            ..self
-        }
+    pub fn with_player_turn(mut self, player_turn: Player) -> Self {
+        self.player_turn = player_turn;
+        self
     }
 
     /// Parses the given FEN.

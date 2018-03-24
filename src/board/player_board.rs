@@ -29,37 +29,43 @@ pub struct PlayerBoard {
 
 impl PlayerBoard {
     /// Returns a copy of the instance with the given pawns.
-    pub fn with_pawns(self, pawns: BitBoard) -> Self {
-        Self { pawns, ..self }
+    pub fn with_pawns(mut self, pawns: BitBoard) -> Self {
+        self.pawns = pawns;
+        self
     }
 
     /// Returns a copy of the instance with the given rooks.
-    pub fn with_rooks(self, rooks: BitBoard) -> Self {
-        Self { rooks, ..self }
+    pub fn with_rooks(mut self, rooks: BitBoard) -> Self {
+        self.rooks = rooks;
+        self
     }
 
     /// Returns a copy of the instance with the given knights.
-    pub fn with_knights(self, knights: BitBoard) -> Self {
-        Self { knights, ..self }
+    pub fn with_knights(mut self, knights: BitBoard) -> Self {
+        self.knights = knights;
+        self
     }
 
     /// Returns a copy of the instance with the given bishops.
-    pub fn with_bishops(self, bishops: BitBoard) -> Self {
-        Self { bishops, ..self }
+    pub fn with_bishops(mut self, bishops: BitBoard) -> Self {
+        self.bishops = bishops;
+        self
     }
 
     /// Returns a copy of the instance with the given queens.
-    pub fn with_queens(self, queens: BitBoard) -> Self {
-        Self { queens, ..self }
+    pub fn with_queens(mut self, queens: BitBoard) -> Self {
+        self.queens = queens;
+        self
     }
 
     /// Returns a copy of the instance with the given king position.
-    pub fn with_king(self, king: BitBoard) -> Self {
-        Self { king, ..self }
+    pub fn with_king(mut self, king: BitBoard) -> Self {
+        self.king = king;
+        self
     }
 
     /// Returns a copy of the instance with the given piece set.
-    pub fn with_piece(self, piece: Piece, bitboard: BitBoard) -> Self {
+    pub fn with_piece(mut self, piece: Piece, bitboard: BitBoard) -> Self {
         match piece {
             Piece::Pawn => self.with_pawns(bitboard),
             Piece::Rook => self.with_rooks(bitboard),
