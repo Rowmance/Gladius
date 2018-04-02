@@ -1,22 +1,19 @@
 //! The complete state of a chess board.
 
-use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result};
 use std::default::Default;
 use std::char;
 
 use board::piece::Piece;
-use board::bitboard::BitBoard;
 use board::player::Player;
 use board::square::Square;
-use board::castle_rights::CastleRights;
-use board::bitboards;
 use board::rank::Rank;
 use board::file::File;
-use board::player_board::PlayerBoard;
+use rules::player_board::PlayerBoard;
+use rules::castle_rights::CastleRights;
 
 /// Represents a complete state of a chess board.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Withers)]
 pub struct GameState {
     /// The white player board.
     pub white_board: PlayerBoard,
@@ -56,24 +53,6 @@ impl GameState {
             draw_plies: 0,
             full_turns: 0,
         }
-    }
-
-    /// Returns the game state with the given white board.
-    pub fn with_white_board(mut self, white_board: PlayerBoard) -> Self {
-        self.white_board = white_board;
-        self
-    }
-
-    /// Returns the game state with the given black board.
-    pub fn with_black_board(mut self, black_board: PlayerBoard) -> Self {
-        self.black_board = black_board;
-        self
-    }
-
-    /// Returns the game state with the given player turn.
-    pub fn with_player_turn(mut self, player_turn: Player) -> Self {
-        self.player_turn = player_turn;
-        self
     }
 
     /// Parses the given FEN.

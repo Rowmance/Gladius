@@ -1,7 +1,6 @@
 //! The movement of chess pieces on an empty board.
 
 use board::square::Square;
-use board::piece::Piece;
 use board::player::Player;
 use board::rank::Rank;
 use board::file::File;

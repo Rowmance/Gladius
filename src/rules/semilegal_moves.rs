@@ -3,10 +3,7 @@
 //! of other pieces. These move generation functions do not consider check or checkmate.
 
 use board::square::Square;
-use board::piece::Piece;
 use board::player::Player;
-use board::rank::Rank;
-use board::file::File;
 use board::bitboard::BitBoard;
 use rules::basic_moves;
 use std::num::Wrapping;

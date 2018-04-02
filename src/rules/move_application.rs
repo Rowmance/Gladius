@@ -2,12 +2,11 @@
 
 use board::square::Square;
 use board::piece::Piece;
-use board::game_state::GameState;
 use std::fmt::{Display, Formatter, Result};
 use board::player::Player;
-use board::castle_rights::CastleRights;
-use board::file::File;
 use board::rank::Rank;
+use rules::game_state::GameState;
+use rules::castle_rights::CastleRights;
 
 /// Represents the direction of a castle move
 #[derive(Clone, Debug)]
@@ -46,8 +45,8 @@ pub struct Move {
 
 impl Display for Move {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        let mut str = String::from("\n");
-
+        let str = String::from("\n");
+        // TODO
         write!(f, "{}", str)
     }
 }

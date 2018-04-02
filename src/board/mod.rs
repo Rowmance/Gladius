@@ -16,15 +16,11 @@
 #![allow(unused_must_use)]
 
 pub mod bitboard;
-pub mod bitboards;
 pub mod square;
 pub mod rank;
 pub mod file;
 pub mod piece;
 pub mod player;
-pub mod game_state;
-pub mod player_board;
-pub mod castle_rights;
 
 #[cfg(test)]
 mod test;

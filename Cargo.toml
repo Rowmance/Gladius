@@ -11,4 +11,4 @@ description = "Rust chess engine."
 
 [dependencies]
 bit_reverse = "0.1.7"
-derive_builder = "0.5.0"
+withers_derive = "0.2.0"

@@ -13,9 +13,12 @@
 //! * Stalemate
 //! * Draws via the 50-move rule
 
-mod basic_moves;
-mod semilegal_moves;
-mod move_;
+pub mod basic_moves;
+pub mod semilegal_moves;
+pub mod move_application;
+pub mod game_state;
+pub mod player_board;
+pub mod castle_rights;
 
 #[cfg(test)]
 mod test;

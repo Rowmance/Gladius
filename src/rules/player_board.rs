@@ -1,12 +1,12 @@
 //! The positions of the pieces for a player
 
 use board::bitboard::BitBoard;
-use board::bitboards;
+use board::bitboard;
 use board::player::Player;
 use board::piece::Piece;
 
 /// Represents the positions of the pieces for a player
-#[derive(Clone, Debug, Copy, Eq, PartialEq)]
+#[derive(Clone, Debug, Copy, Eq, PartialEq, Withers)]
 pub struct PlayerBoard {
     /// The pawns.
     pub pawns: BitBoard,
@@ -28,44 +28,8 @@ pub struct PlayerBoard {
 }
 
 impl PlayerBoard {
-    /// Returns a copy of the instance with the given pawns.
-    pub fn with_pawns(mut self, pawns: BitBoard) -> Self {
-        self.pawns = pawns;
-        self
-    }
-
-    /// Returns a copy of the instance with the given rooks.
-    pub fn with_rooks(mut self, rooks: BitBoard) -> Self {
-        self.rooks = rooks;
-        self
-    }
-
-    /// Returns a copy of the instance with the given knights.
-    pub fn with_knights(mut self, knights: BitBoard) -> Self {
-        self.knights = knights;
-        self
-    }
-
-    /// Returns a copy of the instance with the given bishops.
-    pub fn with_bishops(mut self, bishops: BitBoard) -> Self {
-        self.bishops = bishops;
-        self
-    }
-
-    /// Returns a copy of the instance with the given queens.
-    pub fn with_queens(mut self, queens: BitBoard) -> Self {
-        self.queens = queens;
-        self
-    }
-
-    /// Returns a copy of the instance with the given king position.
-    pub fn with_king(mut self, king: BitBoard) -> Self {
-        self.king = king;
-        self
-    }
-
     /// Returns a copy of the instance with the given piece set.
-    pub fn with_piece(mut self, piece: Piece, bitboard: BitBoard) -> Self {
+    pub fn with_piece(self, piece: Piece, bitboard: BitBoard) -> Self {
         match piece {
             Piece::Pawn => self.with_pawns(bitboard),
             Piece::Rook => self.with_rooks(bitboard),
@@ -76,7 +40,7 @@ impl PlayerBoard {
         }
     }
 
-    // --------------------------
+    /// Returns the positions of the given piece on the board.
     pub fn piece(&self, piece: Piece) -> BitBoard {
         match piece {
             Piece::Pawn => self.pawns,
@@ -98,20 +62,20 @@ impl PlayerBoard {
     pub fn start_position(player: Player) -> Self {
         match player {
             Player::White => PlayerBoard {
-                pawns: bitboards::WHITE_START_PAWNS,
-                rooks: bitboards::WHITE_START_ROOKS,
-                knights: bitboards::WHITE_START_KNIGHTS,
-                bishops: bitboards::WHITE_START_BISHOPS,
-                queens: bitboards::WHITE_START_QUEENS,
-                king: bitboards::WHITE_START_KINGS,
+                pawns: bitboard::WHITE_START_PAWNS,
+                rooks: bitboard::WHITE_START_ROOKS,
+                knights: bitboard::WHITE_START_KNIGHTS,
+                bishops: bitboard::WHITE_START_BISHOPS,
+                queens: bitboard::WHITE_START_QUEENS,
+                king: bitboard::WHITE_START_KINGS,
             },
             Player::Black => PlayerBoard {
-                pawns: bitboards::BLACK_START_PAWNS,
-                rooks: bitboards::BLACK_START_ROOKS,
-                knights: bitboards::BLACK_START_KNIGHTS,
-                bishops: bitboards::BLACK_START_BISHOPS,
-                queens: bitboards::BLACK_START_QUEENS,
-                king: bitboards::BLACK_START_KINGS,
+                pawns: bitboard::BLACK_START_PAWNS,
+                rooks: bitboard::BLACK_START_ROOKS,
+                knights: bitboard::BLACK_START_KNIGHTS,
+                bishops: bitboard::BLACK_START_BISHOPS,
+                queens: bitboard::BLACK_START_QUEENS,
+                king: bitboard::BLACK_START_KINGS,
             },
         }
     }

@@ -12,7 +12,7 @@ extern crate bit_reverse;
 
 #[doc(hidden)]
 #[macro_use]
-extern crate derive_builder;
+extern crate withers_derive;
 
 /// The main method.
 fn main() {}
