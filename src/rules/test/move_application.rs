@@ -36,7 +36,7 @@ fn move_castle_white() {
         castle: Some(CastleMove::KingSide),
     };
 
-    let ks_state = initial_state.apply_move(ks_move);
+    let ks_state = initial_state.apply_move(&ks_move);
 
     println!("{}", initial_state);
     println!("{}", ks_state);
@@ -74,7 +74,7 @@ fn move_castle_white() {
         castle: Some(CastleMove::QueenSide),
     };
 
-    let qs_state = initial_state.apply_move(qs_move);
+    let qs_state = initial_state.apply_move(&qs_move);
 
     println!("{}", initial_state);
     println!("{}", qs_state);
@@ -127,7 +127,7 @@ fn move_castle_black() {
         castle: Some(CastleMove::KingSide),
     };
 
-    let ks_state = initial_state.apply_move(ks_move);
+    let ks_state = initial_state.apply_move(&ks_move);
 
     println!("{}", initial_state);
     println!("{}", ks_state);
@@ -165,7 +165,7 @@ fn move_castle_black() {
         castle: Some(CastleMove::QueenSide),
     };
 
-    let qs_state = initial_state.apply_move(qs_move);
+    let qs_state = initial_state.apply_move(&qs_move);
 
     println!("{}", initial_state);
     println!("{}", qs_state);
@@ -209,7 +209,7 @@ fn move_promote_white() {
         castle: None,
     };
 
-    let state = initial_state.apply_move(move_);
+    let state = initial_state.apply_move(&move_);
 
     println!("{}", initial_state);
     println!("{}", state);
@@ -245,7 +245,7 @@ fn move_promote_black() {
         castle: None,
     };
 
-    let state = initial_state.apply_move(move_);
+    let state = initial_state.apply_move(&move_);
 
     println!("{}", initial_state);
     println!("{}", state);
@@ -280,7 +280,7 @@ fn move_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move1);
+    state = state.apply_move(&move1);
     println!("{}", state);
 
     let move2 = Move {
@@ -293,7 +293,7 @@ fn move_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move2);
+    state = state.apply_move(&move2);
     println!("{}", state);
 
     let move3 = Move {
@@ -306,7 +306,7 @@ fn move_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move3);
+    state = state.apply_move(&move3);
     println!("{}", state);
 
     let move4 = Move {
@@ -319,7 +319,7 @@ fn move_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move4);
+    state = state.apply_move(&move4);
     println!("{}", state);
 
     assert_eq!(
@@ -366,7 +366,7 @@ fn attack_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move1);
+    state = state.apply_move(&move1);
     println!("{}", state);
 
     let move2 = Move {
@@ -379,7 +379,7 @@ fn attack_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move2);
+    state = state.apply_move(&move2);
     println!("{}", state);
 
     let move3 = Move {
@@ -392,7 +392,7 @@ fn attack_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move3);
+    state = state.apply_move(&move3);
     println!("{}", state);
 
     let move4 = Move {
@@ -405,7 +405,7 @@ fn attack_sequence() {
         castle: None,
     };
 
-    state = state.apply_move(move4);
+    state = state.apply_move(&move4);
     println!("{}", state);
 
     assert_eq!(
@@ -454,7 +454,7 @@ fn en_passant() {
         castle: None,
     };
 
-    state = state.apply_move(move1);
+    state = state.apply_move(&move1);
     println!("{}", state);
 
     let move2 = Move {
@@ -467,7 +467,7 @@ fn en_passant() {
         castle: None,
     };
 
-    state = state.apply_move(move2);
+    state = state.apply_move(&move2);
     println!("{}", state);
 
     assert_eq!(
