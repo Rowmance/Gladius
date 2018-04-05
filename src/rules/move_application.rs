@@ -131,10 +131,10 @@ impl GameState {
         // valid origin
         if !match self.player_turn {
             Player::White => self.white_board
-                .piece(move_.piece)
+                .piece(&move_.piece)
                 .is_square_set(move_.origin),
             Player::Black => self.black_board
-                .piece(move_.piece)
+                .piece(&move_.piece)
                 .is_square_set(move_.origin),
         } {
             return Err(format!(
@@ -260,7 +260,7 @@ impl GameState {
                 self.white_board = self.white_board.with_piece(
                     move_.piece,
                     self.white_board
-                        .piece(move_.piece)
+                        .piece(&move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
@@ -273,7 +273,7 @@ impl GameState {
                 self.black_board = self.black_board.with_piece(
                     move_.piece,
                     self.black_board
-                        .piece(move_.piece)
+                        .piece(&move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
@@ -320,7 +320,7 @@ impl GameState {
                 self.white_board = self.white_board.with_piece(
                     move_.piece,
                     self.white_board
-                        .piece(move_.piece)
+                        .piece(&move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
@@ -344,7 +344,7 @@ impl GameState {
                 self.black_board = self.black_board.with_piece(
                     move_.piece,
                     self.black_board
-                        .piece(move_.piece)
+                        .piece(&move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );

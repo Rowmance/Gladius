@@ -89,6 +89,15 @@ fn semilegal_moves_pawn() {
         Player::Black,
         0x808000000000
     );
+
+    test_pawn!(
+        File::H,
+        Rank::Two,
+        File::A,
+        Rank::Four,
+        Player::White,
+        0x80800000
+    );
 }
 
 #[test]

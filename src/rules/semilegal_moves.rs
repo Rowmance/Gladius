@@ -37,9 +37,10 @@ impl Piece {
 
 /// Returns the moves a given pawn can make.
 pub fn pawn_moves(square: Square, player: Player, blockers: BitBoard) -> BitBoard {
+    let blockers_no_self = blockers.unset_square(square);
     let double_blockers = match player {
-        Player::White => blockers | blockers << 8,
-        Player::Black => blockers | blockers >> 8,
+        Player::White => blockers_no_self | blockers_no_self << 8,
+        Player::Black => blockers_no_self | blockers_no_self >> 8,
     };
     basic_moves::pawn_moves(square, player) & !double_blockers
 }

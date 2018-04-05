@@ -20,6 +20,7 @@ pub mod game_state;
 pub mod player_board;
 pub mod castle_rights;
 pub mod check_detection;
+pub mod legal_moves;
 
 #[cfg(test)]
 mod test;

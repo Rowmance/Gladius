@@ -2,7 +2,6 @@
 
 use rules::game_state::GameState;
 use board::piece::Piece;
-use board::player::Player;
 
 impl GameState {
     // Returns true if the player whose turn it is is in check.
@@ -14,7 +13,7 @@ impl GameState {
 
         // if for example, bishop attacks from the king contains a bishop,
         // then a bishop can attack the king. Repeat this for all pieces.
-        Piece::iter().any(|&p| {
+        Piece::iter().any(|p| {
             !(p.attacks(
                 king_square,
                 self.player_turn,

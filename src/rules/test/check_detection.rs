@@ -14,7 +14,7 @@ fn is_check_rook() {
 
     println!("{}", state);
     assert_eq!(state.is_check(), true);
-    
+
     let state = state.clone().with_white_board(
         state
             .white_board

@@ -4,7 +4,7 @@ use std::slice::Iter;
 use std::fmt::{Display, Formatter, Result};
 
 /// Represents a chess piece type.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Piece {
     /// Pawn.
     Pawn,

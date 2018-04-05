@@ -41,8 +41,8 @@ impl PlayerBoard {
     }
 
     /// Returns the positions of the given piece on the board.
-    pub fn piece(&self, piece: Piece) -> BitBoard {
-        match piece {
+    pub fn piece(&self, piece: &Piece) -> BitBoard {
+        match *piece {
             Piece::Pawn => self.pawns,
             Piece::Rook => self.rooks,
             Piece::Knight => self.knights,
