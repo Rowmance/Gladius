@@ -55,8 +55,17 @@ impl GameState {
         }
     }
 
+    /// Returns the player board of the given player.
+    pub fn player_board(&self, player: Player) -> PlayerBoard {
+        match player {
+            Player::White => self.white_board,
+            Player::Black => self.black_board,
+        }
+    }
+
     /// Parses the given FEN.
     pub fn parse_fen(_fen: &str) -> Self {
+        // TODO.
         unimplemented!()
     }
 }

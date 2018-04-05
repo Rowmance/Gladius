@@ -131,3 +131,9 @@ fn bitboard_mirror_diag() {
         Square::from_coordinates(File::E, Rank::Two).to_bitboard()
     );
 }
+
+#[test]
+fn bitboard_to_square() {
+    let square = Square::from_coordinates(File::F, Rank::Three);
+    assert_eq!(square, square.to_bitboard().to_square());
+}

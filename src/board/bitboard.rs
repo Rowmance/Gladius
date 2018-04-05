@@ -156,6 +156,13 @@ impl BitBoard {
     pub fn to_u64(&self) -> u64 {
         self.0
     }
+
+    /// Converts the bitboard to a square.
+    /// Panics in debug mode if more than one square is set.
+    pub fn to_square(&self) -> Square {
+        debug_assert_eq!(self.count(), 1);
+        Square::new(self.0.trailing_zeros() as u8)
+    }
 }
 
 // ---------------------------------------------------------------------------

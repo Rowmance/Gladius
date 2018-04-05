@@ -19,6 +19,7 @@ pub mod move_application;
 pub mod game_state;
 pub mod player_board;
 pub mod castle_rights;
+pub mod check_detection;
 
 #[cfg(test)]
 mod test;

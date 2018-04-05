@@ -7,6 +7,33 @@ use board::player::Player;
 use board::bitboard::BitBoard;
 use rules::basic_moves;
 use std::num::Wrapping;
+use board::piece::Piece;
+
+impl Piece {
+    /// Returns the possible moves of the piece.
+    pub fn moves(&self, square: Square, player: Player, blockers: BitBoard) -> BitBoard {
+        match *self {
+            Piece::Pawn => pawn_moves(square, player, blockers),
+            Piece::Rook => rook_moves(square, blockers),
+            Piece::Knight => knight_moves(square, blockers),
+            Piece::Bishop => bishop_moves(square, blockers),
+            Piece::Queen => queen_moves(square, blockers),
+            Piece::King => king_moves(square, blockers),
+        }
+    }
+
+    /// Returns the possible attacks of the piece.
+    pub fn attacks(&self, square: Square, player: Player, own_pieces: BitBoard, opponent_pieces: BitBoard) -> BitBoard {
+        match *self {
+            Piece::Pawn => pawn_attacks(square, player, opponent_pieces),
+            Piece::Rook => rook_attacks(square, own_pieces, opponent_pieces),
+            Piece::Knight => knight_attacks(square, opponent_pieces),
+            Piece::Bishop => bishop_attacks(square, own_pieces, opponent_pieces),
+            Piece::Queen => queen_attacks(square, own_pieces, opponent_pieces),
+            Piece::King => king_attacks(square, opponent_pieces),
+        }
+    }
+}
 
 /// Returns the moves a given pawn can make.
 pub fn pawn_moves(square: Square, player: Player, blockers: BitBoard) -> BitBoard {
