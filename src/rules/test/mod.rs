@@ -7,3 +7,4 @@ mod player_board;
 mod semilegal_moves;
 mod check_detection;
 mod legal_moves;
+mod castle_rights;

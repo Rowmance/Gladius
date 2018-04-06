@@ -499,4 +499,83 @@ fn en_passant() {
     );
 }
 
-// TODO: Test counters/setting en passant (unless it's already done) and setting castle rights
+#[test]
+fn castle_rights_set_on_move() {
+    let mut state = GameState::default()
+        .with_white_board(PlayerBoard::start_position(Player::White).with_pawns(BitBoard::empty()))
+        .with_black_board(PlayerBoard::start_position(Player::Black).with_pawns(BitBoard::empty()));
+
+    let move1 = Move {
+        piece: Piece::King,
+        origin: Square::from_coordinates(File::E, Rank::One),
+        target: Square::from_coordinates(File::D, Rank::Two),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(&move1);
+    assert_eq!(state.white_castle_rights, CastleRights::None);
+    assert_eq!(state.black_castle_rights, CastleRights::Both);
+
+    let move2 = Move {
+        piece: Piece::Rook,
+        origin: Square::from_coordinates(File::A, Rank::Eight),
+        target: Square::from_coordinates(File::A, Rank::Three),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: None,
+    };
+
+    state = state.apply_move(&move2);
+    assert_eq!(state.white_castle_rights, CastleRights::None);
+    assert_eq!(state.black_castle_rights, CastleRights::KingSide);
+}
+
+#[test]
+fn castle_rights_set_on_castle() {
+    let mut state = GameState::default()
+        .with_white_board(
+            PlayerBoard::start_position(Player::White)
+                .with_pawns(BitBoard::empty())
+                .with_knights(BitBoard::empty())
+                .with_bishops(BitBoard::empty()),
+        )
+        .with_black_board(
+            PlayerBoard::start_position(Player::Black)
+                .with_pawns(BitBoard::empty())
+                .with_knights(BitBoard::empty())
+                .with_bishops(BitBoard::empty())
+                .with_queens(BitBoard::empty()),
+        );
+
+    let move1 = Move {
+        piece: Piece::King,
+        origin: Square::from_coordinates(File::E, Rank::One),
+        target: Square::from_coordinates(File::G, Rank::One),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: Some(CastleMove::KingSide),
+    };
+
+    state = state.apply_move(&move1);
+    assert_eq!(state.white_castle_rights, CastleRights::None);
+    assert_eq!(state.black_castle_rights, CastleRights::Both);
+
+    let move2 = Move {
+        piece: Piece::King,
+        origin: Square::from_coordinates(File::E, Rank::Eight),
+        target: Square::from_coordinates(File::B, Rank::Eight),
+        capture: false,
+        en_passant: false,
+        promotion: None,
+        castle: Some(CastleMove::QueenSide),
+    };
+
+    state = state.apply_move(&move2);
+    assert_eq!(state.white_castle_rights, CastleRights::None);
+    assert_eq!(state.black_castle_rights, CastleRights::None);
+}
