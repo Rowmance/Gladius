@@ -16,7 +16,21 @@ fn starting_position() {
         .filter(|m| m.piece == Piece::Knight)
         .collect();
 
+    println!("{:?}", all_moves);
+
     assert_eq!(all_moves.len(), 20);
     assert_eq!(pawn_moves.len(), 16);
     assert_eq!(knight_moves.len(), 4);
 }
+
+#[test]
+fn en_passant() {}
+
+#[test]
+fn promotion() {}
+
+#[test]
+fn exclude_checks() {}
+
+#[test]
+fn complex_position() {}

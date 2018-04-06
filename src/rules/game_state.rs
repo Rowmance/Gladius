@@ -63,6 +63,14 @@ impl GameState {
         }
     }
 
+    /// Returns the castle rights of the given player.
+    pub fn castle_rights(&self, player: Player) -> CastleRights {
+        match player {
+            Player::White => self.white_castle_rights,
+            Player::Black => self.black_castle_rights,
+        }
+    }
+
     /// Parses the given FEN.
     pub fn parse_fen(_fen: &str) -> Self {
         // TODO.

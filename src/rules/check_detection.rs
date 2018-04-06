@@ -25,10 +25,7 @@ impl GameState {
     }
 
     /// Returns true if the player whose turn it is has been mated.
-    pub fn is_mate() -> bool {
-        // All king moves need to also be check
-        // also make sure there are no moves which can block
-        // also make sure there are no captures which prevent mate
-        true
+    pub fn is_mate(&self) -> bool {
+        self.legal_moves().is_empty()
     }
 }

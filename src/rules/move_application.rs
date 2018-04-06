@@ -74,6 +74,7 @@ impl GameState {
     ///
     /// Invalid game states or moves will give undefined behaviour.
     pub fn apply_move(&self, move_: &Move) -> Self {
+        // TODO: castle rights
         // TODO is there a nicer way of doing this? debug-mode compilation should be a thing
         debug_assert!({
             let result = self.validate(&move_);
@@ -176,7 +177,8 @@ impl GameState {
             }
         };
 
-        // TODO: Valid castle and en passant
+        // TODO: Valid castle (including target/origin) and en passant
+        // TODO: Make sure pawn to last rank is promotion
         // TODO: Make sure piece can move to the target square from the origin
 
         Ok(())
