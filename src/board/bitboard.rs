@@ -113,22 +113,22 @@ impl BitBoard {
     }
 
     /// Returns the the bitboard with the given square set
-    pub fn set_square(self, square: Square) -> Self {
+    pub fn set_square(&self, square: Square) -> Self {
         BitBoard(self.0 | square.to_bitboard().0)
     }
 
     /// Returns the the bitboard with the given square unset
-    pub fn unset_square(self, square: Square) -> Self {
+    pub fn unset_square(&self, square: Square) -> Self {
         BitBoard(self.0 & !square.to_bitboard().0)
     }
 
     /// Returns the bitboard with the given coordinate set
-    pub fn set_coordinate(self, file: File, rank: Rank) -> Self {
+    pub fn set_coordinate(&self, file: File, rank: Rank) -> Self {
         self.set_square(Square::from_coordinates(file, rank))
     }
 
     /// Returns the bitboard with the given coordinate set
-    pub fn unset_coordinate(self, file: File, rank: Rank) -> Self {
+    pub fn unset_coordinate(&self, file: File, rank: Rank) -> Self {
         self.unset_square(Square::from_coordinates(file, rank))
     }
 
@@ -138,7 +138,7 @@ impl BitBoard {
     }
 
     /// Returns the the bitboard with the given square toggled
-    pub fn toggle_square(self, square: Square) -> Self {
+    pub fn toggle_square(&self, square: Square) -> Self {
         BitBoard(self.0 ^ square.to_bitboard().0)
     }
 

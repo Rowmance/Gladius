@@ -6,7 +6,6 @@ use std::panic::catch_unwind;
 
 #[test]
 fn square_from_coordinates() {
-    // TODO: Complete set of tests for this -> use those random test things?
     assert_eq!(Square::new(0), Square::from_coordinates(File::A, Rank::One));
     assert_eq!(Square::new(3), Square::from_coordinates(File::D, Rank::One));
     assert_eq!(Square::new(7), Square::from_coordinates(File::H, Rank::One));
@@ -29,7 +28,6 @@ fn square_from_coordinates() {
     assert_eq!(square.file(), File::C);
     assert_eq!(square.rank(), Rank::Two);
 
-    // TODO:  Random number test thing
     debug_assert!(catch_unwind(|| Square::new(64)).is_err());
 }
 

@@ -11,12 +11,12 @@ use board::bitboard::BitBoard;
 
 /// Returns the valid pawn moves for a given square and player.
 pub fn pawn_moves(square: Square, player: Player) -> BitBoard {
-    let homerank = match player {
+    let home_rank = match player {
         Player::White => Rank::Two,
         Player::Black => Rank::Seven,
     };
-    if square.rank() == homerank {
-        let forwardbb = match player {
+    if square.rank() == home_rank {
+        let forward_bb = match player {
             Player::White => {
                 square.rank().next().unwrap().to_bitboard()
                     | square.rank().next().unwrap().next().unwrap().to_bitboard()
@@ -26,7 +26,7 @@ pub fn pawn_moves(square: Square, player: Player) -> BitBoard {
                     | square.rank().prev().unwrap().prev().unwrap().to_bitboard()
             }
         };
-        return forwardbb & square.file().to_bitboard();
+        return forward_bb & square.file().to_bitboard();
     }
     let forward = match player {
         Player::White => square.rank().next(),

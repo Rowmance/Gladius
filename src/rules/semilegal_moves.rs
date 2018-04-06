@@ -22,7 +22,7 @@ impl Piece {
         }
     }
 
-    /// Returns the possible attacks of the piece.
+    /// Returns the possible captures of the piece.
     pub fn attacks(&self, square: Square, player: Player, own_pieces: BitBoard, opponent_pieces: BitBoard) -> BitBoard {
         match *self {
             Piece::Pawn => pawn_attacks(square, player, opponent_pieces),

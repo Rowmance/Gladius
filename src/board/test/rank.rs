@@ -3,7 +3,6 @@ use board::bitboard::BitBoard;
 
 #[test]
 fn rank() {
-    //TODO: Complete set of tests for this.
     assert_eq!(Rank::Two.to_index(), 1);
     assert_eq!(Rank::from_index(6), Rank::Seven);
 

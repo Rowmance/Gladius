@@ -498,3 +498,5 @@ fn en_passant() {
         }
     );
 }
+
+// TODO: Test counters/setting en passant (unless it's already done) and setting castle rights

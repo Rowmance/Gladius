@@ -69,3 +69,5 @@ fn is_check_bishop() {
     println!("{}", state);
     assert_eq!(state.is_check(), false);
 }
+
+// TODO: Add mate tests

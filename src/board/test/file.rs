@@ -3,7 +3,6 @@ use board::bitboard::BitBoard;
 
 #[test]
 fn file() {
-    // TODO Complete set of tests for these.
     assert_eq!(File::B.to_index(), 1);
     assert_eq!(File::from_index(6), File::G);
 

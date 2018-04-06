@@ -1,7 +1,7 @@
 //! A chess piece type.
 
-use std::slice::Iter;
 use std::fmt::{Display, Formatter, Result};
+use std::vec::IntoIter;
 
 /// Represents a chess piece type.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -27,10 +27,15 @@ pub enum Piece {
 
 impl Piece {
     /// Returns an iterator over all the pieces.
-    pub fn iter() -> Iter<'static, Piece> {
+    pub fn iter() -> IntoIter<Piece> {
         use self::Piece::*;
-        static PIECES: [Piece; 6] = [Pawn, Rook, Knight, Bishop, Queen, King];
-        PIECES.into_iter()
+        vec![Pawn, Rook, Knight, Bishop, Queen, King].into_iter()
+    }
+
+    /// Returns an iterator over all the non-pawn pieces.
+    pub fn iter_pieces() -> IntoIter<Piece> {
+        use self::Piece::*;
+        vec![Rook, Knight, Bishop, Queen, King].into_iter()
     }
 }
 

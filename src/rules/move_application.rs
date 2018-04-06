@@ -8,15 +8,22 @@ use board::player::Player;
 use board::rank::Rank;
 use rules::game_state::GameState;
 use rules::castle_rights::CastleRights;
+use board::file::File;
 
 /// Represents the direction of a castle move
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CastleMove {
     /// A king-side castle.
     KingSide,
 
     /// A queen-side castle.
     QueenSide,
+}
+
+impl Display for CastleMove {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        write!(f, "{:?}", self)
+    }
 }
 
 /// A movement of a piece (a 'move')
@@ -46,9 +53,8 @@ pub struct Move {
 
 impl Display for Move {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
-        let str = String::from("\n");
         // TODO
-        write!(f, "{}", str)
+        write!(f, "{:?}", self)
     }
 }
 
@@ -74,8 +80,6 @@ impl GameState {
     ///
     /// Invalid game states or moves will give undefined behaviour.
     pub fn apply_move(&self, move_: &Move) -> Self {
-        // TODO: castle rights
-        // TODO is there a nicer way of doing this? debug-mode compilation should be a thing
         debug_assert!({
             let result = self.validate(&move_);
             if let Err(ref message) = result {
@@ -123,6 +127,17 @@ impl GameState {
             new_state.draw_plies += 1;
         }
 
+        if move_.piece == Piece::King {
+            new_state.set_castle_rights(self.player_turn, CastleRights::None);
+        } else if move_.piece == Piece::Rook {
+            let castle_rights = self.castle_rights(self.player_turn);
+            if castle_rights.is_king_side_available() && move_.origin.file() == File::H {
+                new_state.set_castle_rights(self.player_turn, castle_rights.without_king_side());
+            } else if castle_rights.is_queen_side_available() && move_.origin.file() == File::A {
+                new_state.set_castle_rights(self.player_turn, castle_rights.without_queen_side());
+            }
+        }
+
         new_state
     }
 
@@ -132,10 +147,10 @@ impl GameState {
         // valid origin
         if !match self.player_turn {
             Player::White => self.white_board
-                .piece(&move_.piece)
+                .piece(move_.piece)
                 .is_square_set(move_.origin),
             Player::Black => self.black_board
-                .piece(&move_.piece)
+                .piece(move_.piece)
                 .is_square_set(move_.origin),
         } {
             return Err(format!(
@@ -165,7 +180,12 @@ impl GameState {
             }
         };
 
-        if move_.promotion.is_some() {
+        // ensure the promotion is to a valid square and piece
+        if let Some(promo_piece) = move_.promotion {
+            if promo_piece == Piece::Pawn {
+                return Err("Cannot promote to a pawn".to_string());
+            }
+
             if match self.player_turn {
                 Player::White => move_.origin.rank() != Rank::Seven || move_.target.rank() != Rank::Eight,
                 Player::Black => move_.origin.rank() != Rank::Two || move_.target.rank() != Rank::One,
@@ -177,9 +197,104 @@ impl GameState {
             }
         };
 
-        // TODO: Valid castle (including target/origin) and en passant
-        // TODO: Make sure pawn to last rank is promotion
-        // TODO: Make sure piece can move to the target square from the origin
+        // ensure that a castle has the correct rights and that the correct spaces are empty
+        if let Some(castle_move) = move_.castle {
+            let castle_rights = self.castle_rights(self.player_turn);
+            if castle_move == CastleMove::KingSide && !castle_rights.is_king_side_available() {
+                return Err(format!(
+                    "{} is invalid with {} castling rights",
+                    castle_move, castle_rights
+                ));
+            }
+            if castle_move == CastleMove::QueenSide && !castle_rights.is_queen_side_available() {
+                return Err(format!(
+                    "{} is invalid with {} castling rights",
+                    castle_move, castle_rights
+                ));
+            }
+
+            let all = self.black_board.all() | self.white_board.all();
+            let king_rank = match self.player_turn {
+                Player::White => Rank::One,
+                Player::Black => Rank::Eight,
+            };
+
+            if castle_move == CastleMove::KingSide {
+                if all.is_square_set(Square::from_coordinates(File::G, king_rank))
+                    || all.is_square_set(Square::from_coordinates(File::F, king_rank))
+                {
+                    return Err(format!(
+                        "{} is invalid as there are pieces in the way",
+                        castle_move
+                    ));
+                }
+            }
+
+            if castle_move == CastleMove::QueenSide {
+                if all.is_square_set(Square::from_coordinates(File::B, king_rank))
+                    || all.is_square_set(Square::from_coordinates(File::C, king_rank))
+                    || all.is_square_set(Square::from_coordinates(File::D, king_rank))
+                {
+                    return Err(format!(
+                        "{} is invalid as there are pieces in the way",
+                        castle_move
+                    ));
+                }
+            }
+        }
+
+        // ensure en passant is allowed and on the correct square
+        if move_.en_passant {
+            if let Some(target) = self.en_passant {
+                if target != move_.target {
+                    return Err(format!(
+                        "Cannot en-passant capture on {} when en-passant square is {}",
+                        move_.target, target
+                    ));
+                }
+            } else {
+                return Err(format!(
+                    "Cannot en-passant capture on {} when there is no en-passant available",
+                    move_.target
+                ));
+            }
+        }
+
+        // ensure pawn moves to the back ranks are promotions
+        if move_.piece == Piece::Pawn && (move_.target.rank() == Rank::Eight || move_.target.rank() == Rank::One)
+            && move_.promotion.is_none()
+        {
+            return Err(format!("Pawn move to {} must be a promotion", move_.target));
+        }
+
+        if move_.capture {
+            let own_pieces = self.player_board(self.player_turn).all();
+            let mut opponent_pieces = self.player_board(self.player_turn.other()).all();
+            if move_.piece == Piece::Pawn {
+                if let Some(en_passant) = self.en_passant {
+                    // imitate attackable square for pawn
+                    opponent_pieces = opponent_pieces.set_square(en_passant);
+                }
+            }
+            let valid_captures = move_
+                .piece
+                .attacks(move_.origin, self.player_turn, own_pieces, opponent_pieces);
+            if !valid_captures.is_square_set(move_.target) {
+                return Err(format!(
+                    "{} capture from {} to {} is not valid",
+                    move_.piece, move_.origin, move_.target
+                ));
+            }
+        } else if move_.castle.is_none() {
+            let blockers = self.white_board.all() | self.black_board.all();
+            let valid_moves = move_.piece.moves(move_.origin, self.player_turn, blockers);
+            if !valid_moves.is_square_set(move_.target) {
+                return Err(format!(
+                    "{} move from {} to {} is not valid",
+                    move_.piece, move_.origin, move_.target
+                ));
+            }
+        }
 
         Ok(())
     }
@@ -262,7 +377,7 @@ impl GameState {
                 self.white_board = self.white_board.with_piece(
                     move_.piece,
                     self.white_board
-                        .piece(&move_.piece)
+                        .piece(move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
@@ -275,7 +390,7 @@ impl GameState {
                 self.black_board = self.black_board.with_piece(
                     move_.piece,
                     self.black_board
-                        .piece(&move_.piece)
+                        .piece(move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
@@ -322,7 +437,7 @@ impl GameState {
                 self.white_board = self.white_board.with_piece(
                     move_.piece,
                     self.white_board
-                        .piece(&move_.piece)
+                        .piece(move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
@@ -346,7 +461,7 @@ impl GameState {
                 self.black_board = self.black_board.with_piece(
                     move_.piece,
                     self.black_board
-                        .piece(&move_.piece)
+                        .piece(move_.piece)
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );

@@ -71,9 +71,18 @@ impl GameState {
         }
     }
 
+    /// Sets the castle rights for the given player
+    pub fn set_castle_rights(&mut self, player: Player, castle_rights: CastleRights) {
+        match player {
+            Player::White => self.white_castle_rights = castle_rights,
+            Player::Black => self.black_castle_rights = castle_rights,
+        };
+    }
+
     /// Parses the given FEN.
     pub fn parse_fen(_fen: &str) -> Self {
         // TODO.
+        // Iterate over all squares and traverse the string alongside that
         unimplemented!()
     }
 }

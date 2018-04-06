@@ -16,7 +16,7 @@ impl GameState {
         let own_board = self.player_board(self.player_turn);
         let opponent_board = self.player_board(self.player_turn.other());
 
-        let mut attacks: Vec<_> = Piece::iter()
+        let mut captures: Vec<_> = Piece::iter()
             .flat_map(|piece| {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
@@ -29,7 +29,7 @@ impl GameState {
                         )
                         .iter()
                         .map(move |target| Move {
-                            piece: *piece,
+                            piece,
                             target,
                             origin: square,
                             capture: true,
@@ -41,11 +41,10 @@ impl GameState {
             })
             .collect();
 
-        moves.append(&mut attacks);
+        moves.append(&mut captures);
 
         // pawns are special as they have promotions and en passant captures
-        let mut non_pawn_moves: Vec<_> = Piece::iter()
-            .filter(|&piece| *piece != Piece::Pawn) // TODO: This is clearly inefficient.
+        let mut non_pawn_moves: Vec<_> = Piece::iter_pieces()
             .flat_map(|piece| {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
@@ -57,7 +56,7 @@ impl GameState {
                         )
                         .iter()
                         .map(move |target| Move {
-                            piece: *piece,
+                            piece,
                             target,
                             origin: square,
                             capture: false,
@@ -80,12 +79,10 @@ impl GameState {
         // (maybe impl traits will fix this?)
         fn process_pawn_moves(move_: Move, last_rank: Rank) -> Box<Iterator<Item = Move>> {
             if move_.target.rank() == last_rank {
-                let iter = Piece::iter()
-                    .filter(|&piece| *piece != Piece::Pawn) // TODO: This is clearly inefficient.
-                    .map(move |&piece| Move {
-                        promotion: Some(piece),
-                        ..move_
-                    });
+                let iter = Piece::iter_pieces().map(move |piece| Move {
+                    promotion: Some(piece),
+                    ..move_
+                });
                 Box::new(iter)
             } else {
                 Box::new(iter::once(move_))
