@@ -32,10 +32,16 @@ impl Piece {
         vec![Pawn, Rook, Knight, Bishop, Queen, King].into_iter()
     }
 
-    /// Returns an iterator over all the non-pawn pieces.
-    pub fn iter_pieces() -> IntoIter<Piece> {
+    /// Returns an iterator over all the pieces except the pawn (including the king)
+    pub fn iter_non_pawn() -> IntoIter<Piece> {
         use self::Piece::*;
         vec![Rook, Knight, Bishop, Queen, King].into_iter()
+    }
+
+    /// Returns an iterator over all the non-pawn and non-king pieces.
+    pub fn iter_pieces() -> IntoIter<Piece> {
+        use self::Piece::*;
+        vec![Rook, Knight, Bishop, Queen].into_iter()
     }
 }
 

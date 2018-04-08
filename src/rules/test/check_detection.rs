@@ -3,6 +3,7 @@ use rules::player_board::PlayerBoard;
 use board::square::Square;
 use board::file::File;
 use board::rank::Rank;
+use board::player::Player;
 
 #[test]
 fn is_check_rook() {
@@ -13,7 +14,7 @@ fn is_check_rook() {
         );
 
     println!("{}", state);
-    assert_eq!(state.is_check(), true);
+    assert_eq!(state.is_check(Player::White), true);
 
     let state = state.clone().with_white_board(
         state
@@ -22,7 +23,7 @@ fn is_check_rook() {
     );
 
     println!("{}", state);
-    assert_eq!(state.is_check(), false);
+    assert_eq!(state.is_check(Player::White), false);
 }
 
 #[test]
@@ -34,7 +35,7 @@ fn is_check_pawn() {
         );
 
     println!("{}", state);
-    assert_eq!(state.is_check(), true);
+    assert_eq!(state.is_check(Player::White), true);
 }
 
 #[test]
@@ -46,7 +47,7 @@ fn is_check_knight() {
         );
 
     println!("{}", state);
-    assert_eq!(state.is_check(), true);
+    assert_eq!(state.is_check(Player::White), true);
 }
 
 #[test]
@@ -58,7 +59,7 @@ fn is_check_bishop() {
         );
 
     println!("{}", state);
-    assert_eq!(state.is_check(), true);
+    assert_eq!(state.is_check(Player::White), true);
 
     let state = state.clone().with_white_board(
         state
@@ -67,7 +68,7 @@ fn is_check_bishop() {
     );
 
     println!("{}", state);
-    assert_eq!(state.is_check(), false);
+    assert_eq!(state.is_check(Player::White), false);
 }
 
-// TODO: Add mate tests
+// TODO: Add mate tests (different types of mates)

@@ -44,7 +44,7 @@ impl GameState {
         moves.append(&mut captures);
 
         // pawns are special as they have promotions and en passant captures
-        let mut non_pawn_moves: Vec<_> = Piece::iter_pieces()
+        let mut non_pawn_moves: Vec<_> = Piece::iter_non_pawn()
             .flat_map(|piece| {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
@@ -199,7 +199,7 @@ impl GameState {
 
         moves
             .into_iter()
-            .filter(|move_| !self.apply_move(move_).is_check())
+            .filter(|move_| !self.apply_move(move_).is_check(self.player_turn))
             .collect::<Vec<Move>>()
     }
 }
