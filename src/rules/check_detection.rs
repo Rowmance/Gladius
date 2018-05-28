@@ -20,7 +20,12 @@ impl GameState {
     }
 
     /// Returns true if the player whose turn it is has been mated.
-    pub fn is_mate(&self) -> bool {
-        self.legal_moves().is_empty()
+    pub fn is_mate(&self, player: Player) -> bool {
+        self.is_check(player) && self.legal_moves().is_empty()
+    }
+
+    /// Returns true if there is a stale mate.
+    pub fn is_stale_mate(&self, player: Player) -> bool {
+        !self.is_check(player) && self.legal_moves().is_empty()
     }
 }
