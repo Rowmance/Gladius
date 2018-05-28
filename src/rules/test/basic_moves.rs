@@ -1,17 +1,17 @@
-use rules::basic_moves;
-use board::rank::Rank;
-use board::file::File;
-use board::square::Square;
-use board::player::Player;
 use board::bitboard::BitBoard;
+use board::file::File;
+use board::player::Player;
+use board::rank::Rank;
+use board::square::Square;
+use rules::basic_moves;
 
 #[test]
 fn basic_moves_rook() {
     macro_rules! test_rook {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             assert_eq!(basic_moves::rook(square), BitBoard::new($expected));
-        )
+        };
     }
 
     test_rook!(File::A, Rank::One, 0x1010101010101FE);
@@ -36,10 +36,10 @@ fn basic_moves_rook() {
 #[test]
 fn basic_moves_bishop() {
     macro_rules! test_bishop {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             assert_eq!(basic_moves::bishop(square), BitBoard::new($expected));
-        )
+        };
     }
 
     test_bishop!(File::A, Rank::Four, 0x1008040200020408);
@@ -69,10 +69,10 @@ fn basic_moves_bishop() {
 #[test]
 fn basic_moves_queen() {
     macro_rules! test_queen {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             assert_eq!(basic_moves::queen(square), BitBoard::new($expected));
-        )
+        };
     }
 
     test_queen!(File::C, Rank::Three, 0x844424150EFB0E15);
@@ -84,12 +84,12 @@ fn basic_moves_queen() {
 #[test]
 fn basic_moves_king() {
     macro_rules! test_king {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = basic_moves::king(square);
             println!("\n{} king moves: {}", square, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        )
+        };
     }
 
     test_king!(File::C, Rank::Three, 0xE0A0E00);
@@ -105,10 +105,10 @@ fn basic_moves_king() {
 #[test]
 fn basic_moves_pawn() {
     macro_rules! test_pawn {
-        ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $player:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             assert_eq!(basic_moves::pawn_moves(square, $player), BitBoard::new($expected));
-        )
+        };
     }
 
     test_pawn!(File::C, Rank::Four, Player::White, 0x400000000);
@@ -127,12 +127,12 @@ fn basic_moves_pawn() {
 #[test]
 fn basic_attacks_pawn() {
     macro_rules! test_pawn {
-        ($file:expr, $rank:expr, $player:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $player:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = basic_moves::pawn_attacks(square, $player);
             println!("\n{} {} pawn attacks: {}", square, $player, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        )
+        };
     }
 
     test_pawn!(File::C, Rank::Four, Player::White, 0xA00000000);
@@ -151,12 +151,12 @@ fn basic_attacks_pawn() {
 #[test]
 fn basic_moves_knight() {
     macro_rules! test_knight {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = basic_moves::knight(square);
             println!("\n{} knight attacks: {}", square, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        )
+        };
     }
 
     test_knight!(File::C, Rank::Four, 0xA1100110A00);

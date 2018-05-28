@@ -1,14 +1,14 @@
 //! A movement of a piece
 
-use board::square::Square;
+use board::file::File;
 use board::piece::Piece;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::result::Result;
 use board::player::Player;
 use board::rank::Rank;
-use rules::game_state::GameState;
+use board::square::Square;
 use rules::castle_rights::CastleRights;
-use board::file::File;
+use rules::game_state::GameState;
+use std::fmt::{Display, Formatter, Result as FmtResult};
+use std::result::Result;
 
 /// Represents the direction of a castle move
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -146,12 +146,8 @@ impl GameState {
     fn validate(&self, move_: &Move) -> Result<(), String> {
         // valid origin
         if !match self.player_turn {
-            Player::White => self.white_board
-                .piece(move_.piece)
-                .is_square_set(move_.origin),
-            Player::Black => self.black_board
-                .piece(move_.piece)
-                .is_square_set(move_.origin),
+            Player::White => self.white_board.piece(move_.piece).is_square_set(move_.origin),
+            Player::Black => self.black_board.piece(move_.piece).is_square_set(move_.origin),
         } {
             return Err(format!(
                 "The moved {} from square {} for player {} was not in place",
@@ -223,10 +219,7 @@ impl GameState {
                 if all.is_square_set(Square::from_coordinates(File::G, king_rank))
                     || all.is_square_set(Square::from_coordinates(File::F, king_rank))
                 {
-                    return Err(format!(
-                        "{} is invalid as there are pieces in the way",
-                        castle_move
-                    ));
+                    return Err(format!("{} is invalid as there are pieces in the way", castle_move));
                 }
             }
 
@@ -235,10 +228,7 @@ impl GameState {
                     || all.is_square_set(Square::from_coordinates(File::C, king_rank))
                     || all.is_square_set(Square::from_coordinates(File::D, king_rank))
                 {
-                    return Err(format!(
-                        "{} is invalid as there are pieces in the way",
-                        castle_move
-                    ));
+                    return Err(format!("{} is invalid as there are pieces in the way", castle_move));
                 }
             }
         }
@@ -351,9 +341,7 @@ impl GameState {
                 self.white_board = self.white_board
                     .with_pawns(self.white_board.pawns.unset_square(move_.origin))
                     .with_piece(
-                        move_
-                            .promotion
-                            .expect("apply_promotion called without promotion piece"),
+                        move_.promotion.expect("apply_promotion called without promotion piece"),
                         move_.target.to_bitboard(),
                     )
             }
@@ -361,9 +349,7 @@ impl GameState {
                 self.black_board = self.black_board
                     .with_pawns(self.black_board.pawns.unset_square(move_.origin))
                     .with_piece(
-                        move_
-                            .promotion
-                            .expect("apply_promotion called without promotion piece"),
+                        move_.promotion.expect("apply_promotion called without promotion piece"),
                         move_.target.to_bitboard(),
                     )
             }
@@ -413,8 +399,7 @@ impl GameState {
                         .set_square(move_.target),
                 );
                 let target = Square::from_coordinates(move_.target.file(), move_.target.rank().prev().unwrap());
-                self.black_board = self.black_board
-                    .with_pawns(self.black_board.pawns.unset_square(target));
+                self.black_board = self.black_board.with_pawns(self.black_board.pawns.unset_square(target));
             }
             Player::Black => {
                 self.black_board = self.black_board.with_pawns(
@@ -424,8 +409,7 @@ impl GameState {
                         .set_square(move_.target),
                 );
                 let target = Square::from_coordinates(move_.target.file(), move_.target.rank().next().unwrap());
-                self.white_board = self.white_board
-                    .with_pawns(self.white_board.pawns.unset_square(target));
+                self.white_board = self.white_board.with_pawns(self.white_board.pawns.unset_square(target));
             }
         }
     }

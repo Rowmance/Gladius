@@ -1,15 +1,15 @@
-use rules::game_state::GameState;
-use rules::player_board::PlayerBoard;
-use rules::move_application::Move;
-use rules::move_application::CastleMove;
-use board::player::Player;
+use board::bitboard;
 use board::bitboard::BitBoard;
-use rules::castle_rights::CastleRights;
 use board::file::File;
+use board::piece::Piece;
+use board::player::Player;
 use board::rank::Rank;
 use board::square::Square;
-use board::piece::Piece;
-use board::bitboard;
+use rules::castle_rights::CastleRights;
+use rules::game_state::GameState;
+use rules::move_application::CastleMove;
+use rules::move_application::Move;
+use rules::player_board::PlayerBoard;
 
 #[test]
 fn move_castle_white() {

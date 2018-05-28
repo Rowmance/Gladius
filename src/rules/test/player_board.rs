@@ -1,7 +1,7 @@
-use board::player::Player;
-use rules::player_board::PlayerBoard;
 use board::bitboard::BitBoard;
 use board::piece::Piece;
+use board::player::Player;
+use rules::player_board::PlayerBoard;
 
 #[test]
 fn player_board() {

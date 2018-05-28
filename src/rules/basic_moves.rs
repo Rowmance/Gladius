@@ -1,10 +1,10 @@
 //! The movement of chess pieces on an empty board.
 
-use board::square::Square;
+use board::bitboard::BitBoard;
+use board::file::File;
 use board::player::Player;
 use board::rank::Rank;
-use board::file::File;
-use board::bitboard::BitBoard;
+use board::square::Square;
 
 // TODO: Can all of these be generated at build time? There are only (up to) 64 possibilities per piece.
 // TODO: If not, cache these.
@@ -43,15 +43,11 @@ pub fn pawn_attacks(square: Square, player: Player) -> BitBoard {
     let sides = square
         .file()
         .prev()
-        .map_or(BitBoard::empty(), |file| {
-            file.to_bitboard()
-        })
+        .map_or(BitBoard::empty(), |file| file.to_bitboard())
         | square
             .file()
             .next()
-            .map_or(BitBoard::empty(), |file| {
-                file.to_bitboard()
-            });
+            .map_or(BitBoard::empty(), |file| file.to_bitboard());
 
     let forward = match player {
         Player::White => square.rank().next(),

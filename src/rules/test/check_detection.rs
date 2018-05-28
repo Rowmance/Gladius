@@ -1,9 +1,9 @@
+use board::file::File;
+use board::player::Player;
+use board::rank::Rank;
+use board::square::Square;
 use rules::game_state::GameState;
 use rules::player_board::PlayerBoard;
-use board::square::Square;
-use board::file::File;
-use board::rank::Rank;
-use board::player::Player;
 
 #[test]
 fn is_check_rook() {

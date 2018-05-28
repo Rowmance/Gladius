@@ -2,12 +2,12 @@
 //! These are moves which, unlike those in [basic_moves], consider the positions
 //! of other pieces. These move generation functions do not consider check or checkmate.
 
-use board::square::Square;
-use board::player::Player;
 use board::bitboard::BitBoard;
+use board::piece::Piece;
+use board::player::Player;
+use board::square::Square;
 use rules::basic_moves;
 use std::num::Wrapping;
-use board::piece::Piece;
 
 impl Piece {
     /// Returns the possible moves of the piece.
@@ -124,10 +124,7 @@ fn bishop_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
     let forward_diag = forward_moves(square, blockers);
     let backward_diag = forward_moves(
         square.mirror_horizontal().mirror_diag().mirror_horizontal(),
-        blockers
-            .mirror_horizontal()
-            .mirror_diag()
-            .mirror_horizontal(),
+        blockers.mirror_horizontal().mirror_diag().mirror_horizontal(),
     ).mirror_horizontal()
         .mirror_diag()
         .mirror_horizontal();

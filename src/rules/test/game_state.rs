@@ -1,7 +1,7 @@
-use rules::game_state::GameState;
-use rules::player_board::PlayerBoard;
 use board::player::Player;
 use rules::castle_rights::CastleRights;
+use rules::game_state::GameState;
+use rules::player_board::PlayerBoard;
 
 #[test]
 fn game_state() {

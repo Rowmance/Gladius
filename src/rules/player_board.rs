@@ -1,9 +1,9 @@
 //! The positions of the pieces for a player
 
-use board::bitboard::BitBoard;
 use board::bitboard;
-use board::player::Player;
+use board::bitboard::BitBoard;
 use board::piece::Piece;
+use board::player::Player;
 
 /// Represents the positions of the pieces for a player
 #[derive(Clone, Debug, Copy, Eq, PartialEq, Withers)]

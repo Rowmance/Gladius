@@ -1,12 +1,12 @@
 //! Generates legal moves.
 
-use rules::game_state::GameState;
-use rules::move_application::{CastleMove, Move};
+use board::file::File;
 use board::piece::Piece;
+use board::player::Player;
 use board::rank::Rank;
 use board::square::Square;
-use board::file::File;
-use board::player::Player;
+use rules::game_state::GameState;
+use rules::move_application::{CastleMove, Move};
 use std::iter;
 
 impl GameState {
@@ -21,12 +21,7 @@ impl GameState {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
                     piece
-                        .attacks(
-                            square,
-                            self.player_turn,
-                            own_board.all(),
-                            opponent_board.all(),
-                        )
+                        .attacks(square, self.player_turn, own_board.all(), opponent_board.all())
                         .iter()
                         .map(move |target| Move {
                             piece,
@@ -49,11 +44,7 @@ impl GameState {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
                     piece
-                        .moves(
-                            square,
-                            self.player_turn,
-                            own_board.all() | opponent_board.all(),
-                        )
+                        .moves(square, self.player_turn, own_board.all() | opponent_board.all())
                         .iter()
                         .map(move |target| Move {
                             piece,
@@ -94,11 +85,7 @@ impl GameState {
             .iter()
             .flat_map(move |square| {
                 Piece::Pawn
-                    .moves(
-                        square,
-                        self.player_turn,
-                        own_board.all() | opponent_board.all(),
-                    )
+                    .moves(square, self.player_turn, own_board.all() | opponent_board.all())
                     .iter()
                     .map(move |target| Move {
                         piece: Piece::Pawn,

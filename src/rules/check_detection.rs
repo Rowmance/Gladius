@@ -1,8 +1,8 @@
 //! Check and checkmate detection.
 
-use rules::game_state::GameState;
 use board::piece::Piece;
 use board::player::Player;
+use rules::game_state::GameState;
 
 impl GameState {
     // Returns true if the given player is is in check.

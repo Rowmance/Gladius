@@ -1,26 +1,20 @@
-use rules::game_state::GameState;
-use board::piece::Piece;
-use rules::player_board::PlayerBoard;
 use board::bitboard::BitBoard;
-use board::square::Square;
 use board::file::File;
+use board::piece::Piece;
 use board::rank::Rank;
+use board::square::Square;
 use rules::castle_rights::CastleRights;
+use rules::game_state::GameState;
+use rules::player_board::PlayerBoard;
 
 #[test]
 fn starting_position() {
     let state = GameState::start_position();
     let all_moves = state.legal_moves();
 
-    let pawn_moves: Vec<_> = all_moves
-        .iter()
-        .filter(|m| m.piece == Piece::Pawn)
-        .collect();
+    let pawn_moves: Vec<_> = all_moves.iter().filter(|m| m.piece == Piece::Pawn).collect();
 
-    let knight_moves: Vec<_> = all_moves
-        .iter()
-        .filter(|m| m.piece == Piece::Knight)
-        .collect();
+    let knight_moves: Vec<_> = all_moves.iter().filter(|m| m.piece == Piece::Knight).collect();
 
     println!("{:?}", all_moves);
 

@@ -1,115 +1,58 @@
-use board::square::Square;
 use board::bitboard::BitBoard;
 use board::file::File;
-use board::rank::Rank;
 use board::player::Player;
+use board::rank::Rank;
+use board::square::Square;
 use rules::semilegal_moves;
 
 #[test]
 fn semilegal_moves_pawn() {
     macro_rules! test_pawn {
-        ($own_file:expr, $own_rank:expr, $opp_file:expr, $opp_rank:expr, $player:expr, $expected:expr) => (
+        ($own_file:expr, $own_rank:expr, $opp_file:expr, $opp_rank:expr, $player:expr, $expected:expr) => {
             let own_square = Square::from_coordinates($own_file, $own_rank);
             let blockers = Square::from_coordinates($opp_file, $opp_rank).to_bitboard();
             let moves = semilegal_moves::pawn_moves(own_square, $player, blockers);
 
-            println!("\n{} {} pawn moves blocked by:\n{}\nGives: {}", own_square, $player, blockers, moves);
+            println!(
+                "\n{} {} pawn moves blocked by:\n{}\nGives: {}",
+                own_square, $player, blockers, moves
+            );
             assert_eq!(moves, BitBoard::new($expected));
-        )
+        };
     }
 
     test_pawn!(File::A, Rank::Five, File::A, Rank::Six, Player::White, 0x0);
-    test_pawn!(
-        File::A,
-        Rank::Five,
-        File::A,
-        Rank::Seven,
-        Player::White,
-        0x10000000000
-    );
-    test_pawn!(
-        File::A,
-        Rank::Five,
-        File::A,
-        Rank::Eight,
-        Player::White,
-        0x10000000000
-    );
+    test_pawn!(File::A, Rank::Five, File::A, Rank::Seven, Player::White, 0x10000000000);
+    test_pawn!(File::A, Rank::Five, File::A, Rank::Eight, Player::White, 0x10000000000);
 
     test_pawn!(File::B, Rank::Two, File::B, Rank::Three, Player::White, 0x0);
-    test_pawn!(
-        File::B,
-        Rank::Two,
-        File::B,
-        Rank::Four,
-        Player::White,
-        0x20000
-    );
-    test_pawn!(
-        File::B,
-        Rank::Two,
-        File::B,
-        Rank::Five,
-        Player::White,
-        0x2020000
-    );
+    test_pawn!(File::B, Rank::Two, File::B, Rank::Four, Player::White, 0x20000);
+    test_pawn!(File::B, Rank::Two, File::B, Rank::Five, Player::White, 0x2020000);
 
     test_pawn!(File::D, Rank::Five, File::D, Rank::Four, Player::Black, 0x0);
-    test_pawn!(
-        File::D,
-        Rank::Five,
-        File::D,
-        Rank::Three,
-        Player::Black,
-        0x8000000
-    );
-    test_pawn!(
-        File::D,
-        Rank::Five,
-        File::D,
-        Rank::Two,
-        Player::Black,
-        0x8000000
-    );
+    test_pawn!(File::D, Rank::Five, File::D, Rank::Three, Player::Black, 0x8000000);
+    test_pawn!(File::D, Rank::Five, File::D, Rank::Two, Player::Black, 0x8000000);
 
     test_pawn!(File::H, Rank::Seven, File::H, Rank::Six, Player::Black, 0x0);
-    test_pawn!(
-        File::H,
-        Rank::Seven,
-        File::H,
-        Rank::Five,
-        Player::Black,
-        0x800000000000
-    );
-    test_pawn!(
-        File::H,
-        Rank::Seven,
-        File::H,
-        Rank::Four,
-        Player::Black,
-        0x808000000000
-    );
+    test_pawn!(File::H, Rank::Seven, File::H, Rank::Five, Player::Black, 0x800000000000);
+    test_pawn!(File::H, Rank::Seven, File::H, Rank::Four, Player::Black, 0x808000000000);
 
-    test_pawn!(
-        File::H,
-        Rank::Two,
-        File::A,
-        Rank::Four,
-        Player::White,
-        0x80800000
-    );
+    test_pawn!(File::H, Rank::Two, File::A, Rank::Four, Player::White, 0x80800000);
 }
 
 #[test]
 fn semilegal_attacks_pawn() {
     macro_rules! test_pawn {
-        ($file:expr, $rank:expr, $targets:expr, $player:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $targets:expr, $player:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let targets = semilegal_moves::pawn_attacks(square, $player, $targets);
 
-            println!("\n{} {} pawn attacks against:\n{}\nGives: {}", square, $player, $targets, targets);
+            println!(
+                "\n{} {} pawn attacks against:\n{}\nGives: {}",
+                square, $player, $targets, targets
+            );
             assert_eq!(targets, BitBoard::new($expected));
-        )
+        };
     }
 
     let targets = Rank::Five.to_bitboard();
@@ -147,13 +90,13 @@ fn semilegal_moves_knight() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_knight {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::knight_moves(square, board);
 
             println!("\n{} knight moves against:\n{}\nGives: {}", square, board, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_knight!(File::D, Rank::Four, 0x42000001400);
@@ -185,13 +128,13 @@ fn semilegal_attacks_knight() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_knight {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::knight_attacks(square, board);
 
             println!("\n{} knight attacks against:\n{}\nGives: {}", square, board, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_knight!(File::D, Rank::Four, 0x100200220000);
@@ -223,13 +166,13 @@ fn semilegal_moves_rook() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_rook {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::rook_moves(square, board);
 
             println!("\n{} rook moves against:\n{}\nGives: {}", square, board, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_rook!(File::D, Rank::Four, 0x8F7000000);
@@ -268,18 +211,16 @@ fn semilegal_attacks_rook() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_rook {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::rook_attacks(square, own_board, opponent_board);
 
             println!(
                 "\n{} rook attacks against:\n{}\nBlocked by {}\nGives: {}",
-                square,
-                opponent_board,
-                own_board,
-                moves);
+                square, opponent_board, own_board, moves
+            );
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_rook!(File::D, Rank::Four, 0x80000);
@@ -315,13 +256,13 @@ fn semilegal_moves_bishop() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_bishop {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::bishop_moves(square, board);
 
             println!("\n{} bishop moves against:\n{}\nGives: {}", square, board, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_bishop!(File::D, Rank::Four, 0x1221400142241);
@@ -362,18 +303,16 @@ fn semilegal_attack_bishop() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_bishop {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::bishop_attacks(square, own_board, opponent_board);
 
             println!(
                 "\n{} bishop attacks against:\n{}\nBlocked by {}\nGives: {}",
-                square,
-                opponent_board,
-                own_board,
-                moves);
+                square, opponent_board, own_board, moves
+            );
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_bishop!(File::D, Rank::Four, 0x40000000000000);
@@ -411,13 +350,13 @@ fn semilegal_moves_queen() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_queen {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::queen_moves(square, board);
 
             println!("\n{} queen moves against:\n{}\nGives: {}", square, board, moves);
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_queen!(File::D, Rank::Four, 0x1221CF7142241);
@@ -458,18 +397,16 @@ fn semilegal_attack_queen() {
         .set_square(Square::from_coordinates(File::G, Rank::Seven));
 
     macro_rules! test_queen {
-        ($file:expr, $rank:expr, $expected:expr) => (
+        ($file:expr, $rank:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
             let moves = semilegal_moves::queen_attacks(square, own_board, opponent_board);
 
             println!(
                 "\n{} queen attacks against:\n{}\nBlocked by {}\nGives: {}",
-                square,
-                opponent_board,
-                own_board,
-                moves);
+                square, opponent_board, own_board, moves
+            );
             assert_eq!(moves, BitBoard::new($expected));
-        );
+        };
     }
 
     test_queen!(File::D, Rank::Four, 0x40000000080000);

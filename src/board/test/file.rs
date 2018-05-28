@@ -1,5 +1,5 @@
-use board::file::File;
 use board::bitboard::BitBoard;
+use board::file::File;
 
 #[test]
 fn file() {

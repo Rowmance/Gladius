@@ -34,10 +34,7 @@ impl CastleRights {
         match *self {
             CastleRights::Both => CastleRights::QueenSide,
             CastleRights::KingSide => CastleRights::None,
-            _ => panic!(format!(
-                "Cannot remove king side castle rights from {}",
-                self
-            )),
+            _ => panic!(format!("Cannot remove king side castle rights from {}", self)),
         }
     }
 
@@ -46,10 +43,7 @@ impl CastleRights {
         match *self {
             CastleRights::Both => CastleRights::KingSide,
             CastleRights::QueenSide => CastleRights::None,
-            _ => panic!(format!(
-                "Cannot remove queen side castle rights from {}",
-                self
-            )),
+            _ => panic!(format!("Cannot remove queen side castle rights from {}", self)),
         }
     }
 }

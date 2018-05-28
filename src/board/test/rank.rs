@@ -1,5 +1,5 @@
-use board::rank::Rank;
 use board::bitboard::BitBoard;
+use board::rank::Rank;
 
 #[test]
 fn rank() {

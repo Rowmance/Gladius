@@ -14,13 +14,13 @@
 //! * Draws via the 50-move rule
 
 pub mod basic_moves;
-pub mod semilegal_moves;
-pub mod move_application;
-pub mod game_state;
-pub mod player_board;
 pub mod castle_rights;
 pub mod check_detection;
+pub mod game_state;
 pub mod legal_moves;
+pub mod move_application;
+pub mod player_board;
+pub mod semilegal_moves;
 
 #[cfg(test)]
 mod test;

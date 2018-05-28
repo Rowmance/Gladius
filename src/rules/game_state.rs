@@ -1,16 +1,16 @@
 //! The complete state of a chess board.
 
-use std::fmt::{Display, Formatter, Result};
-use std::default::Default;
 use std::char;
+use std::default::Default;
+use std::fmt::{Display, Formatter, Result};
 
+use board::file::File;
 use board::piece::Piece;
 use board::player::Player;
-use board::square::Square;
 use board::rank::Rank;
-use board::file::File;
-use rules::player_board::PlayerBoard;
+use board::square::Square;
 use rules::castle_rights::CastleRights;
+use rules::player_board::PlayerBoard;
 
 /// Represents a complete state of a chess board.
 #[derive(Clone, Debug, Eq, PartialEq, Withers)]

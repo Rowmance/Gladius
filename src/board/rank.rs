@@ -1,7 +1,7 @@
 //! A rank on the chess board.
 
-use std::slice::Iter;
 use std::fmt::{Display, Formatter, Result};
+use std::slice::Iter;
 
 use board::bitboard::BitBoard;
 

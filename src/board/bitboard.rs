@@ -1,15 +1,15 @@
 //! A 64-bit bitboard.
 
-use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, Shl, Shr, Sub, SubAssign};
 use std::fmt::{Display, Formatter, Result};
-use std::u64;
 use std::num::Wrapping;
+use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, Shl, Shr, Sub, SubAssign};
+use std::u64;
 
 use bit_reverse::ParallelReverse;
 
-use board::square::Square;
 use board::file::File;
 use board::rank::Rank;
+use board::square::Square;
 
 //---------------------------------------------------------------------------
 // Common

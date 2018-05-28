@@ -1,7 +1,7 @@
-use board::square::Square;
+use board::bitboard::BitBoard;
 use board::file::File;
 use board::rank::Rank;
-use board::bitboard::BitBoard;
+use board::square::Square;
 use std::panic::catch_unwind;
 
 #[test]
@@ -10,18 +10,9 @@ fn square_from_coordinates() {
     assert_eq!(Square::new(3), Square::from_coordinates(File::D, Rank::One));
     assert_eq!(Square::new(7), Square::from_coordinates(File::H, Rank::One));
     assert_eq!(Square::new(8), Square::from_coordinates(File::A, Rank::Two));
-    assert_eq!(
-        Square::new(27),
-        Square::from_coordinates(File::D, Rank::Four)
-    );
-    assert_eq!(
-        Square::new(47),
-        Square::from_coordinates(File::H, Rank::Six)
-    );
-    assert_eq!(
-        Square::new(63),
-        Square::from_coordinates(File::H, Rank::Eight)
-    );
+    assert_eq!(Square::new(27), Square::from_coordinates(File::D, Rank::Four));
+    assert_eq!(Square::new(47), Square::from_coordinates(File::H, Rank::Six));
+    assert_eq!(Square::new(63), Square::from_coordinates(File::H, Rank::Eight));
 
     let square = Square::from_coordinates(File::C, Rank::Two);
     println!("{}", square.file());
