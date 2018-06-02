@@ -8,9 +8,13 @@ use rules::player_board::PlayerBoard;
 #[test]
 fn is_check_rook() {
     let state = GameState::default()
-        .with_white_board(PlayerBoard::default().with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()))
+        .with_white_board(
+            PlayerBoard::default()
+                .with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()),
+        )
         .with_black_board(
-            PlayerBoard::default().with_rooks(Square::from_coordinates(File::B, Rank::Four).to_bitboard()),
+            PlayerBoard::default()
+                .with_rooks(Square::from_coordinates(File::B, Rank::Four).to_bitboard()),
         );
 
     println!("{}", state);
@@ -29,9 +33,13 @@ fn is_check_rook() {
 #[test]
 fn is_check_pawn() {
     let state = GameState::default()
-        .with_white_board(PlayerBoard::default().with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()))
+        .with_white_board(
+            PlayerBoard::default()
+                .with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()),
+        )
         .with_black_board(
-            PlayerBoard::default().with_pawns(Square::from_coordinates(File::C, Rank::Three).to_bitboard()),
+            PlayerBoard::default()
+                .with_pawns(Square::from_coordinates(File::C, Rank::Three).to_bitboard()),
         );
 
     println!("{}", state);
@@ -41,9 +49,13 @@ fn is_check_pawn() {
 #[test]
 fn is_check_knight() {
     let state = GameState::default()
-        .with_white_board(PlayerBoard::default().with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()))
+        .with_white_board(
+            PlayerBoard::default()
+                .with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()),
+        )
         .with_black_board(
-            PlayerBoard::default().with_knights(Square::from_coordinates(File::C, Rank::Four).to_bitboard()),
+            PlayerBoard::default()
+                .with_knights(Square::from_coordinates(File::C, Rank::Four).to_bitboard()),
         );
 
     println!("{}", state);
@@ -53,9 +65,13 @@ fn is_check_knight() {
 #[test]
 fn is_check_bishop() {
     let state = GameState::default()
-        .with_white_board(PlayerBoard::default().with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()))
+        .with_white_board(
+            PlayerBoard::default()
+                .with_king(Square::from_coordinates(File::B, Rank::Two).to_bitboard()),
+        )
         .with_black_board(
-            PlayerBoard::default().with_bishops(Square::from_coordinates(File::E, Rank::Five).to_bitboard()),
+            PlayerBoard::default()
+                .with_bishops(Square::from_coordinates(File::E, Rank::Five).to_bitboard()),
         );
 
     println!("{}", state);

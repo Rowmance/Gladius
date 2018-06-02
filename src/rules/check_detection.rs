@@ -15,7 +15,9 @@ impl GameState {
         // if for example, bishop attacks from the king contains a bishop,
         // then a bishop can attack the king. Repeat this for all pieces.
         Piece::iter().any(|p| {
-            !(p.attacks(king_square, player, own_pieces, opponent_pieces.all()) & opponent_pieces.piece(p)).is_empty()
+            !(p.attacks(king_square, player, own_pieces, opponent_pieces.all())
+                & opponent_pieces.piece(p))
+                .is_empty()
         })
     }
 

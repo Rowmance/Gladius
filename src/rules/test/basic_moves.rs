@@ -107,7 +107,10 @@ fn basic_moves_pawn() {
     macro_rules! test_pawn {
         ($file:expr, $rank:expr, $player:expr, $expected:expr) => {
             let square = Square::from_coordinates($file, $rank);
-            assert_eq!(basic_moves::pawn_moves(square, $player), BitBoard::new($expected));
+            assert_eq!(
+                basic_moves::pawn_moves(square, $player),
+                BitBoard::new($expected)
+            );
         };
     }
 

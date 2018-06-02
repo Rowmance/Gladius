@@ -21,7 +21,12 @@ impl GameState {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
                     piece
-                        .attacks(square, self.player_turn, own_board.all(), opponent_board.all())
+                        .attacks(
+                            square,
+                            self.player_turn,
+                            own_board.all(),
+                            opponent_board.all(),
+                        )
                         .iter()
                         .map(move |target| Move {
                             piece,
@@ -44,7 +49,11 @@ impl GameState {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
                     piece
-                        .moves(square, self.player_turn, own_board.all() | opponent_board.all())
+                        .moves(
+                            square,
+                            self.player_turn,
+                            own_board.all() | opponent_board.all(),
+                        )
                         .iter()
                         .map(move |target| Move {
                             piece,
@@ -85,7 +94,11 @@ impl GameState {
             .iter()
             .flat_map(move |square| {
                 Piece::Pawn
-                    .moves(square, self.player_turn, own_board.all() | opponent_board.all())
+                    .moves(
+                        square,
+                        self.player_turn,
+                        own_board.all() | opponent_board.all(),
+                    )
                     .iter()
                     .map(move |target| Move {
                         piece: Piece::Pawn,

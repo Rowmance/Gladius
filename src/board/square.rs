@@ -78,7 +78,8 @@ impl Square {
             let anti_mask = !((2 as u64).pow(8 * (anti_diff.abs()) as u32) - 1);
             BitBoard::new((0x0102040810204080 & anti_mask) << anti_diff)
         } else {
-            let anti_mask = 0xFFFFFFFFFFFFFFFF ^ ((2 as u64).pow(8 * (8 - anti_diff.abs()) as u32) - 1);
+            let anti_mask =
+                0xFFFFFFFFFFFFFFFF ^ ((2 as u64).pow(8 * (8 - anti_diff.abs()) as u32) - 1);
             BitBoard::new((0x0102040810204080 & !anti_mask) >> anti_diff.abs())
         }
     }

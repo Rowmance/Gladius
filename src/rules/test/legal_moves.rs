@@ -12,9 +12,15 @@ fn starting_position() {
     let state = GameState::start_position();
     let all_moves = state.legal_moves();
 
-    let pawn_moves: Vec<_> = all_moves.iter().filter(|m| m.piece == Piece::Pawn).collect();
+    let pawn_moves: Vec<_> = all_moves
+        .iter()
+        .filter(|m| m.piece == Piece::Pawn)
+        .collect();
 
-    let knight_moves: Vec<_> = all_moves.iter().filter(|m| m.piece == Piece::Knight).collect();
+    let knight_moves: Vec<_> = all_moves
+        .iter()
+        .filter(|m| m.piece == Piece::Knight)
+        .collect();
 
     println!("{:?}", all_moves);
 
@@ -79,7 +85,9 @@ fn promotion() {
                 .with_pawns(BitBoard::empty().set_coordinate(File::B, Rank::Seven))
                 .with_king(BitBoard::empty().set_coordinate(File::A, Rank::One)),
         )
-        .with_black_board(PlayerBoard::default().with_king(BitBoard::empty().set_coordinate(File::H, Rank::One)))
+        .with_black_board(
+            PlayerBoard::default().with_king(BitBoard::empty().set_coordinate(File::H, Rank::One)),
+        )
         .with_en_passant(Some(Square::from_coordinates(File::D, Rank::Six)));
 
     let moves = state.legal_moves();
@@ -115,7 +123,9 @@ fn include_checks() {
                 .with_rooks(BitBoard::empty().set_coordinate(File::H, Rank::Eight))
                 .with_king(BitBoard::empty().set_coordinate(File::H, Rank::Seven)),
         )
-        .with_black_board(PlayerBoard::default().with_king(BitBoard::empty().set_coordinate(File::A, Rank::One)));
+        .with_black_board(
+            PlayerBoard::default().with_king(BitBoard::empty().set_coordinate(File::A, Rank::One)),
+        );
 
     let moves = state.legal_moves();
     println!("{:?}", moves);

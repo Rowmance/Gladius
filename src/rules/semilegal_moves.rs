@@ -23,7 +23,13 @@ impl Piece {
     }
 
     /// Returns the possible captures of the piece.
-    pub fn attacks(&self, square: Square, player: Player, own_pieces: BitBoard, opponent_pieces: BitBoard) -> BitBoard {
+    pub fn attacks(
+        &self,
+        square: Square,
+        player: Player,
+        own_pieces: BitBoard,
+        opponent_pieces: BitBoard,
+    ) -> BitBoard {
         match *self {
             Piece::Pawn => pawn_attacks(square, player, opponent_pieces),
             Piece::Rook => rook_attacks(square, own_pieces, opponent_pieces),
@@ -81,13 +87,15 @@ fn rook_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
         let file_mask = square.file().to_bitboard();
         let pot_blockers = blockers & file_mask;
 
-        let difference = pot_blockers - BitBoard::new((Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
+        let difference =
+            pot_blockers - BitBoard::new((Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
         let changed = difference ^ blockers;
         changed & file_mask
     }
 
     let up = forward_moves(square, blockers);
-    let down = forward_moves(square.mirror_horizontal(), blockers.mirror_horizontal()).mirror_horizontal();
+    let down =
+        forward_moves(square.mirror_horizontal(), blockers.mirror_horizontal()).mirror_horizontal();
     let left = forward_moves(square.mirror_diag(), blockers.mirror_diag()).mirror_diag();
     let right = forward_moves(
         square.mirror_diag().mirror_horizontal(),
@@ -116,7 +124,8 @@ fn bishop_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
         let file_mask = square.diagonal();
         let pot_blockers = blockers & file_mask;
 
-        let difference = pot_blockers - BitBoard::new((Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
+        let difference =
+            pot_blockers - BitBoard::new((Wrapping(square.to_bitboard().to_u64()) * Wrapping(2)).0);
         let changed = difference ^ blockers;
         changed & file_mask
     }
@@ -124,12 +133,16 @@ fn bishop_all_moves(square: Square, blockers: BitBoard) -> BitBoard {
     let forward_diag = forward_moves(square, blockers);
     let backward_diag = forward_moves(
         square.mirror_horizontal().mirror_diag().mirror_horizontal(),
-        blockers.mirror_horizontal().mirror_diag().mirror_horizontal(),
+        blockers
+            .mirror_horizontal()
+            .mirror_diag()
+            .mirror_horizontal(),
     ).mirror_horizontal()
         .mirror_diag()
         .mirror_horizontal();
 
-    let forward_antidiag = forward_moves(square.mirror_horizontal(), blockers.mirror_horizontal()).mirror_horizontal();
+    let forward_antidiag =
+        forward_moves(square.mirror_horizontal(), blockers.mirror_horizontal()).mirror_horizontal();
     let backward_antidiag = forward_moves(
         square.mirror_diag().mirror_horizontal(),
         blockers.mirror_diag().mirror_horizontal(),
@@ -158,5 +171,6 @@ pub fn queen_moves(square: Square, blockers: BitBoard) -> BitBoard {
 
 /// Returns the attacks a given queen can make.
 pub fn queen_attacks(square: Square, own_pieces: BitBoard, opponent_pieces: BitBoard) -> BitBoard {
-    bishop_attacks(square, own_pieces, opponent_pieces) | rook_attacks(square, own_pieces, opponent_pieces)
+    bishop_attacks(square, own_pieces, opponent_pieces)
+        | rook_attacks(square, own_pieces, opponent_pieces)
 }

@@ -146,8 +146,12 @@ impl GameState {
     fn validate(&self, move_: &Move) -> Result<(), String> {
         // valid origin
         if !match self.player_turn {
-            Player::White => self.white_board.piece(move_.piece).is_square_set(move_.origin),
-            Player::Black => self.black_board.piece(move_.piece).is_square_set(move_.origin),
+            Player::White => self.white_board
+                .piece(move_.piece)
+                .is_square_set(move_.origin),
+            Player::Black => self.black_board
+                .piece(move_.piece)
+                .is_square_set(move_.origin),
         } {
             return Err(format!(
                 "The moved {} from square {} for player {} was not in place",
@@ -183,8 +187,12 @@ impl GameState {
             }
 
             if match self.player_turn {
-                Player::White => move_.origin.rank() != Rank::Seven || move_.target.rank() != Rank::Eight,
-                Player::Black => move_.origin.rank() != Rank::Two || move_.target.rank() != Rank::One,
+                Player::White => {
+                    move_.origin.rank() != Rank::Seven || move_.target.rank() != Rank::Eight
+                }
+                Player::Black => {
+                    move_.origin.rank() != Rank::Two || move_.target.rank() != Rank::One
+                }
             } {
                 return Err(format!(
                     "Promotion move from {} to {} is invalid",
@@ -219,7 +227,10 @@ impl GameState {
                 if all.is_square_set(Square::from_coordinates(File::G, king_rank))
                     || all.is_square_set(Square::from_coordinates(File::F, king_rank))
                 {
-                    return Err(format!("{} is invalid as there are pieces in the way", castle_move));
+                    return Err(format!(
+                        "{} is invalid as there are pieces in the way",
+                        castle_move
+                    ));
                 }
             }
 
@@ -228,7 +239,10 @@ impl GameState {
                     || all.is_square_set(Square::from_coordinates(File::C, king_rank))
                     || all.is_square_set(Square::from_coordinates(File::D, king_rank))
                 {
-                    return Err(format!("{} is invalid as there are pieces in the way", castle_move));
+                    return Err(format!(
+                        "{} is invalid as there are pieces in the way",
+                        castle_move
+                    ));
                 }
             }
         }
@@ -251,7 +265,8 @@ impl GameState {
         }
 
         // ensure pawn moves to the back ranks are promotions
-        if move_.piece == Piece::Pawn && (move_.target.rank() == Rank::Eight || move_.target.rank() == Rank::One)
+        if move_.piece == Piece::Pawn
+            && (move_.target.rank() == Rank::Eight || move_.target.rank() == Rank::One)
             && move_.promotion.is_none()
         {
             return Err(format!("Pawn move to {} must be a promotion", move_.target));
@@ -266,9 +281,10 @@ impl GameState {
                     opponent_pieces = opponent_pieces.set_square(en_passant);
                 }
             }
-            let valid_captures = move_
-                .piece
-                .attacks(move_.origin, self.player_turn, own_pieces, opponent_pieces);
+            let valid_captures =
+                move_
+                    .piece
+                    .attacks(move_.origin, self.player_turn, own_pieces, opponent_pieces);
             if !valid_captures.is_square_set(move_.target) {
                 return Err(format!(
                     "{} capture from {} to {} is not valid",
@@ -341,7 +357,9 @@ impl GameState {
                 self.white_board = self.white_board
                     .with_pawns(self.white_board.pawns.unset_square(move_.origin))
                     .with_piece(
-                        move_.promotion.expect("apply_promotion called without promotion piece"),
+                        move_
+                            .promotion
+                            .expect("apply_promotion called without promotion piece"),
                         move_.target.to_bitboard(),
                     )
             }
@@ -349,7 +367,9 @@ impl GameState {
                 self.black_board = self.black_board
                     .with_pawns(self.black_board.pawns.unset_square(move_.origin))
                     .with_piece(
-                        move_.promotion.expect("apply_promotion called without promotion piece"),
+                        move_
+                            .promotion
+                            .expect("apply_promotion called without promotion piece"),
                         move_.target.to_bitboard(),
                     )
             }
@@ -368,8 +388,11 @@ impl GameState {
                         .set_square(move_.target),
                 );
 
-                if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Two && move_.target.rank() == Rank::Four {
-                    self.en_passant = Some(Square::from_coordinates(move_.origin.file(), Rank::Three))
+                if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Two
+                    && move_.target.rank() == Rank::Four
+                {
+                    self.en_passant =
+                        Some(Square::from_coordinates(move_.origin.file(), Rank::Three))
                 }
             }
             Player::Black => {
@@ -380,7 +403,8 @@ impl GameState {
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
-                if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Seven && move_.target.rank() == Rank::Five
+                if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Seven
+                    && move_.target.rank() == Rank::Five
                 {
                     self.en_passant = Some(Square::from_coordinates(move_.origin.file(), Rank::Six))
                 }
@@ -398,8 +422,12 @@ impl GameState {
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
-                let target = Square::from_coordinates(move_.target.file(), move_.target.rank().prev().unwrap());
-                self.black_board = self.black_board.with_pawns(self.black_board.pawns.unset_square(target));
+                let target = Square::from_coordinates(
+                    move_.target.file(),
+                    move_.target.rank().prev().unwrap(),
+                );
+                self.black_board = self.black_board
+                    .with_pawns(self.black_board.pawns.unset_square(target));
             }
             Player::Black => {
                 self.black_board = self.black_board.with_pawns(
@@ -408,8 +436,12 @@ impl GameState {
                         .unset_square(move_.origin)
                         .set_square(move_.target),
                 );
-                let target = Square::from_coordinates(move_.target.file(), move_.target.rank().next().unwrap());
-                self.white_board = self.white_board.with_pawns(self.white_board.pawns.unset_square(target));
+                let target = Square::from_coordinates(
+                    move_.target.file(),
+                    move_.target.rank().next().unwrap(),
+                );
+                self.white_board = self.white_board
+                    .with_pawns(self.white_board.pawns.unset_square(target));
             }
         }
     }
