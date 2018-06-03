@@ -23,6 +23,7 @@ extern crate fern;
 extern crate chrono;
 
 /// The main method.
-fn main() {
-    logger::setup();
+fn main() -> Result<(), ()> {
+    logger::setup().map_err(|_| ());
+    Ok(())
 }

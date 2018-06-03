@@ -5,7 +5,7 @@ use board::player::Player;
 use rules::game_state::GameState;
 
 impl GameState {
-    // Returns true if the given player is is in check.
+    /// Returns true if the given player is is in check.
     pub fn is_check(&self, player: Player) -> bool {
         let own_board = self.player_board(player);
         let king_square = own_board.king.to_square();

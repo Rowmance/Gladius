@@ -1,6 +1,5 @@
 //! The alpha-beta tree-searching code.
 
-use rules::game_state::GameState;
 
 //pub struct SearchTree {
 //    game_state: GameState,

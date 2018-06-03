@@ -2,7 +2,6 @@
 
 use chrono;
 use fern;
-use fern::colors::Color;
 use fern::colors::ColoredLevelConfig;
 use log;
 use std;

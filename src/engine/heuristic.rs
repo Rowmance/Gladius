@@ -1,7 +1,5 @@
 //! The heuristic function used for the engine.
 
-use board::piece::Piece;
-use board::player::Player;
 use rules::game_state::GameState;
 use rules::player_board::PlayerBoard;
 use std::i64;

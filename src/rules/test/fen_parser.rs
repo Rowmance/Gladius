@@ -17,7 +17,7 @@ fn parse_default() {
 }
 
 #[test]
-fn parse_example1() {
+fn parse_end_game() {
     let state = parse_fen("5k2/ppp5/4P3/3R3p/6P1/1K2Nr2/PP3P2/8 b - - 1 32").unwrap();
 
     use board::file::File::*;

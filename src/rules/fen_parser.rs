@@ -72,31 +72,31 @@ fn parse_piece_placement(part: &str) -> Result<PlayerValues<PlayerBoard>, String
     // can literally step through the string and parse it as needed.
     let mut white = PlayerBoard::new();
     let mut black = PlayerBoard::new();
-    let mut squareIndex: u8 = 0;
+    let mut square_index: u8 = 0;
     let chars = part.chars();
     for ch in chars {
         // move to next rank
         if ch == '/' {
-            if squareIndex % 8 != 0 {
+            if square_index % 8 != 0 {
                 return Err(format!("Some rows aren't 8 pieces long"));
             }
             continue;
         }
         // skip empty squares
         if let Some(digit) = ch.to_digit(10) {
-            squareIndex += digit as u8;
+            square_index += digit as u8;
             continue;
         }
         let (player, piece) = parse_fen_piece(ch)?;
         // FEN uses the reverse order to our internal representation
-        let square = Square::new(squareIndex).mirror_horizontal();
+        let square = Square::new(square_index).mirror_horizontal();
         match player {
             Player::White => white = white.with_piece(piece, white.piece(piece).set_square(square)),
             Player::Black => black = black.with_piece(piece, black.piece(piece).set_square(square)),
         }
-        squareIndex += 1;
+        square_index += 1;
     }
-    if squareIndex != 64 {
+    if square_index != 64 {
         return Err(format!("Piece sequence doesn't cover 64 squares: {}", part));
     }
     Ok(PlayerValues { white, black })
