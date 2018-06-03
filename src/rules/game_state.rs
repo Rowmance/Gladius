@@ -34,10 +34,10 @@ pub struct GameState {
     pub black_castle_rights: CastleRights,
 
     /// The number of half-turns since the last capture or pawn advance.
-    pub draw_plies: usize,
+    pub draw_plies: u8,
 
-    /// The number of full turns elapsed.
-    pub full_turns: usize,
+    /// The number of full turns elapsed (such that a new game starts at 0)
+    pub full_turns: u8,
 }
 
 impl GameState {
@@ -77,13 +77,6 @@ impl GameState {
             Player::White => self.white_castle_rights = castle_rights,
             Player::Black => self.black_castle_rights = castle_rights,
         };
-    }
-
-    /// Parses the given FEN.
-    pub fn parse_fen(_fen: &str) -> Self {
-        // TODO.
-        // Iterate over all squares and traverse the string alongside that
-        unimplemented!()
     }
 }
 

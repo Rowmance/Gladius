@@ -16,6 +16,7 @@
 pub mod basic_moves;
 pub mod castle_rights;
 pub mod check_detection;
+pub mod fen_parser;
 pub mod game_state;
 pub mod legal_moves;
 pub mod move_application;
@@ -24,3 +25,5 @@ pub mod semilegal_moves;
 
 #[cfg(test)]
 mod test;
+
+// TODO rename this to 'game'

@@ -7,6 +7,7 @@
 
 pub mod board;
 pub mod engine;
+pub mod logger;
 pub mod rules;
 
 extern crate bit_reverse;
@@ -15,5 +16,13 @@ extern crate bit_reverse;
 #[macro_use]
 extern crate withers_derive;
 
+#[macro_use]
+extern crate log;
+extern crate fern;
+
+extern crate chrono;
+
 /// The main method.
-fn main() {}
+fn main() {
+    logger::setup();
+}

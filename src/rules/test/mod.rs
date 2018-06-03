@@ -3,6 +3,7 @@
 mod basic_moves;
 mod castle_rights;
 mod check_detection;
+mod fen_parser;
 mod game_state;
 mod legal_moves;
 mod move_application;

@@ -1,9 +1,11 @@
 //! A file on the chess board.
 
-use std::fmt::{Display, Formatter, Result};
+use std::fmt::{Display, Formatter};
 use std::slice::Iter;
 
 use board::bitboard::BitBoard;
+use std::fmt;
+use std::str::FromStr;
 
 /// Represents a file on a chessboard.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -102,8 +104,27 @@ impl File {
     }
 }
 
+// ---------------------------------------------------------------------
 impl Display for File {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
+    }
+}
+// ---------------------------------------------------------------------
+impl FromStr for File {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, <Self as FromStr>::Err> {
+        match s.to_uppercase().as_ref() {
+            "A" => Ok(File::A),
+            "B" => Ok(File::B),
+            "C" => Ok(File::C),
+            "D" => Ok(File::D),
+            "E" => Ok(File::E),
+            "F" => Ok(File::F),
+            "G" => Ok(File::G),
+            "H" => Ok(File::H),
+            _ => Err(format!("Cannot convert {} to file", s)),
+        }
     }
 }

@@ -1,9 +1,11 @@
 //! A rank on the chess board.
 
-use std::fmt::{Display, Formatter, Result};
+use std::fmt::{Display, Formatter};
 use std::slice::Iter;
 
 use board::bitboard::BitBoard;
+use std::fmt;
+use std::str::FromStr;
 
 /// Represents a rank on a chessboard.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -99,7 +101,25 @@ impl Rank {
 }
 
 impl Display for Rank {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(f, "{}", self.to_index() + 1)
+    }
+}
+
+impl FromStr for Rank {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, <Self as FromStr>::Err> {
+        match s.to_uppercase().as_ref() {
+            "1" => Ok(Rank::One),
+            "2" => Ok(Rank::Two),
+            "3" => Ok(Rank::Three),
+            "4" => Ok(Rank::Four),
+            "5" => Ok(Rank::Five),
+            "6" => Ok(Rank::Six),
+            "7" => Ok(Rank::Seven),
+            "8" => Ok(Rank::Eight),
+            _ => Err(format!("Cannot convert {} to rank", s)),
+        }
     }
 }

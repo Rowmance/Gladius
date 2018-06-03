@@ -1,10 +1,13 @@
 //! A square on the chess board.
 
-use std::fmt::{Display, Formatter, Result};
+use std::fmt::{Display, Formatter};
 
 use board::bitboard::BitBoard;
 use board::file::File;
 use board::rank::Rank;
+use std::fmt;
+use std::result::Result::Err;
+use std::str::FromStr;
 
 /// Represents a square on a board.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -15,7 +18,7 @@ impl Square {
     ///
     /// Will panic if debug mode and the value is not <64.
     pub fn new(val: u8) -> Self {
-        debug_assert!(val < 64, "Attempt to initiate Square with value {}", val);
+        debug_assert!(val < 64, "Attempt to instantiate Square with value {}", val);
         Square(val)
     }
 
@@ -85,8 +88,26 @@ impl Square {
     }
 }
 
+// ---------------------------------------------------------------------
 impl Display for Square {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(f, "{}{}", self.file(), self.rank())
+    }
+}
+
+// ---------------------------------------------------------------------
+impl FromStr for Square {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, <Self as FromStr>::Err> {
+        let mut chars = s.chars();
+        let file_char = chars.next().ok_or(format!("{} is not a valid square", s))?;
+        let rank_char = chars.next().ok_or(format!("{} is not a valid square", s))?;
+        let file = File::from_str(file_char.to_string().as_ref())?;
+        let rank = Rank::from_str(rank_char.to_string().as_ref())?;
+        if let Some(_) = chars.next() {
+            return Err(format!("{} is not a valid square", s));
+        }
+        Ok(Square::from_coordinates(file, rank))
     }
 }

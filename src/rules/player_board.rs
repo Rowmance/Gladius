@@ -6,7 +6,7 @@ use board::piece::Piece;
 use board::player::Player;
 
 /// Represents the positions of the pieces for a player
-#[derive(Clone, Debug, Copy, Eq, PartialEq, Withers)]
+#[derive(Clone, Debug, Copy, Eq, PartialEq, Withers, Default)]
 pub struct PlayerBoard {
     /// The pawns.
     pub pawns: BitBoard,
@@ -28,6 +28,11 @@ pub struct PlayerBoard {
 }
 
 impl PlayerBoard {
+    /// Returns a new, empty instance.
+    pub fn new() -> Self {
+        PlayerBoard::default()
+    }
+
     /// Returns a copy of the instance with the given piece set.
     pub fn with_piece(self, piece: Piece, bitboard: BitBoard) -> Self {
         match piece {
@@ -77,19 +82,6 @@ impl PlayerBoard {
                 queens: bitboard::BLACK_START_QUEENS,
                 king: bitboard::BLACK_START_KINGS,
             },
-        }
-    }
-}
-
-impl Default for PlayerBoard {
-    fn default() -> Self {
-        PlayerBoard {
-            pawns: BitBoard::empty(),
-            rooks: BitBoard::empty(),
-            knights: BitBoard::empty(),
-            bishops: BitBoard::empty(),
-            queens: BitBoard::empty(),
-            king: BitBoard::empty(),
         }
     }
 }

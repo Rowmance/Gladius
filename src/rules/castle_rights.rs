@@ -30,8 +30,8 @@ impl CastleRights {
     }
 
     /// Returns castle rights without the king side.
-    pub fn without_king_side(&self) -> CastleRights {
-        match *self {
+    pub fn without_king_side(self) -> CastleRights {
+        match self {
             CastleRights::Both => CastleRights::QueenSide,
             CastleRights::KingSide => CastleRights::None,
             _ => panic!(format!(
@@ -42,14 +42,32 @@ impl CastleRights {
     }
 
     /// Returns castle rights without the queen side.
-    pub fn without_queen_side(&self) -> CastleRights {
-        match *self {
+    pub fn without_queen_side(self) -> CastleRights {
+        match self {
             CastleRights::Both => CastleRights::KingSide,
             CastleRights::QueenSide => CastleRights::None,
             _ => panic!(format!(
                 "Cannot remove queen side castle rights from {}",
                 self
             )),
+        }
+    }
+
+    /// Returns castle rights with the king side set.
+    pub fn with_king_side(self) -> CastleRights {
+        match self {
+            CastleRights::None => CastleRights::KingSide,
+            CastleRights::QueenSide => CastleRights::Both,
+            other => other,
+        }
+    }
+
+    /// Returns castle rights with the queen side set.
+    pub fn with_queen_side(self) -> CastleRights {
+        match self {
+            CastleRights::None => CastleRights::QueenSide,
+            CastleRights::KingSide => CastleRights::Both,
+            other => other,
         }
     }
 }

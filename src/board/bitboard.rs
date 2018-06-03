@@ -77,7 +77,7 @@ pub const BLACK_START_KINGS: BitBoard =
 
 //---------------------------------------------------------------------------
 /// Represents a 64-bit bitboard.
-#[derive(Eq, PartialEq, Clone, Copy, Debug)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, Default)]
 pub struct BitBoard(pub u64);
 
 impl BitBoard {
@@ -98,9 +98,9 @@ impl BitBoard {
 
     /// Mirrors the board along the A1-H8 diagonal
     pub fn mirror_diag(&self) -> Self {
-        static K1: BitBoard = BitBoard(0x5500550055005500);
-        static K2: BitBoard = BitBoard(0x3333000033330000);
-        static K4: BitBoard = BitBoard(0x0f0f0f0f00000000);
+        const K1: BitBoard = BitBoard(0x5500550055005500);
+        const K2: BitBoard = BitBoard(0x3333000033330000);
+        const K4: BitBoard = BitBoard(0x0f0f0f0f00000000);
         let mut t = K4 & (*self ^ (*self << 28));
         let mut x = *self ^ (t ^ (t >> 28));
         t = K2 & (x ^ (x << 14));
