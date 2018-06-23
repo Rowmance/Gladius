@@ -16,7 +16,7 @@ impl GameState {
         let own_board = self.player_board(self.player_turn);
         let opponent_board = self.player_board(self.player_turn.other());
 
-        let mut captures: Vec<_> = Piece::iter()
+        let mut non_pawn_captures: Vec<_> = Piece::iter_non_pawn()
             .flat_map(|piece| {
                 let piece_board = own_board.piece(piece);
                 piece_board.iter().flat_map(move |square| {
@@ -41,7 +41,53 @@ impl GameState {
             })
             .collect();
 
-        moves.append(&mut captures);
+        moves.append(&mut non_pawn_captures);
+
+        let last_rank = match self.player_turn {
+            Player::White => Rank::Eight,
+            Player::Black => Rank::One,
+        };
+
+        // TODO: This is a bit of a shame - couldn't get it working otherwise though
+        // (maybe impl traits will fix this?)
+        fn process_pawn_moves(mv: Move, last_rank: Rank) -> Box<Iterator<Item = Move>> {
+            if mv.target.rank() == last_rank {
+                let iter = Piece::iter_pieces().map(move |piece| Move {
+                    promotion: Some(piece),
+                    ..mv
+                });
+                Box::new(iter)
+            } else {
+                Box::new(iter::once(mv))
+            }
+        }
+
+        let mut pawn_captures = own_board
+            .pawns
+            .iter()
+            .flat_map(move |square| {
+                Piece::Pawn
+                    .attacks(
+                        square,
+                        self.player_turn,
+                        own_board.all(),
+                        opponent_board.all(),
+                    )
+                    .iter()
+                    .map(move |target| Move {
+                        piece: Piece::Pawn,
+                        target,
+                        origin: square,
+                        capture: true,
+                        en_passant: false,
+                        promotion: None,
+                        castle: None,
+                    })
+            })
+            .flat_map(move |mv| process_pawn_moves(mv, last_rank))
+            .collect();
+
+        moves.append(&mut pawn_captures);
 
         // pawns are special as they have promotions and en passant captures
         let mut non_pawn_moves: Vec<_> = Piece::iter_non_pawn()
@@ -70,25 +116,6 @@ impl GameState {
 
         moves.append(&mut non_pawn_moves);
 
-        let last_rank = match self.player_turn {
-            Player::White => Rank::Eight,
-            Player::Black => Rank::One,
-        };
-
-        // TODO: This is a bit of a shame - couldn't get it working otherwise though
-        // (maybe impl traits will fix this?)
-        fn process_pawn_moves(move_: Move, last_rank: Rank) -> Box<Iterator<Item = Move>> {
-            if move_.target.rank() == last_rank {
-                let iter = Piece::iter_pieces().map(move |piece| Move {
-                    promotion: Some(piece),
-                    ..move_
-                });
-                Box::new(iter)
-            } else {
-                Box::new(iter::once(move_))
-            }
-        }
-
         let mut pawn_moves: Vec<_> = own_board
             .pawns
             .iter()
@@ -110,7 +137,7 @@ impl GameState {
                         castle: None,
                     })
             })
-            .flat_map(move |move_| process_pawn_moves(move_, last_rank))
+            .flat_map(move |mv| process_pawn_moves(mv, last_rank))
             .collect();
 
         moves.append(&mut pawn_moves);
@@ -199,7 +226,7 @@ impl GameState {
 
         moves
             .into_iter()
-            .filter(|move_| !self.apply_move(move_).is_check(self.player_turn))
+            .filter(|mv| !self.apply_move(mv).is_check(self.player_turn))
             .collect::<Vec<Move>>()
     }
 }

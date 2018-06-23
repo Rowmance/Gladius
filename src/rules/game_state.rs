@@ -87,8 +87,8 @@ impl Default for GameState {
             black_board: PlayerBoard::default(),
             player_turn: Player::White,
             en_passant: None,
-            white_castle_rights: CastleRights::Both,
-            black_castle_rights: CastleRights::Both,
+            white_castle_rights: CastleRights::None,
+            black_castle_rights: CastleRights::None,
             draw_plies: 0,
             full_turns: 0,
         }

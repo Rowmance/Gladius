@@ -6,8 +6,8 @@
 #![allow(dead_code)]
 #![allow(unused_must_use)]
 
+pub mod calculator;
 pub mod heuristic;
-pub mod search;
 
 #[cfg(test)]
 mod test;
@@ -29,11 +29,15 @@ mod test;
 // Function which ultimately returns list of move sequences to scores, given a depth
 // An instance which takes lock on result whilst calculating, and then can be interrupted with pending results so far!
 // don't worry about pruning just yet...
+// don't worry about cancelling just yet either - just go until depth runs out.
 
 // risks
 // make sure that forced draw by repetition doesn't break things.
 
-// ---
-
-// code organising
-// - search
+// next steps
+// pruning
+// cancellable future
+// multithreading
+// queue of search states so that checks can be explored in full before anything else?
+// prioritise checks in general
+// memoising?

@@ -53,8 +53,22 @@ pub struct Move {
 
 impl Display for Move {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
-        // TODO
-        write!(f, "{:?}", self)
+        let piece = match self.piece {
+            Piece::Pawn => "",
+            Piece::Rook => "R",
+            Piece::Knight => "N",
+            Piece::Bishop => "B",
+            Piece::Queen => "Q",
+            Piece::King => "K",
+        };
+        write!(
+            f,
+            "{}: {} {} {}",
+            piece,
+            self.origin,
+            if self.capture { "X" } else { "->" },
+            self.target
+        ) // TODO
     }
 }
 
@@ -79,9 +93,9 @@ impl GameState {
     /// - Updates the castle rights if a rook or king move
     ///
     /// Invalid game states or moves will give undefined behaviour.
-    pub fn apply_move(&self, move_: &Move) -> Self {
+    pub fn apply_move(&self, mv: &Move) -> Self {
         debug_assert!({
-            let result = self.validate(&move_);
+            let result = self.validate(&mv);
             if let Err(ref message) = result {
                 println!("{}", message);
             }
@@ -92,24 +106,24 @@ impl GameState {
         new_state.en_passant = None;
 
         // Castling
-        if let Some(castle_move) = move_.castle {
+        if let Some(castle_move) = mv.castle {
             new_state.apply_castle(castle_move);
         }
         // Promotion
-        else if move_.promotion.is_some() {
-            new_state.apply_promotion(&move_);
+        else if mv.promotion.is_some() {
+            new_state.apply_promotion(&mv);
         }
         // All other non-capture moves
-        else if !move_.capture {
-            new_state.apply_non_capture(&move_);
+        else if !mv.capture {
+            new_state.apply_non_capture(&mv);
         }
         // En passant
-        else if move_.en_passant {
-            new_state.apply_en_passant(&move_);
+        else if mv.en_passant {
+            new_state.apply_en_passant(&mv);
         }
         // All other capture moves
         else {
-            new_state.apply_capture(move_);
+            new_state.apply_capture(mv);
         }
 
         if self.player_turn == Player::Black {
@@ -121,19 +135,19 @@ impl GameState {
             Player::White => Player::Black,
         };
 
-        if move_.capture || move_.piece == Piece::Pawn {
+        if mv.capture || mv.piece == Piece::Pawn {
             new_state.draw_plies = 0;
         } else {
             new_state.draw_plies += 1;
         }
 
-        if move_.piece == Piece::King {
+        if mv.piece == Piece::King {
             new_state.set_castle_rights(self.player_turn, CastleRights::None);
-        } else if move_.piece == Piece::Rook {
+        } else if mv.piece == Piece::Rook {
             let castle_rights = self.castle_rights(self.player_turn);
-            if castle_rights.is_king_side_available() && move_.origin.file() == File::H {
+            if castle_rights.is_king_side_available() && mv.origin.file() == File::H {
                 new_state.set_castle_rights(self.player_turn, castle_rights.without_king_side());
-            } else if castle_rights.is_queen_side_available() && move_.origin.file() == File::A {
+            } else if castle_rights.is_queen_side_available() && mv.origin.file() == File::A {
                 new_state.set_castle_rights(self.player_turn, castle_rights.without_queen_side());
             }
         }
@@ -143,66 +157,58 @@ impl GameState {
 
     // ----------------------------------------------------------------
     // returns None if the move and board are valid, or an error
-    fn validate(&self, move_: &Move) -> Result<(), String> {
+    fn validate(&self, mv: &Move) -> Result<(), String> {
         // valid origin
         if !match self.player_turn {
-            Player::White => self.white_board
-                .piece(move_.piece)
-                .is_square_set(move_.origin),
-            Player::Black => self.black_board
-                .piece(move_.piece)
-                .is_square_set(move_.origin),
+            Player::White => self.white_board.piece(mv.piece).is_square_set(mv.origin),
+            Player::Black => self.black_board.piece(mv.piece).is_square_set(mv.origin),
         } {
             return Err(format!(
                 "The moved {} from square {} for player {} was not in place",
-                move_.piece, move_.origin, self.player_turn
+                mv.piece, mv.origin, self.player_turn
             ));
         }
 
         // validate target - en passant doesn't capture where a piece is
-        if move_.capture && !move_.en_passant {
+        if mv.capture && !mv.en_passant {
             if !match self.player_turn {
-                Player::White => self.black_board.all().is_square_set(move_.target),
-                Player::Black => self.white_board.all().is_square_set(move_.target),
+                Player::White => self.black_board.all().is_square_set(mv.target),
+                Player::Black => self.white_board.all().is_square_set(mv.target),
             } {
                 return Err(format!(
                     "The captured piece from square {} for player {} was not in place",
-                    move_.target, self.player_turn
+                    mv.target, self.player_turn
                 ));
             }
         } else {
             let all_pieces = self.black_board.all() | self.white_board.all();
-            if all_pieces.is_square_set(move_.target) {
+            if all_pieces.is_square_set(mv.target) {
                 return Err(format!(
                     "The target square {} for player {} isn't empty",
-                    move_.target, self.player_turn
+                    mv.target, self.player_turn
                 ));
             }
         };
 
         // ensure the promotion is to a valid square and piece
-        if let Some(promo_piece) = move_.promotion {
+        if let Some(promo_piece) = mv.promotion {
             if promo_piece == Piece::Pawn {
                 return Err("Cannot promote to a pawn".to_string());
             }
 
             if match self.player_turn {
-                Player::White => {
-                    move_.origin.rank() != Rank::Seven || move_.target.rank() != Rank::Eight
-                }
-                Player::Black => {
-                    move_.origin.rank() != Rank::Two || move_.target.rank() != Rank::One
-                }
+                Player::White => mv.origin.rank() != Rank::Seven || mv.target.rank() != Rank::Eight,
+                Player::Black => mv.origin.rank() != Rank::Two || mv.target.rank() != Rank::One,
             } {
                 return Err(format!(
                     "Promotion move from {} to {} is invalid",
-                    move_.origin, move_.target
+                    mv.origin, mv.target
                 ));
             }
         };
 
         // ensure that a castle has the correct rights and that the correct spaces are empty
-        if let Some(castle_move) = move_.castle {
+        if let Some(castle_move) = mv.castle {
             let castle_rights = self.castle_rights(self.player_turn);
             if castle_move == CastleMove::KingSide && !castle_rights.is_king_side_available() {
                 return Err(format!(
@@ -248,56 +254,56 @@ impl GameState {
         }
 
         // ensure en passant is allowed and on the correct square
-        if move_.en_passant {
+        if mv.en_passant {
             if let Some(target) = self.en_passant {
-                if target != move_.target {
+                if target != mv.target {
                     return Err(format!(
                         "Cannot en-passant capture on {} when en-passant square is {}",
-                        move_.target, target
+                        mv.target, target
                     ));
                 }
             } else {
                 return Err(format!(
                     "Cannot en-passant capture on {} when there is no en-passant available",
-                    move_.target
+                    mv.target
                 ));
             }
         }
 
         // ensure pawn moves to the back ranks are promotions
-        if move_.piece == Piece::Pawn
-            && (move_.target.rank() == Rank::Eight || move_.target.rank() == Rank::One)
-            && move_.promotion.is_none()
+        if mv.piece == Piece::Pawn
+            && (mv.target.rank() == Rank::Eight || mv.target.rank() == Rank::One)
+            && mv.promotion.is_none()
         {
-            return Err(format!("Pawn move to {} must be a promotion", move_.target));
+            println!("{}", mv);
+            return Err(format!("Pawn move to {} must be a promotion", mv.target));
         }
 
-        if move_.capture {
+        if mv.capture {
             let own_pieces = self.player_board(self.player_turn).all();
             let mut opponent_pieces = self.player_board(self.player_turn.other()).all();
-            if move_.piece == Piece::Pawn {
+            if mv.piece == Piece::Pawn {
                 if let Some(en_passant) = self.en_passant {
                     // imitate attackable square for pawn
                     opponent_pieces = opponent_pieces.set_square(en_passant);
                 }
             }
             let valid_captures =
-                move_
-                    .piece
-                    .attacks(move_.origin, self.player_turn, own_pieces, opponent_pieces);
-            if !valid_captures.is_square_set(move_.target) {
+                mv.piece
+                    .attacks(mv.origin, self.player_turn, own_pieces, opponent_pieces);
+            if !valid_captures.is_square_set(mv.target) {
                 return Err(format!(
                     "{} capture from {} to {} is not valid",
-                    move_.piece, move_.origin, move_.target
+                    mv.piece, mv.origin, mv.target
                 ));
             }
-        } else if move_.castle.is_none() {
+        } else if mv.castle.is_none() {
             let blockers = self.white_board.all() | self.black_board.all();
-            let valid_moves = move_.piece.moves(move_.origin, self.player_turn, blockers);
-            if !valid_moves.is_square_set(move_.target) {
+            let valid_moves = mv.piece.moves(mv.origin, self.player_turn, blockers);
+            if !valid_moves.is_square_set(mv.target) {
                 return Err(format!(
                     "{} move from {} to {} is not valid",
-                    move_.piece, move_.origin, move_.target
+                    mv.piece, mv.origin, mv.target
                 ));
             }
         }
@@ -351,81 +357,76 @@ impl GameState {
     }
 
     /// Applies a promoting move to the state.
-    fn apply_promotion(&mut self, move_: &Move) {
+    fn apply_promotion(&mut self, mv: &Move) {
         match self.player_turn {
             Player::White => {
                 self.white_board = self.white_board
-                    .with_pawns(self.white_board.pawns.unset_square(move_.origin))
+                    .with_pawns(self.white_board.pawns.unset_square(mv.origin))
                     .with_piece(
-                        move_
-                            .promotion
+                        mv.promotion
                             .expect("apply_promotion called without promotion piece"),
-                        move_.target.to_bitboard(),
+                        mv.target.to_bitboard(),
                     )
             }
             Player::Black => {
                 self.black_board = self.black_board
-                    .with_pawns(self.black_board.pawns.unset_square(move_.origin))
+                    .with_pawns(self.black_board.pawns.unset_square(mv.origin))
                     .with_piece(
-                        move_
-                            .promotion
+                        mv.promotion
                             .expect("apply_promotion called without promotion piece"),
-                        move_.target.to_bitboard(),
+                        mv.target.to_bitboard(),
                     )
             }
         }
     }
 
     /// Applies a non-capturing move to the state.
-    fn apply_non_capture(&mut self, move_: &Move) {
+    fn apply_non_capture(&mut self, mv: &Move) {
         match self.player_turn {
             Player::White => {
                 self.white_board = self.white_board.with_piece(
-                    move_.piece,
+                    mv.piece,
                     self.white_board
-                        .piece(move_.piece)
-                        .unset_square(move_.origin)
-                        .set_square(move_.target),
+                        .piece(mv.piece)
+                        .unset_square(mv.origin)
+                        .set_square(mv.target),
                 );
 
-                if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Two
-                    && move_.target.rank() == Rank::Four
+                if mv.piece == Piece::Pawn && mv.origin.rank() == Rank::Two
+                    && mv.target.rank() == Rank::Four
                 {
-                    self.en_passant =
-                        Some(Square::from_coordinates(move_.origin.file(), Rank::Three))
+                    self.en_passant = Some(Square::from_coordinates(mv.origin.file(), Rank::Three))
                 }
             }
             Player::Black => {
                 self.black_board = self.black_board.with_piece(
-                    move_.piece,
+                    mv.piece,
                     self.black_board
-                        .piece(move_.piece)
-                        .unset_square(move_.origin)
-                        .set_square(move_.target),
+                        .piece(mv.piece)
+                        .unset_square(mv.origin)
+                        .set_square(mv.target),
                 );
-                if move_.piece == Piece::Pawn && move_.origin.rank() == Rank::Seven
-                    && move_.target.rank() == Rank::Five
+                if mv.piece == Piece::Pawn && mv.origin.rank() == Rank::Seven
+                    && mv.target.rank() == Rank::Five
                 {
-                    self.en_passant = Some(Square::from_coordinates(move_.origin.file(), Rank::Six))
+                    self.en_passant = Some(Square::from_coordinates(mv.origin.file(), Rank::Six))
                 }
             }
         }
     }
 
     /// Applies an en-passant capture to the state.
-    fn apply_en_passant(&mut self, move_: &Move) {
+    fn apply_en_passant(&mut self, mv: &Move) {
         match self.player_turn {
             Player::White => {
                 self.white_board = self.white_board.with_pawns(
                     self.white_board
                         .pawns
-                        .unset_square(move_.origin)
-                        .set_square(move_.target),
+                        .unset_square(mv.origin)
+                        .set_square(mv.target),
                 );
-                let target = Square::from_coordinates(
-                    move_.target.file(),
-                    move_.target.rank().prev().unwrap(),
-                );
+                let target =
+                    Square::from_coordinates(mv.target.file(), mv.target.rank().prev().unwrap());
                 self.black_board = self.black_board
                     .with_pawns(self.black_board.pawns.unset_square(target));
             }
@@ -433,13 +434,11 @@ impl GameState {
                 self.black_board = self.black_board.with_pawns(
                     self.black_board
                         .pawns
-                        .unset_square(move_.origin)
-                        .set_square(move_.target),
+                        .unset_square(mv.origin)
+                        .set_square(mv.target),
                 );
-                let target = Square::from_coordinates(
-                    move_.target.file(),
-                    move_.target.rank().next().unwrap(),
-                );
+                let target =
+                    Square::from_coordinates(mv.target.file(), mv.target.rank().next().unwrap());
                 self.white_board = self.white_board
                     .with_pawns(self.white_board.pawns.unset_square(target));
             }
@@ -447,54 +446,54 @@ impl GameState {
     }
 
     /// Applies an ordinary capture move to the state.
-    fn apply_capture(&mut self, move_: &Move) {
+    fn apply_capture(&mut self, mv: &Move) {
         match self.player_turn {
             Player::White => {
                 self.white_board = self.white_board.with_piece(
-                    move_.piece,
+                    mv.piece,
                     self.white_board
-                        .piece(move_.piece)
-                        .unset_square(move_.origin)
-                        .set_square(move_.target),
+                        .piece(mv.piece)
+                        .unset_square(mv.origin)
+                        .set_square(mv.target),
                 );
                 self.black_board = match self.black_board {
-                    board if board.pawns.is_square_set(move_.target) => {
-                        board.with_pawns(board.pawns.unset_square(move_.target))
+                    board if board.pawns.is_square_set(mv.target) => {
+                        board.with_pawns(board.pawns.unset_square(mv.target))
                     }
-                    board if board.rooks.is_square_set(move_.target) => {
-                        board.with_rooks(board.rooks.unset_square(move_.target))
+                    board if board.rooks.is_square_set(mv.target) => {
+                        board.with_rooks(board.rooks.unset_square(mv.target))
                     }
-                    board if board.knights.is_square_set(move_.target) => {
-                        board.with_knights(board.knights.unset_square(move_.target))
+                    board if board.knights.is_square_set(mv.target) => {
+                        board.with_knights(board.knights.unset_square(mv.target))
                     }
-                    board if board.bishops.is_square_set(move_.target) => {
-                        board.with_bishops(board.bishops.unset_square(move_.target))
+                    board if board.bishops.is_square_set(mv.target) => {
+                        board.with_bishops(board.bishops.unset_square(mv.target))
                     }
-                    board => board.with_queens(board.queens.unset_square(move_.target)),
+                    board => board.with_queens(board.queens.unset_square(mv.target)),
                 }
             }
             Player::Black => {
                 self.black_board = self.black_board.with_piece(
-                    move_.piece,
+                    mv.piece,
                     self.black_board
-                        .piece(move_.piece)
-                        .unset_square(move_.origin)
-                        .set_square(move_.target),
+                        .piece(mv.piece)
+                        .unset_square(mv.origin)
+                        .set_square(mv.target),
                 );
                 self.white_board = match self.white_board {
-                    board if board.pawns.is_square_set(move_.target) => {
-                        board.with_pawns(board.pawns.unset_square(move_.target))
+                    board if board.pawns.is_square_set(mv.target) => {
+                        board.with_pawns(board.pawns.unset_square(mv.target))
                     }
-                    board if board.rooks.is_square_set(move_.target) => {
-                        board.with_rooks(board.rooks.unset_square(move_.target))
+                    board if board.rooks.is_square_set(mv.target) => {
+                        board.with_rooks(board.rooks.unset_square(mv.target))
                     }
-                    board if board.knights.is_square_set(move_.target) => {
-                        board.with_knights(board.knights.unset_square(move_.target))
+                    board if board.knights.is_square_set(mv.target) => {
+                        board.with_knights(board.knights.unset_square(mv.target))
                     }
-                    board if board.bishops.is_square_set(move_.target) => {
-                        board.with_bishops(board.bishops.unset_square(move_.target))
+                    board if board.bishops.is_square_set(mv.target) => {
+                        board.with_bishops(board.bishops.unset_square(mv.target))
                     }
-                    board => board.with_queens(board.queens.unset_square(move_.target)),
+                    board => board.with_queens(board.queens.unset_square(mv.target)),
                 }
             }
         }

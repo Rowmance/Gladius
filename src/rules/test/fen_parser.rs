@@ -3,7 +3,6 @@ use board::file::File;
 use board::player::Player;
 use board::rank::Rank;
 use board::square::Square;
-use logger;
 use rules::castle_rights::CastleRights;
 use rules::fen_parser::parse_fen;
 use rules::game_state::GameState;

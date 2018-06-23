@@ -6,7 +6,7 @@ repository = "https://github.com/Rowmance/Gladius"
 homepage = "https://github.com/Rowmance/Gladius"
 license = "MIT"
 readme = "README.md"
-description = "Rust chess engine."
+description = "Rust chess engine"
 
 [dependencies]
 bit_reverse = "0.1.7"
@@ -14,3 +14,4 @@ withers_derive = "0.2.0"
 log = "0.4"
 fern = { version = "0.5", features = ["colored"] }
 chrono = "0.4.2"
+futures = "0.2"

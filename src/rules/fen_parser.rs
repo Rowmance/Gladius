@@ -6,6 +6,7 @@ use board::square::Square;
 use rules::castle_rights::CastleRights;
 use rules::game_state::GameState;
 use rules::player_board::PlayerBoard;
+use std::cmp::max;
 use std::str::FromStr;
 
 /// Parses a given FEN string.
@@ -55,7 +56,7 @@ pub fn parse_fen(fen: &str) -> Result<GameState, String> {
         white_castle_rights: castling.white,
         black_castle_rights: castling.black,
         draw_plies: half_moves,
-        full_turns: full_moves - 1,
+        full_turns: max(full_moves, 1) - 1,
     })
 }
 

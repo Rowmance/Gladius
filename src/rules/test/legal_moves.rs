@@ -91,7 +91,7 @@ fn promotion() {
         .with_en_passant(Some(Square::from_coordinates(File::D, Rank::Six)));
 
     let moves = state.legal_moves();
-    println!("{:?}", moves);
+    println!("{:#?}", moves);
     assert_eq!(moves.len(), 7); // 4 promotions + 3 king moves
 
     let promo_moves: Vec<_> = moves

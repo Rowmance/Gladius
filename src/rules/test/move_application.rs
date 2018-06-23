@@ -14,6 +14,8 @@ use rules::player_board::PlayerBoard;
 #[test]
 fn move_castle_white() {
     let initial_state = GameState::default()
+        .with_white_castle_rights(CastleRights::Both)
+        .with_black_castle_rights(CastleRights::Both)
         .with_player_turn(Player::White)
         .with_white_board(
             PlayerBoard::default()
@@ -105,6 +107,8 @@ fn move_castle_white() {
 #[test]
 fn move_castle_black() {
     let initial_state = GameState::default()
+        .with_white_castle_rights(CastleRights::Both)
+        .with_black_castle_rights(CastleRights::Both)
         .with_player_turn(Player::Black)
         .with_white_board(
             PlayerBoard::default()
@@ -225,8 +229,8 @@ fn move_promote_white() {
             black_board: PlayerBoard::default(),
             player_turn: Player::Black,
             en_passant: None,
-            white_castle_rights: CastleRights::Both,
-            black_castle_rights: CastleRights::Both,
+            white_castle_rights: CastleRights::None,
+            black_castle_rights: CastleRights::None,
             draw_plies: 0,
             full_turns: 0,
         }
@@ -264,8 +268,8 @@ fn move_promote_black() {
                 .with_knights(BitBoard::empty().set_coordinate(File::B, Rank::One)),
             player_turn: Player::White,
             en_passant: None,
-            white_castle_rights: CastleRights::Both,
-            black_castle_rights: CastleRights::Both,
+            white_castle_rights: CastleRights::None,
+            black_castle_rights: CastleRights::None,
             draw_plies: 0,
             full_turns: 1,
         }
@@ -510,6 +514,8 @@ fn en_passant() {
 #[test]
 fn castle_rights_set_on_move() {
     let mut state = GameState::default()
+        .with_white_castle_rights(CastleRights::Both)
+        .with_black_castle_rights(CastleRights::Both)
         .with_white_board(PlayerBoard::start_position(Player::White).with_pawns(BitBoard::empty()))
         .with_black_board(PlayerBoard::start_position(Player::Black).with_pawns(BitBoard::empty()));
 
@@ -545,6 +551,8 @@ fn castle_rights_set_on_move() {
 #[test]
 fn castle_rights_set_on_castle() {
     let mut state = GameState::default()
+        .with_white_castle_rights(CastleRights::Both)
+        .with_black_castle_rights(CastleRights::Both)
         .with_white_board(
             PlayerBoard::start_position(Player::White)
                 .with_pawns(BitBoard::empty())

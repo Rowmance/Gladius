@@ -47,6 +47,7 @@ impl Square {
         Square::new(8 * (self.0 % 8) + (self.0 / 8))
     }
 
+    // TODO implement from trait
     /// Returns a bitboard with only the square marked.
     pub fn to_bitboard(&self) -> BitBoard {
         BitBoard::new(1 << self.0)

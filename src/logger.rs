@@ -27,4 +27,5 @@ pub fn setup() -> Result<(), fern::InitError> {
 }
 
 // TODO: Add logging in key areas
+// TODO: Allow log-level overriding without source code modifications (ie, environment variables)
 // TODO: https://github.com/rust-lang/rfcs/issues/1664
