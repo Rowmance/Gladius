@@ -4,6 +4,7 @@ use board::piece::Piece;
 use board::rank::Rank;
 use board::square::Square;
 use rules::castle_rights::CastleRights;
+use rules::fen_parser::parse_fen;
 use rules::game_state::GameState;
 use rules::player_board::PlayerBoard;
 
@@ -66,6 +67,15 @@ fn en_passant() {
 }
 
 #[test]
+fn castle_no_check() {
+    let fen = "r1bQk2r/1p2bppp/p3q3/1p2p1B1/8/5N2/PPP2PPP/3R1RK1 b kq - 1 1";
+    let state = parse_fen(fen).unwrap();
+    println!("{}", state);
+    let no_castles = state.legal_moves().iter().all(|mv| mv.castle.is_none());
+    assert!(no_castles);
+}
+
+#[test]
 fn promotion() {
     // +-+-+-+-+-+-+-+-+-+
     // | - - - - - - - - |
@@ -98,6 +108,50 @@ fn promotion() {
         .iter()
         .filter(|m| m.promotion.is_some())
         .filter(|m| m.target == Square::from_coordinates(File::B, Rank::Eight))
+        .collect();
+
+    assert_eq!(promo_moves.len(), 4);
+}
+
+#[test]
+fn capture_promotion() {
+    // +-+-+-+-+-+-+-+-+-+
+    // | p p - - - - - - |
+    // | - P - - - - - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // | - - - - - - - - |
+    // | K - - - - - - k |
+    // +-+-+-+-+-+-+-+-+-+
+    let state = GameState::default()
+        .with_black_castle_rights(CastleRights::None)
+        .with_white_castle_rights(CastleRights::None)
+        .with_white_board(
+            PlayerBoard::default()
+                .with_pawns(BitBoard::empty().set_coordinate(File::B, Rank::Seven))
+                .with_king(BitBoard::empty().set_coordinate(File::A, Rank::One)),
+        )
+        .with_black_board(
+            PlayerBoard::default()
+                .with_king(BitBoard::empty().set_coordinate(File::H, Rank::One))
+                .with_pawns(
+                    BitBoard::empty()
+                        .set_coordinate(File::B, Rank::Eight)
+                        .set_coordinate(File::A, Rank::Eight),
+                ),
+        )
+        .with_en_passant(Some(Square::from_coordinates(File::D, Rank::Six)));
+
+    let moves = state.legal_moves();
+    println!("{:#?}", moves);
+    assert_eq!(moves.len(), 7); // 4 promotions + 3 king moves
+
+    let promo_moves: Vec<_> = moves
+        .iter()
+        .filter(|m| m.promotion.is_some())
+        .filter(|m| m.target == Square::from_coordinates(File::A, Rank::Eight))
         .collect();
 
     assert_eq!(promo_moves.len(), 4);

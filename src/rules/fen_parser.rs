@@ -146,10 +146,10 @@ fn parse_castling_ability(part: &str) -> Result<PlayerValues<CastleRights>, Stri
     let mut black = CastleRights::None;
     for char in part.chars() {
         match char {
-            'k' => white = white.with_king_side(),
-            'q' => white = white.with_queen_side(),
-            'K' => black = black.with_king_side(),
-            'Q' => black = black.with_queen_side(),
+            'K' => white = white.with_king_side(),
+            'Q' => white = white.with_queen_side(),
+            'k' => black = black.with_king_side(),
+            'q' => black = black.with_queen_side(),
             _ => return Err(format!("Unknown castle ability character {}", char)),
         }
     }

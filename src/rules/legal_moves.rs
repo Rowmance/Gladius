@@ -1,10 +1,12 @@
 //! Generates legal moves.
 
+use board::bitboard::BitBoard;
 use board::file::File;
 use board::piece::Piece;
 use board::player::Player;
 use board::rank::Rank;
 use board::square::Square;
+use rules::castle_rights::CastleRights;
 use rules::game_state::GameState;
 use rules::move_application::{CastleMove, Move};
 use std::iter;
@@ -181,46 +183,93 @@ impl GameState {
 
         let castle_rights = self.castle_rights(self.player_turn);
 
-        if castle_rights.is_king_side_available() {
-            let king_rank = match self.player_turn {
-                Player::White => Rank::One,
-                Player::Black => Rank::Eight,
-            };
-            let all = opponent_board.all() | own_board.all();
-            if !all.is_square_set(Square::from_coordinates(File::G, king_rank))
-                && !all.is_square_set(Square::from_coordinates(File::F, king_rank))
-            {
-                moves.push(Move {
-                    piece: Piece::King,
-                    origin: Square::from_coordinates(File::E, king_rank),
-                    target: Square::from_coordinates(File::G, king_rank),
-                    capture: false,
-                    en_passant: false,
-                    promotion: None,
-                    castle: Some(CastleMove::KingSide),
+        if castle_rights == CastleRights::None {
+            let all_attacks = Piece::iter()
+                .map(|piece| {
+                    let piece_board = opponent_board.piece(piece);
+                    piece_board
+                        .iter()
+                        .map(move |square| {
+                            piece.attacks(
+                                square,
+                                self.player_turn,
+                                own_board.all(),
+                                opponent_board.all(),
+                            )
+                        })
+                        .fold(BitBoard::empty(), |a, b| a ^ b)
                 })
-            }
-        }
+                .fold(BitBoard::empty(), |a, b| a ^ b);
 
-        if castle_rights.is_queen_side_available() {
-            let king_rank = match self.player_turn {
-                Player::White => Rank::One,
-                Player::Black => Rank::Eight,
+            // TODO const these bitboards.
+            // TODO names are awful here
+            // prevent castling if king movement squares are being attacked
+            let king_check_blockers = match self.player_turn {
+                Player::White => BitBoard::empty()
+                    .set_coordinate(File::E, Rank::One)
+                    .set_coordinate(File::F, Rank::One)
+                    .set_coordinate(File::G, Rank::One),
+                Player::Black => BitBoard::empty()
+                    .set_coordinate(File::E, Rank::Eight)
+                    .set_coordinate(File::F, Rank::Eight)
+                    .set_coordinate(File::G, Rank::Eight),
             };
-            let all = opponent_board.all() | own_board.all();
-            if !all.is_square_set(Square::from_coordinates(File::B, king_rank))
-                && !all.is_square_set(Square::from_coordinates(File::C, king_rank))
-                && !all.is_square_set(Square::from_coordinates(File::D, king_rank))
-            {
-                moves.push(Move {
-                    piece: Piece::King,
-                    origin: Square::from_coordinates(File::E, king_rank),
-                    target: Square::from_coordinates(File::C, king_rank),
-                    capture: false,
-                    en_passant: false,
-                    promotion: None,
-                    castle: Some(CastleMove::QueenSide),
-                })
+
+            let queen_check_blockers = match self.player_turn {
+                Player::White => BitBoard::empty()
+                    .set_coordinate(File::E, Rank::One)
+                    .set_coordinate(File::D, Rank::One)
+                    .set_coordinate(File::C, Rank::One),
+                Player::Black => BitBoard::empty()
+                    .set_coordinate(File::E, Rank::Eight)
+                    .set_coordinate(File::D, Rank::Eight)
+                    .set_coordinate(File::C, Rank::Eight),
+            };
+
+            let can_ks_castle = (king_check_blockers & all_attacks).is_empty();
+            let can_qs_castle = (queen_check_blockers & all_attacks).is_empty();
+
+            if castle_rights.is_king_side_available() && can_ks_castle {
+                let king_rank = match self.player_turn {
+                    Player::White => Rank::One,
+                    Player::Black => Rank::Eight,
+                };
+                let all = opponent_board.all() | own_board.all();
+                if !all.is_square_set(Square::from_coordinates(File::G, king_rank))
+                    && !all.is_square_set(Square::from_coordinates(File::F, king_rank))
+                {
+                    moves.push(Move {
+                        piece: Piece::King,
+                        origin: Square::from_coordinates(File::E, king_rank),
+                        target: Square::from_coordinates(File::G, king_rank),
+                        capture: false,
+                        en_passant: false,
+                        promotion: None,
+                        castle: Some(CastleMove::KingSide),
+                    })
+                }
+            }
+
+            if castle_rights.is_queen_side_available() && can_qs_castle {
+                let king_rank = match self.player_turn {
+                    Player::White => Rank::One,
+                    Player::Black => Rank::Eight,
+                };
+                let all = opponent_board.all() | own_board.all();
+                if !all.is_square_set(Square::from_coordinates(File::B, king_rank))
+                    && !all.is_square_set(Square::from_coordinates(File::C, king_rank))
+                    && !all.is_square_set(Square::from_coordinates(File::D, king_rank))
+                {
+                    moves.push(Move {
+                        piece: Piece::King,
+                        origin: Square::from_coordinates(File::E, king_rank),
+                        target: Square::from_coordinates(File::C, king_rank),
+                        capture: false,
+                        en_passant: false,
+                        promotion: None,
+                        castle: Some(CastleMove::QueenSide),
+                    })
+                }
             }
         }
 

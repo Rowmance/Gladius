@@ -2,9 +2,7 @@
 
 use board::bitboard::BitBoard;
 use board::file::File;
-use board::rank::Rank;
 use rules::game_state::GameState;
-use rules::player_board::PlayerBoard;
 use std::i32;
 
 /// Quickly computes the score of the given game state, in centipawns.
@@ -72,14 +70,14 @@ fn pawns(state: &GameState) -> i32 {
         .count() as i32;
 
     // position mask
-    static pawn_mask: [i32; 64] = [
+    static PAWN_MASK: [i32; 64] = [
         0, 0, 0, 0, 0, 0, 0, 0, 50, 50, 50, 50, 50, 50, 50, 50, 10, 10, 20, 30, 30, 20, 10, 10, 5,
         5, 10, 25, 25, 10, 5, 5, 0, 0, 0, 20, 20, 0, 0, 0, 5, -5, -10, 0, 0, -10, -5, 5, 5, 10, 10,
         -20, -20, 10, 10, 5, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
 
-    let white_mask = apply_mask(state.white_board.pawns, &pawn_mask);
-    let black_mask = apply_mask_flipped(state.black_board.pawns, &pawn_mask);
+    let white_mask = apply_mask(state.white_board.pawns, &PAWN_MASK);
+    let black_mask = apply_mask_flipped(state.black_board.pawns, &PAWN_MASK);
 
     material + (black_doubled * 50) + (white_doubled * -50) + (black_isolated * 50)
         + (white_isolated * -50) + white_mask - black_mask
@@ -95,14 +93,14 @@ fn knights(state: &GameState) -> i32 {
     let material = diff * 300;
 
     // position mask
-    static knight_mask: [i32; 64] = [
+    static KNIGHT_MASK: [i32; 64] = [
         -50, -40, -30, -30, -30, -30, -40, -50, -40, -20, 0, 0, 0, 0, -20, -40, -30, 0, 10, 15, 15,
         10, 0, -30, -30, 5, 15, 20, 20, 15, 5, -30, -30, 0, 15, 20, 20, 15, 0, -30, -30, 5, 10, 15,
         15, 10, 5, -30, -40, -20, 0, 5, 5, 0, -20, -40, -50, -40, -30, -30, -30, -30, -40, -50,
     ];
 
-    let white_mask = apply_mask(state.white_board.knights, &knight_mask);
-    let black_mask = apply_mask_flipped(state.black_board.knights, &knight_mask);
+    let white_mask = apply_mask(state.white_board.knights, &KNIGHT_MASK);
+    let black_mask = apply_mask_flipped(state.black_board.knights, &KNIGHT_MASK);
 
     material + white_mask - black_mask
     // decrease in value if fewer pawns
@@ -115,14 +113,14 @@ fn bishops(state: &GameState) -> i32 {
     let material = diff * 300;
 
     // position mask
-    static bishop_mask: [i32; 64] = [
+    static BISHOP_MASK: [i32; 64] = [
         -20, -10, -10, -10, -10, -10, -10, -20, -10, 0, 0, 0, 0, 0, 0, -10, -10, 0, 5, 10, 10, 5,
         0, -10, -10, 5, 5, 10, 10, 5, 5, -10, -10, 0, 10, 10, 10, 10, 0, -10, -10, 10, 10, 10, 10,
         10, 10, -10, -10, 5, 0, 0, 0, 0, 5, -10, -20, -10, -10, -10, -10, -10, -10, -20,
     ];
 
-    let white_mask = apply_mask(state.white_board.bishops, &bishop_mask);
-    let black_mask = apply_mask_flipped(state.black_board.bishops, &bishop_mask);
+    let white_mask = apply_mask(state.white_board.bishops, &BISHOP_MASK);
+    let black_mask = apply_mask_flipped(state.black_board.bishops, &BISHOP_MASK);
 
     material + white_mask - black_mask
     // bonus for bishop pair
@@ -135,14 +133,14 @@ fn rooks(state: &GameState) -> i32 {
     let material = diff * 500;
 
     // position mask
-    static rook_mask: [i32; 64] = [
+    static ROOK_MASK: [i32; 64] = [
         0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 10, 10, 10, 10, 10, 5, -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0,
         0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0, 0,
         -5, 0, 0, 0, 5, 5, 0, 0, 0,
     ];
 
-    let white_mask = apply_mask(state.white_board.rooks, &rook_mask);
-    let black_mask = apply_mask_flipped(state.black_board.rooks, &rook_mask);
+    let white_mask = apply_mask(state.white_board.rooks, &ROOK_MASK);
+    let black_mask = apply_mask_flipped(state.black_board.rooks, &ROOK_MASK);
 
     material + white_mask - black_mask
     // penalty for rook pair
@@ -159,14 +157,14 @@ fn queens(state: &GameState) -> i32 {
     let material = diff * 900;
 
     // position mask
-    static queen_mask: [i32; 64] = [
+    static QUEEN_MASK: [i32; 64] = [
         -20, -10, -10, -5, -5, -10, -10, -20, -10, 0, 0, 0, 0, 0, 0, -10, -10, 0, 5, 5, 5, 5, 0,
         -10, -5, 0, 5, 5, 5, 5, 0, -5, 0, 0, 5, 5, 5, 5, 0, -5, -10, 5, 5, 5, 5, 5, 0, -10, -10, 0,
         5, 0, 0, 0, 0, -10, -20, -10, -10, -5, -5, -10, -10, -20,
     ];
 
-    let white_mask = apply_mask(state.white_board.queens, &queen_mask);
-    let black_mask = apply_mask_flipped(state.black_board.queens, &queen_mask);
+    let white_mask = apply_mask(state.white_board.queens, &QUEEN_MASK);
+    let black_mask = apply_mask_flipped(state.black_board.queens, &QUEEN_MASK);
 
     material + white_mask - black_mask
     // penalty for early development
@@ -174,22 +172,22 @@ fn queens(state: &GameState) -> i32 {
 
 fn king(state: &GameState) -> i32 {
     // position mask
-    static king_mask: [i32; 64] = [
+    static KING_MASK: [i32; 64] = [
         -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40,
         -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -20, -30, -30, -40,
         -40, -30, -30, -20, -10, -20, -20, -20, -20, -20, -20, -10, 20, 20, 0, 0, 0, 0, 20, 20, 20,
         30, 10, 0, 0, 10, 30, 20,
     ];
 
-    static king_late_mask: [i32; 64] = [
+    static KING_LATE_MASK: [i32; 64] = [
         -50, -40, -30, -20, -20, -30, -40, -50, -30, -20, -10, 0, 0, -10, -20, -30, -30, -10, 20,
         30, 30, 20, -10, -30, -30, -10, 30, 40, 40, 30, -10, -30, -30, -10, 30, 40, 40, 30, -10,
         -30, -30, -10, 20, 30, 30, 20, -10, -30, -30, -30, 0, 0, 0, 0, -30, -30, -50, -30, -30,
         -30, -30, -30, -30, -50,
     ];
 
-    let white_mask = apply_mask(state.white_board.king, &king_mask);
-    let black_mask = apply_mask_flipped(state.black_board.king, &king_mask);
+    let white_mask = apply_mask(state.white_board.king, &KING_MASK);
+    let black_mask = apply_mask_flipped(state.black_board.king, &KING_MASK);
 
     white_mask - black_mask
     // king should be safe in early/mid game
@@ -226,7 +224,7 @@ fn apply_mask_flipped(bitboard: BitBoard, mask: &[i32; 64]) -> i32 {
     while iterator > 0 {
         let index = iterator.trailing_zeros() as usize;
         sum += mask[index];
-        iterator ^= (1 << index);
+        iterator ^= 1 << index;
     }
     sum
 }

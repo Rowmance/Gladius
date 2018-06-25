@@ -2,20 +2,12 @@
 
 use board::player::Player;
 use engine::heuristic;
-use futures::executor::ThreadPool;
-use futures::future::Future;
-use futures::task::Context;
-use futures::Async;
 use rules::game_state::GameState;
 use rules::move_application::Move;
 use std::cmp;
-use std::collections::LinkedList;
-use std::error::Error;
 use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
-use std::sync::Mutex;
-use std::thread;
 
 /// A sequence of turns with a given score.
 ///
@@ -78,11 +70,10 @@ fn alpha_beta_internal(state: &GameState, depth: usize, mut alpha: i32, mut beta
     if state.player_turn == Player::White {
         let mut max_eval = i32::min_value();
         for mv in moves {
-            println!("--------------------------------------");
-            println!("{}", mv);
+            // TODO order move search checks + capturers -> checks normal -> captures -> normal
             let new_state = state.apply_move(&mv);
-            println!("New State {}", new_state);
             let eval = alpha_beta_internal(&new_state, depth - 1, alpha, beta);
+            //            println!("{}, {}: {}", mv, new_state, eval);
             max_eval = cmp::max(max_eval, eval);
             alpha = cmp::max(alpha, eval);
             if beta <= alpha {
@@ -96,6 +87,7 @@ fn alpha_beta_internal(state: &GameState, depth: usize, mut alpha: i32, mut beta
     for mv in moves {
         let new_state = state.apply_move(&mv);
         let eval = alpha_beta_internal(&new_state, depth - 1, alpha, beta);
+        //        println!("{}, {}: {}", mv, new_state, eval);
         min_eval = cmp::min(min_eval, eval);
         beta = cmp::min(beta, eval);
         if beta <= alpha {
